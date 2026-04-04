@@ -19,7 +19,6 @@ import type { Task, TaskStatus, Comment } from "@/lib/features/types/task-type";
 import { createPersonalTaskSchema } from "@/lib/schemas";
 import type { z } from "zod";
 
-/* ── Constants ──────────────────────────────────────────────────── */
 const PRIORITY_STYLE: Record<string, string> = {
   LOW:    "bg-slate-50  text-slate-600 border-slate-200",
   MEDIUM: "bg-orange-50 text-orange-600 border-orange-200",
@@ -35,7 +34,6 @@ const COLUMNS: ColDef[] = [
   { id: "DONE",        label: "Done",        dot: "#00875a", bg: "#e3fcef", accent: "#00875a" },
 ];
 
-/* ── Avatar Helpers ─────────────────────────────────────────────── */
 const AVATAR_PALETTE = [
   "#0052cc", "#00875a", "#ff5630", "#6554c0",
   "#ff991f", "#00b8d9", "#36b37e", "#de350b",
