@@ -1,13 +1,16 @@
 import { baseApi } from "../api/api";
 import type {
-  Task, Project, ActivityItem, DashboardStats,
-  Comment, Attachment, PageResponse,
+  Task,
+  Project,
+  ActivityItem,
+  DashboardStats,
+  Comment,
+  Attachment,
+  PageResponse,
 } from "../types/task-type";
 
 export const taskApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-
-    // ── Personal Tasks ─────────────────────────────────────────────────────
     getPersonalTasks: builder.query<
       PageResponse<Task>,
       { status?: string; search?: string; page?: number; size?: number }
@@ -21,7 +24,13 @@ export const taskApi = baseApi.injectEndpoints({
 
     createPersonalTask: builder.mutation<
       Task,
-      { title: string; description?: string; priority?: string; dueDate?: string; parentTaskId?: string }
+      {
+        title: string;
+        description?: string;
+        priority?: string;
+        dueDate?: string;
+        parentTaskId?: string;
+      }
     >({
       query: (body) => ({
         url: "/tasks/personal",
@@ -31,10 +40,15 @@ export const taskApi = baseApi.injectEndpoints({
       invalidatesTags: ["PersonalTask", "Task"],
     }),
 
-    // ── Project Tasks ──────────────────────────────────────────────────────
     getProjectTasks: builder.query<
       PageResponse<Task>,
-      { projectId: string; assigneeId?: string; status?: string; page?: number; size?: number }
+      {
+        projectId: string;
+        assigneeId?: string;
+        status?: string;
+        page?: number;
+        size?: number;
+      }
     >({
       query: ({ projectId, ...params }) => ({
         url: `/tasks/project/${projectId}`,
@@ -44,9 +58,18 @@ export const taskApi = baseApi.injectEndpoints({
     }),
 
     createProjectTask: builder.mutation<
-      Task,
-      { projectId: string; title: string; description?: string; priority?: string; dueDate?: string; assigneeId?: string }
-    >({
+  Task,
+  {
+    projectId: string;
+    title: string;
+    description?: string;
+    priority?: string;
+    dueDate?: string;
+    assigneeId?: string;
+    parentTaskId?: string;
+    status?: string;
+  }
+>({
       query: ({ projectId, ...body }) => ({
         url: `/tasks/project/${projectId}`,
         method: "POST",
@@ -55,7 +78,6 @@ export const taskApi = baseApi.injectEndpoints({
       invalidatesTags: ["ProjectTask", "Task"],
     }),
 
-    // ── Task CRUD ──────────────────────────────────────────────────────────
     getTask: builder.query<Task, string>({
       query: (id) => `/tasks/${id}`,
       providesTags: (_r, _e, id) => [{ type: "Task", id }],
@@ -88,13 +110,12 @@ export const taskApi = baseApi.injectEndpoints({
       ],
     }),
 
-    // ✅ FIXED DELETE TASK
     deleteTask: builder.mutation<null, string>({
       query: (id) => ({
         url: `/tasks/${id}`,
         method: "DELETE",
       }),
-      transformResponse: () => null, // 🔥 FIX
+      transformResponse: () => null,
       invalidatesTags: ["Task", "PersonalTask", "ProjectTask"],
     }),
 
@@ -103,7 +124,6 @@ export const taskApi = baseApi.injectEndpoints({
       providesTags: ["Task"],
     }),
 
-    // ── Attachments ────────────────────────────────────────────────────────
     addAttachment: builder.mutation<
       Attachment,
       { taskId: string; file: FormData }
@@ -113,12 +133,9 @@ export const taskApi = baseApi.injectEndpoints({
         method: "POST",
         body: file,
       }),
-      invalidatesTags: (_r, _e, { taskId }) => [
-        { type: "Task", id: taskId },
-      ],
+      invalidatesTags: (_r, _e, { taskId }) => [{ type: "Task", id: taskId }],
     }),
 
-    // ✅ FIXED DELETE ATTACHMENT
     deleteAttachment: builder.mutation<
       void,
       { taskId: string; attachmentId: string }
@@ -127,13 +144,10 @@ export const taskApi = baseApi.injectEndpoints({
         url: `/tasks/${taskId}/attachments/${attachmentId}`,
         method: "DELETE",
       }),
-      transformResponse: () => null, // 🔥 FIX
-      invalidatesTags: (_r, _e, { taskId }) => [
-        { type: "Task", id: taskId },
-      ],
+      transformResponse: () => undefined, 
+      invalidatesTags: (_r, _e, { taskId }) => [{ type: "Task", id: taskId }],
     }),
 
-    // ── Comments ───────────────────────────────────────────────────────────
     getComments: builder.query<
       PageResponse<Comment>,
       { taskId: string; page?: number; size?: number }
@@ -145,10 +159,7 @@ export const taskApi = baseApi.injectEndpoints({
       providesTags: ["Comment"],
     }),
 
-    addComment: builder.mutation<
-      Comment,
-      { taskId: string; content: string }
-    >({
+    addComment: builder.mutation<Comment, { taskId: string; content: string }>({
       query: ({ taskId, content }) => ({
         url: `/tasks/${taskId}/comments`,
         method: "POST",
@@ -169,7 +180,7 @@ export const taskApi = baseApi.injectEndpoints({
       invalidatesTags: ["Comment"],
     }),
 
-    // ✅ FIXED DELETE COMMENT
+
     deleteComment: builder.mutation<
       void,
       { taskId: string; commentId: string }
@@ -178,11 +189,11 @@ export const taskApi = baseApi.injectEndpoints({
         url: `/tasks/${taskId}/comments/${commentId}`,
         method: "DELETE",
       }),
-      transformResponse: () => null, // 🔥 FIX
+      transformResponse: () => undefined, 
       invalidatesTags: ["Comment"],
     }),
 
-    // ── Projects ───────────────────────────────────────────────────────────
+  
     getProjects: builder.query<
       PageResponse<Project>,
       { page?: number; size?: number }
@@ -249,17 +260,17 @@ export const taskApi = baseApi.injectEndpoints({
       invalidatesTags: ["Project"],
     }),
 
-    // ✅ FIXED DELETE PROJECT
+ 
     deleteProject: builder.mutation<void, string>({
       query: (id) => ({
         url: `/projects/${id}`,
         method: "DELETE",
       }),
-      transformResponse: () => null, // 🔥 FIX
+      transformResponse: () => undefined, 
       invalidatesTags: ["Project"],
     }),
 
-    // ── Dashboard ──────────────────────────────────────────────────────────
+   
     getDashboard: builder.query<
       DashboardStats & { recentActivity: ActivityItem[] },
       void

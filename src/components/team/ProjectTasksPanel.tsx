@@ -1,5 +1,5 @@
 "use client";
-
+import CreateProjectTaskModal from "./CreateProjectTaskModal";
 import { useMemo, useState } from "react";
 import {
   Calendar,
@@ -12,6 +12,8 @@ import {
   Check,
   X,
   Send,
+  ChevronDown,
+  ChevronRight,
 } from "lucide-react";
 
 import type { Project, Task } from "@/lib/features/types/task-type";
@@ -23,7 +25,9 @@ import {
   useAddCommentMutation,
   useUpdateCommentMutation,
   useDeleteCommentMutation,
+  useGetSubtasksQuery,
 } from "@/lib/features/tasks/taskApi";
+import ParentTaskDetailView from "./ParentTaskDetailView";
 
 type TaskStatus = "TODO" | "IN_PROGRESS" | "IN_REVIEW" | "DONE";
 
@@ -286,6 +290,7 @@ function TeamTaskCard({
   task,
   col,
   onMove,
+  onOpenTask,
   onDelete,
   onComment,
 }: {
@@ -294,16 +299,50 @@ function TeamTaskCard({
   onMove: (id: string, status: TaskStatus) => void;
   onDelete: (id: string) => void;
   onComment: (task: Task) => void;
+  onOpenTask: (task: Task) => void;
 }) {
+  const [expanded, setExpanded] = useState(false);
+
+  const hasSubtasks = (task.subtaskCount ?? task.subtaskCount ?? 0) > 0;
+
+  const { data: subtasks = [], isLoading: subtasksLoading } =
+    useGetSubtasksQuery(task.id, {
+      skip: !expanded || !hasSubtasks,
+    });
+
+  const toggleExpand = () => {
+    if (hasSubtasks) setExpanded((v) => !v);
+  };
+
   return (
     <div
       className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 border-l-[3px] p-3.5 space-y-3 hover:shadow-md transition-all group"
       style={{ borderLeftColor: col.accent }}
     >
       <div className="flex items-start justify-between gap-2">
-        <p className="text-sm font-medium text-slate-900 dark:text-white leading-snug">
-          {task.title}
-        </p>
+        <button
+          type="button"
+          onClick={() => onOpenTask(task)}
+          className="flex items-start gap-2 flex-1 min-w-0 text-left"
+        >
+          <div className="mt-0.5 w-5 h-5 rounded flex items-center justify-center shrink-0 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+            {hasSubtasks ? (
+              expanded ? (
+                <ChevronDown size={14} />
+              ) : (
+                <ChevronRight size={14} />
+              )
+            ) : (
+              <div className="w-1.5 h-1.5 rounded-full bg-slate-300" />
+            )}
+          </div>
+
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-slate-900 dark:text-white leading-snug break-words">
+              {task.title}
+            </p>
+          </div>
+        </button>
 
         <div className="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
           <button
@@ -335,64 +374,67 @@ function TeamTaskCard({
           {task.priority?.toLowerCase()}
         </span>
 
-        {task.commentsCount != null && task.commentsCount > 0 && (
+        {hasSubtasks && (
           <span className="text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
-            {task.commentsCount} comment{task.commentsCount !== 1 ? "s" : ""}
-          </span>
-        )}
-
-        {task.subtasksCount != null && task.subtasksCount > 0 && (
-          <span className="text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
-            {task.subtasksCount} subtask{task.subtasksCount !== 1 ? "s" : ""}
+            {task.subtaskCount ?? task.subtaskCount} subtask
+            {(task.subtaskCount ?? task.subtaskCount) !== 1 ? "s" : ""}
           </span>
         )}
       </div>
 
-      <div className="flex items-center justify-between">
-        <div className="flex items-center">
-          {task.assignees?.slice(0, 3).map((a, i) => (
-            <div
-              key={a.id}
-              className="w-5 h-5 rounded-full flex items-center justify-center text-white text-[8px] font-medium ring-[1.5px] ring-white"
-              style={{
-                backgroundColor: a.color,
-                marginLeft: i > 0 ? "-4px" : "0",
-              }}
-            >
-              {a.initials}
-            </div>
-          ))}
+      {expanded && (
+        <div className="pt-1 border-t border-slate-100 dark:border-slate-800">
+          <div className="pl-7 space-y-2">
+            {subtasksLoading ? (
+              <>
+                <div className="animate-pulse bg-slate-100 dark:bg-slate-800 rounded-lg h-16" />
+                <div className="animate-pulse bg-slate-100 dark:bg-slate-800 rounded-lg h-16" />
+              </>
+            ) : subtasks.length === 0 ? (
+              <div className="text-xs text-slate-400 py-2">No subtasks</div>
+            ) : (
+              subtasks.map((subtask: Task) => (
+                <div
+                  key={subtask.id}
+                  className="bg-slate-50 dark:bg-slate-800/60 rounded-lg border border-slate-200 dark:border-slate-700 border-l-[3px] p-3 space-y-2"
+                  style={{ borderLeftColor: col.accent }}
+                >
+                  <p className="text-sm font-medium text-slate-900 dark:text-white break-words">
+                    {subtask.title}
+                  </p>
+
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span
+                      className={`text-[10px] font-semibold px-1.5 py-0.5 rounded border capitalize ${
+                        PRIORITY_STYLE[subtask.priority] ?? ""
+                      }`}
+                    >
+                      {subtask.priority?.toLowerCase()}
+                    </span>
+                    <span className="text-[10px] text-slate-500 bg-white dark:bg-slate-900 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700">
+                      {subtask.status}
+                    </span>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         </div>
-
-        {task.dueDate && (
-          <span className="flex items-center gap-1 text-[10px] text-slate-400">
-            <Calendar size={10} />
-            {new Date(task.dueDate).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-            })}
-          </span>
-        )}
-      </div>
-
-      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-wrap">
-        {COLUMNS.filter((c) => c.id !== task.status).map((c) => (
-          <button
-            key={c.id}
-            onClick={() => onMove(task.id, c.id)}
-            className="text-[9px] px-1.5 py-0.5 rounded border border-slate-200 text-slate-500 hover:border-blue-500 hover:text-blue-600 transition-colors font-medium"
-          >
-            → {c.label}
-          </button>
-        ))}
-      </div>
+      )}
     </div>
   );
 }
-
 export default function ProjectTasksPanel({ project }: { project: Project }) {
   const [search, setSearch] = useState("");
   const [commentTask, setCommentTask] = useState<Task | null>(null);
+  const [showCreate, setShowCreate] = useState(false);
+  const [defaultStatus, setDefaultStatus] = useState<TaskStatus | undefined>();
+  const [activeParentTask, setActiveParentTask] = useState<Task | null>(null);
+
+  const openCreateModal = (status?: TaskStatus) => {
+    setDefaultStatus(status);
+    setShowCreate(true);
+  };
 
   const {
     data: tasksPage,
@@ -406,17 +448,18 @@ export default function ProjectTasksPanel({ project }: { project: Project }) {
   const [updateTask] = useUpdateTaskMutation();
   const [deleteTask] = useDeleteTaskMutation();
 
-  const tasks: Task[] = tasksPage?.content ?? [];
+ const allTasks: Task[] = tasksPage?.content ?? [];
+
+const tasks = allTasks.filter((t) => !t.parentTaskId);
 
   const filteredTasks = useMemo(() => {
-    if (!search.trim()) return tasks;
-    return tasks.filter((t) =>
-      t.title.toLowerCase().includes(search.toLowerCase()),
-    );
-  }, [tasks, search]);
+  if (!search.trim()) return tasks;
+  return tasks.filter((t) =>
+    t.title.toLowerCase().includes(search.toLowerCase())
+  );
+}, [tasks, search]);
 
   const progress =
-    project.progressPercent ??
     project.progress ??
     (tasks.length
       ? Math.round(
@@ -432,6 +475,15 @@ export default function ProjectTasksPanel({ project }: { project: Project }) {
   const handleDelete = (id: string) => {
     deleteTask(id);
   };
+
+  if (activeParentTask) {
+    return (
+      <ParentTaskDetailView
+        task={activeParentTask}
+        onBack={() => setActiveParentTask(null)}
+      />
+    );
+  }
 
   return (
     <>
@@ -505,7 +557,10 @@ export default function ProjectTasksPanel({ project }: { project: Project }) {
                       </span>
                     </div>
 
-                    <button className="w-6 h-6 flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-white dark:hover:bg-slate-900 rounded transition-colors">
+                    <button
+                      onClick={() => openCreateModal(col.id)}
+                      className="w-6 h-6 flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-white dark:hover:bg-slate-900 rounded transition-colors"
+                    >
                       <Plus size={14} />
                     </button>
                   </div>
@@ -529,6 +584,7 @@ export default function ProjectTasksPanel({ project }: { project: Project }) {
                             onMove={handleMove}
                             onDelete={handleDelete}
                             onComment={setCommentTask}
+                            onOpenTask={setActiveParentTask}
                           />
                         ))}
 
@@ -549,6 +605,13 @@ export default function ProjectTasksPanel({ project }: { project: Project }) {
         <CommentsDrawer
           task={commentTask}
           onClose={() => setCommentTask(null)}
+        />
+      )}
+      {showCreate && (
+        <CreateProjectTaskModal
+          projectId={project.id}
+          defaultStatus={defaultStatus}
+          onClose={() => setShowCreate(false)}
         />
       )}
     </>

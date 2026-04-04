@@ -69,8 +69,8 @@ export interface Task {
   dueDate?: string;
   createdAt: string;
   updatedAt: string;
-  subtasksCount?: number;
-  commentsCount?: number;
+  subtaskCount?: number;
+  commentCount?: number;
   attachmentsCount?: number;
 }
 
