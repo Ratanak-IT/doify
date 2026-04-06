@@ -15,7 +15,7 @@ export interface PageResponse<T> {
 export const projectApi = createApi({
   reducerPath: "projectApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: process.env.NEXT_PUBLIC_API_URL ?? "http://taskflow-api-682258391368.asia-southeast1.run.app",
+    baseUrl: process.env.NEXT_PUBLIC_API,
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).auth?.accessToken;
       if (token) headers.set("Authorization", `Bearer ${token}`);

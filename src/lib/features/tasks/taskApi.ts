@@ -54,28 +54,42 @@ export const taskApi = baseApi.injectEndpoints({
         url: `/tasks/project/${projectId}`,
         params: { page: 0, size: 20, ...params },
       }),
-      providesTags: ["ProjectTask"],
+      providesTags: (result, _error, { projectId }) =>
+        result
+          ? [
+              ...result.content.map((t) => ({
+                type: "Task" as const,
+                id: t.id,
+              })),
+              { type: "ProjectTask" as const, id: projectId },
+              "ProjectTask",
+            ]
+          : ["ProjectTask"],
     }),
 
     createProjectTask: builder.mutation<
-  Task,
-  {
-    projectId: string;
-    title: string;
-    description?: string;
-    priority?: string;
-    dueDate?: string;
-    assigneeId?: string;
-    parentTaskId?: string;
-    status?: string;
-  }
->({
+      Task,
+      {
+        projectId: string;
+        title: string;
+        description?: string;
+        priority?: string;
+        dueDate?: string;
+        assigneeId?: string;
+        parentTaskId?: string;
+        status?: string;
+      }
+    >({
       query: ({ projectId, ...body }) => ({
         url: `/tasks/project/${projectId}`,
         method: "POST",
         body,
       }),
-      invalidatesTags: ["ProjectTask", "Task"],
+      invalidatesTags: (_r, _e, { projectId }) => [
+        { type: "ProjectTask", id: projectId },
+        "ProjectTask",
+        "Task",
+      ],
     }),
 
     getTask: builder.query<Task, string>({
@@ -83,6 +97,7 @@ export const taskApi = baseApi.injectEndpoints({
       providesTags: (_r, _e, id) => [{ type: "Task", id }],
     }),
 
+    // ─── Used for personal tasks only ───────────────────────────────────────
     updateTask: builder.mutation<
       Task,
       {
@@ -102,26 +117,57 @@ export const taskApi = baseApi.injectEndpoints({
         method: "PUT",
         body: data,
       }),
+      // Also invalidate the PARENT task's subtask list so getSubtasksQuery
+      // re-fetches immediately when a subtask status/title changes.
       invalidatesTags: (_r, _e, { id }) => [
         { type: "Task", id },
-        "Task",
         "PersonalTask",
-        "ProjectTask",
+        "Task", // re-fetches all getSubtasksQuery caches (they providesTags: "Task")
       ],
     }),
 
-    deleteTask: builder.mutation<null, string>({
-      query: (id) => ({
-        url: `/tasks/${id}`,
-        method: "DELETE",
+    // ─── Used for project tasks (parent + subtasks) ──────────────────────────
+    updateProjectTask: builder.mutation<
+      Task,
+      {
+        projectId: string;
+        taskId: string;
+        data: {
+          title?: string;
+          description?: string;
+          status?: string;
+          priority?: string;
+          dueDate?: string;
+          assigneeId?: string;
+        };
+      }
+    >({
+      query: ({ taskId, data }) => ({
+        url: `/tasks/${taskId}`,
+        method: "PUT",
+        body: data,
       }),
-      transformResponse: () => null,
+      invalidatesTags: (_r, _e, { projectId, taskId }) => [
+        { type: "Task", id: taskId },
+        { type: "ProjectTask", id: projectId },
+        "ProjectTask",
+        "Task", // re-fetches all getSubtasksQuery caches
+      ],
+    }),
+
+    deleteTask: builder.mutation<void, string>({
+      query: (id) => ({ url: `/tasks/${id}`, method: "DELETE" }),
       invalidatesTags: ["Task", "PersonalTask", "ProjectTask"],
     }),
 
     getSubtasks: builder.query<Task[], string>({
       query: (taskId) => `/tasks/${taskId}/subtasks`,
-      providesTags: ["Task"],
+      // Tag with the PARENT task id so any mutation that invalidates
+      // { type: "Task", id: parentTaskId } will re-fetch this query.
+      providesTags: (_r, _e, taskId) => [
+        { type: "Task", id: taskId },
+        "Task",
+      ],
     }),
 
     addAttachment: builder.mutation<
@@ -136,6 +182,7 @@ export const taskApi = baseApi.injectEndpoints({
       invalidatesTags: (_r, _e, { taskId }) => [{ type: "Task", id: taskId }],
     }),
 
+    // Fix: transformResponse on DELETE mutations must return void, not null
     deleteAttachment: builder.mutation<
       void,
       { taskId: string; attachmentId: string }
@@ -144,7 +191,6 @@ export const taskApi = baseApi.injectEndpoints({
         url: `/tasks/${taskId}/attachments/${attachmentId}`,
         method: "DELETE",
       }),
-      transformResponse: () => null, 
       invalidatesTags: (_r, _e, { taskId }) => [{ type: "Task", id: taskId }],
     }),
 
@@ -180,7 +226,7 @@ export const taskApi = baseApi.injectEndpoints({
       invalidatesTags: ["Comment"],
     }),
 
-
+    // Fix: removed transformResponse: () => null — return type is void
     deleteComment: builder.mutation<
       void,
       { taskId: string; commentId: string }
@@ -189,11 +235,9 @@ export const taskApi = baseApi.injectEndpoints({
         url: `/tasks/${taskId}/comments/${commentId}`,
         method: "DELETE",
       }),
-      transformResponse: () => null, 
       invalidatesTags: ["Comment"],
     }),
 
-  
     getProjects: builder.query<
       PageResponse<Project>,
       { page?: number; size?: number }
@@ -260,17 +304,14 @@ export const taskApi = baseApi.injectEndpoints({
       invalidatesTags: ["Project"],
     }),
 
- 
     deleteProject: builder.mutation<void, string>({
       query: (id) => ({
         url: `/projects/${id}`,
         method: "DELETE",
       }),
-      transformResponse: () => null, 
       invalidatesTags: ["Project"],
     }),
 
-   
     getDashboard: builder.query<
       DashboardStats & { recentActivity: ActivityItem[] },
       void
@@ -298,6 +339,7 @@ export const {
   useCreateProjectTaskMutation,
   useGetTaskQuery,
   useUpdateTaskMutation,
+  useUpdateProjectTaskMutation,
   useDeleteTaskMutation,
   useGetSubtasksQuery,
   useAddAttachmentMutation,
