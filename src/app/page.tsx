@@ -14,16 +14,17 @@ const FEATURES = [
   { icon: (<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M3 17l4-4 3 3 4-5 5 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><rect x="2" y="2" width="18" height="13" rx="2" stroke="currentColor" strokeWidth="2" opacity=".4"/></svg>), title: "Reports & Insights", desc: "Track velocity, spot blockers, and forecast delivery. Real-time charts that actually make sense.", color: "#ae2e24", bg: "#ffeceb" },
 ];
 
+const TEAM_MEMBERS = [
+  { name: "Alex Rivera", role: "Founder & CEO", initials: "AR", color: "#6C5CE7", bg: "#e9f2ff", desc: "Ex-Notion product lead. Obsessed with building tools that feel magical instead of overwhelming." },
+  { name: "Jordan Hale", role: "Head of Design", initials: "JH", color: "#216e4e", bg: "#dcfff1", desc: "Former Figma designer. The person behind every beautiful pixel you see in TaskFlow." },
+  { name: "Sam Chen", role: "CTO", initials: "SC", color: "#5e4db2", bg: "#f3f0ff", desc: "Ex-Linear engineer. Lives for clean code, instant drag-and-drop, and zero lag." },
+  { name: "Taylor Kim", role: "Head of Growth", initials: "TK", color: "#a54800", bg: "#fff3eb", desc: "Grew the community to 50,000+ users. Turns your feedback into new features every week." },
+];
+
 const TESTIMONIALS = [
   { name: "Sarah Chen", role: "Product Manager · Shopify", initials: "SC", color: "#6C5CE7", text: "TaskFlow transformed how our team ships features. We went from chaos to clarity in two weeks flat. Now every sprint is predictable." },
   { name: "Marcus Reid", role: "CTO · Vercel", initials: "MR", color: "#216e4e", text: "The Kanban view alone is worth switching for. Every engineer uses it daily. It replaced three other tools overnight." },
   { name: "Priya Nair", role: "Design Lead · Figma", initials: "PN", color: "#5e4db2", text: "Finally, a project tool designers actually enjoy. Flexible enough for creative work, structured enough for stakeholders." },
-];
-
-const PRICING = [
-  { name: "Free",       price: "$0",     period: "/mo", cta: "Get started free", highlight: false, desc: "Perfect for individuals and small teams getting started.",         features: ["Unlimited cards", "10 boards", "Up to 2 members", "Basic automation", "7-day activity log"] },
-  { name: "Pro",        price: "$10",    period: "/mo", cta: "Start free trial",  highlight: true,  desc: "For growing teams that need more power and flexibility.",         features: ["Unlimited boards", "Unlimited members", "Advanced automation", "Priority support", "Custom fields", "Timeline view"] },
-  { name: "Enterprise", price: "Custom", period: "",    cta: "Contact sales",     highlight: false, desc: "For large organizations with compliance and security needs.",     features: ["Everything in Pro", "SSO & SAML", "Audit logs", "SLA guarantee", "Dedicated support", "Custom contracts"] },
 ];
 
 const AV_COLORS: Record<string, string> = { SC: "#6C5CE7", MR: "#216e4e", PN: "#5e4db2" };
@@ -137,6 +138,7 @@ function KanbanDemo() {
 
 export default function HomePage() {
   const [scrolled, setScrolled] = useState(false);
+
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", fn, { passive: true });
@@ -146,20 +148,39 @@ export default function HomePage() {
   return (
     <div className="lp-root">
 
-      {/* NAV */}
+      {/* UPDATED HEADER / NAV */}
       <nav className={`lp-nav${scrolled ? " lp-nav--scrolled" : ""}`}>
         <div className="lp-nav-inner">
+          {/* TaskFlow Logo (kept your original logo) */}
           <Link href="/" className="lp-logo-wrap">
             <div className="lp-logo-mark">
-              <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="12" rx="1.5" fill="white"/><rect x="9" y="2" width="5" height="8" rx="1.5" fill="white" opacity=".8"/></svg>
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                <rect x="2" y="2" width="5" height="12" rx="1.5" fill="white" />
+                <rect x="9" y="2" width="5" height="8" rx="1.5" fill="white" opacity=".8" />
+              </svg>
             </div>
             <span className="lp-logo-text">TaskFlow</span>
           </Link>
+
+          {/* Updated nav links – About Us now points to the separate /about page */}
           <div className="lp-nav-links">
-            {["Features", "Templates", "Pricing", "Enterprise"].map((item) => (
-              <a key={item} href={`#${item.toLowerCase()}`} className="lp-nav-link">{item}</a>
-            ))}
+            {["Features", "Templates", "About Us", "Enterprise"].map((item) => {
+              const href =
+                item === "About Us"
+                  ? "/about"                    // ← connects to your About page
+                  : `#${item.toLowerCase()}`;
+              return (
+                <Link
+                  key={item}
+                  href={href}
+                  className="lp-nav-link"
+                >
+                  {item}
+                </Link>
+              );
+            })}
           </div>
+
           <div className="lp-nav-actions">
             <Link href="/login" className="lp-btn-ghost">Log in</Link>
             <Link href="/register" className="lp-btn-primary lp-btn-sm">Get started free</Link>
@@ -292,37 +313,6 @@ export default function HomePage() {
                   <div className="lp-testi-av" style={{ background: t.color }}>{t.initials}</div>
                   <div><p className="lp-testi-name">{t.name}</p><p className="lp-testi-role">{t.role}</p></div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* PRICING */}
-      <section id="pricing" className="lp-section lp-section--dark">
-        <div className="lp-container">
-          <div className="lp-section-header">
-            <h2 className="lp-section-title lp-section-title--white">Simple, honest pricing</h2>
-            <p className="lp-section-sub lp-section-sub--muted">Start free. Upgrade when you need to.</p>
-          </div>
-          <div className="lp-pricing-grid">
-            {PRICING.map((plan, i) => (
-              <div key={i} className={`lp-pricing-card${plan.highlight ? " lp-pricing-card--highlight" : ""}`}>
-                <p className="lp-plan-name" style={{ color: plan.highlight ? "#6C5CE7" : "#7c93d8" }}>{plan.name}</p>
-                <div className="lp-plan-price">
-                  <span className="lp-plan-amount" style={{ color: plan.highlight ? "#0a0a0a" : "#fff" }}>{plan.price}</span>
-                  <span className="lp-plan-period" style={{ color: plan.highlight ? "#64748b" : "#7c93d8" }}>{plan.period}</span>
-                </div>
-                <p className="lp-plan-desc" style={{ color: plan.highlight ? "#64748b" : "#93afda" }}>{plan.desc}</p>
-                <ul className="lp-plan-features">
-                  {plan.features.map((f, fi) => (
-                    <li key={fi} className="lp-plan-feature" style={{ color: plan.highlight ? "#374151" : "#cdd8f0" }}>
-                      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2.5 7.5l3.5 3.5 6.5-7" stroke={plan.highlight ? "#6C5CE7" : "#4e8af0"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <Link href="/register" className={`lp-plan-cta${plan.highlight ? " lp-plan-cta--blue" : " lp-plan-cta--ghost"}`}>{plan.cta}</Link>
               </div>
             ))}
           </div>
