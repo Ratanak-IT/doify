@@ -135,7 +135,6 @@ export default function HomePage() {
   return (
     <div className="lp-root">
 
-      {/* ✅ Single shared Navbar — no more inline <nav> */}
       <Navbar />
 
       {/* HERO */}
@@ -284,85 +283,74 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* FOOTER */}
-      <style>{`
-        .footer { background: #ffffff; border-top: 1px solid #e2e8f0; color: #6b7280; padding: 56px 32px 32px; font-family: 'Inter', sans-serif; }
-        .footer-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
-        .footer-brand-name { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-        .footer-logo-icon { width: 32px; height: 32px; border-radius: 8px; background: #6c47ff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .footer-brand-text { font-weight: 700; font-size: 1rem; color: #1a1a2e; }
-        .footer-brand-desc { font-size: 0.82rem; line-height: 1.65; color: #6b7280; max-width: 240px; }
-        .footer-social { display: flex; gap: 10px; margin-top: 20px; }
-        .footer-social-btn { width: 34px; height: 34px; border-radius: 8px; background: #eef2f7; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #6b7280; transition: background 0.15s, color 0.15s, border-color 0.15s; }
-        .footer-social-btn:hover { background: #ede9ff; color: #6c47ff; border-color: #6c47ff; }
-        .footer-social-btn svg { width: 15px; height: 15px; fill: currentColor; }
-        .footer-col h4 { font-size: 0.75rem; font-weight: 600; color: #1a1a2e; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 16px; }
-        .footer-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
-        .footer-col ul li a { font-size: 0.83rem; color: #6b7280; text-decoration: none; transition: color 0.15s; }
-        .footer-col ul li a:hover { color: #6c47ff; }
-        .footer-divider { border: none; border-top: 1px solid #e2e8f0; max-width: 1100px; margin: 0 auto 24px; }
-        .footer-bottom { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
-        .footer-copy { font-size: 0.75rem; color: #94a3b8; }
-        @media (max-width: 860px) { .footer-inner { grid-template-columns: 1fr 1fr; } }
-        @media (max-width: 480px) { .footer-inner { grid-template-columns: 1fr; } .footer-bottom { flex-direction: column; align-items: flex-start; } }
-      `}</style>
+      {/* ── FOOTER ── */}
+      <footer className="bg-white border-t border-[#e2e8f0] text-[#6b7280] pt-14 pb-8 px-8">
+        <div className="max-w-[1100px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr] gap-10 mb-10">
 
-      <footer className="footer">
-        <div className="footer-inner">
+          {/* Brand */}
           <div>
-            <div className="footer-brand-name">
-              <div className="footer-logo-icon">
+            <div className="flex items-center gap-2.5 mb-3.5">
+              <div className="w-8 h-8 rounded-lg bg-[#6c47ff] flex items-center justify-center flex-shrink-0">
                 <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
                   <path d="M3 5h14M3 10h10M3 15h7" stroke="white" strokeWidth="2.2" strokeLinecap="round" />
                 </svg>
               </div>
-              <span className="footer-brand-text"></span>
+              <span className="font-bold text-base text-[#1a1a2e]">TaskFlow</span>
             </div>
-            <p className="footer-brand-desc">Simplifying teamwork and productivity for everyone, everywhere.</p>
-            <div className="footer-social">
-              <button className="footer-social-btn" aria-label="Twitter">
-                <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
+            <p className="text-[0.82rem] leading-[1.65] text-[#6b7280] max-w-[240px]">
+              Simplifying teamwork and productivity for everyone, everywhere.
+            </p>
+            <div className="flex gap-2.5 mt-5">
+              <button className="w-[34px] h-[34px] rounded-lg bg-[#eef2f7] border border-[#e2e8f0] flex items-center justify-center cursor-pointer text-[#6b7280] transition-all hover:bg-[#ede9ff] hover:text-[#6c47ff] hover:border-[#6c47ff]" aria-label="Twitter">
+                <svg className="w-[15px] h-[15px] fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
               </button>
-              <button className="footer-social-btn" aria-label="LinkedIn">
-                <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg>
+              <button className="w-[34px] h-[34px] rounded-lg bg-[#eef2f7] border border-[#e2e8f0] flex items-center justify-center cursor-pointer text-[#6b7280] transition-all hover:bg-[#ede9ff] hover:text-[#6c47ff] hover:border-[#6c47ff]" aria-label="LinkedIn">
+                <svg className="w-[15px] h-[15px] fill-current" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg>
               </button>
-              <button className="footer-social-btn" aria-label="Globe">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <circle cx="12" cy="12" r="10" />
-                  <path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20" />
+              <button className="w-[34px] h-[34px] rounded-lg bg-[#eef2f7] border border-[#e2e8f0] flex items-center justify-center cursor-pointer text-[#6b7280] transition-all hover:bg-[#ede9ff] hover:text-[#6c47ff] hover:border-[#6c47ff]" aria-label="Globe">
+                <svg className="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <circle cx="12" cy="12" r="10" /><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20" />
                 </svg>
               </button>
             </div>
           </div>
-          <div className="footer-col">
-            <h4>Company</h4>
-            <ul>
-              <li><Link href="/about">About Us</Link></li>
-              <li><Link href="/contact">Contact</Link></li>
-              <li><Link href="#">Careers</Link></li>
+
+          {/* Company */}
+          <div>
+            <h4 className="text-[0.75rem] font-semibold text-[#1a1a2e] uppercase tracking-[0.07em] mb-4">Company</h4>
+            <ul className="flex flex-col gap-2.5 list-none p-0 m-0">
+              <li><Link href="/about" className="text-[0.83rem] text-[#6b7280] no-underline transition-colors hover:text-[#6c47ff]">About Us</Link></li>
+              <li><Link href="/contact" className="text-[0.83rem] text-[#6b7280] no-underline transition-colors hover:text-[#6c47ff]">Contact</Link></li>
+              <li><Link href="#" className="text-[0.83rem] text-[#6b7280] no-underline transition-colors hover:text-[#6c47ff]">Careers</Link></li>
             </ul>
           </div>
-          <div className="footer-col">
-            <h4>Resources</h4>
-            <ul>
-              <li><Link href="#">Blog</Link></li>
-              <li><Link href="#">Help Center</Link></li>
-              <li><Link href="#">Privacy Policy</Link></li>
+
+          {/* Resources */}
+          <div>
+            <h4 className="text-[0.75rem] font-semibold text-[#1a1a2e] uppercase tracking-[0.07em] mb-4">Resources</h4>
+            <ul className="flex flex-col gap-2.5 list-none p-0 m-0">
+              <li><Link href="#" className="text-[0.83rem] text-[#6b7280] no-underline transition-colors hover:text-[#6c47ff]">Blog</Link></li>
+              <li><Link href="#" className="text-[0.83rem] text-[#6b7280] no-underline transition-colors hover:text-[#6c47ff]">Help Center</Link></li>
+              <li><Link href="#" className="text-[0.83rem] text-[#6b7280] no-underline transition-colors hover:text-[#6c47ff]">Privacy Policy</Link></li>
             </ul>
           </div>
-          <div className="footer-col">
-            <h4>Product</h4>
-            <ul>
-              <li><Link href="#">Features</Link></li>
-              <li><Link href="#">Pricing</Link></li>
-              <li><Link href="#">Changelog</Link></li>
+
+          {/* Product */}
+          <div>
+            <h4 className="text-[0.75rem] font-semibold text-[#1a1a2e] uppercase tracking-[0.07em] mb-4">Product</h4>
+            <ul className="flex flex-col gap-2.5 list-none p-0 m-0">
+              <li><Link href="#" className="text-[0.83rem] text-[#6b7280] no-underline transition-colors hover:text-[#6c47ff]">Features</Link></li>
+              <li><Link href="#" className="text-[0.83rem] text-[#6b7280] no-underline transition-colors hover:text-[#6c47ff]">Pricing</Link></li>
+              <li><Link href="#" className="text-[0.83rem] text-[#6b7280] no-underline transition-colors hover:text-[#6c47ff]">Changelog</Link></li>
             </ul>
           </div>
         </div>
-        <hr className="footer-divider" />
-        <div className="footer-bottom">
-          <span className="footer-copy">© 2026 TaskFlow. All rights reserved.</span>
-          <span className="footer-copy">Made with ♥ in Phnom Penh</span>
+
+        <hr className="border-none border-t border-[#e2e8f0] max-w-[1100px] mx-auto mb-6" />
+
+        <div className="max-w-[1100px] mx-auto flex items-center justify-between flex-wrap gap-2">
+          <span className="text-[0.75rem] text-[#94a3b8]">© 2026 TaskFlow. All rights reserved.</span>
+          <span className="text-[0.75rem] text-[#94a3b8]">Made with ♥ in Phnom Penh</span>
         </div>
       </footer>
 
