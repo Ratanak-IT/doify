@@ -51,6 +51,12 @@ export default function Navbar() {
   if (!mounted) {
     return null;
   }
+  const navLinks = [
+  { name: "Home", path: "/" },
+  { name: "About", path: "/about" },
+  { name: "Contact", path: "/contact" },
+
+];
 
   return (
     <header className="sticky top-0 z-50">
@@ -72,17 +78,17 @@ export default function Navbar() {
             <span className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">TaskFlow</span>
           </Link>
 
-          <div className="hidden md:flex items-center gap-7 flex-1 justify-center">
-            {["Features", "Templates", "Pricing", "Enterprise"].map((item) => (
-              <a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors duration-200"
-              >
-                {item}
-              </a>
-            ))}
-          </div>
+<div className="hidden md:flex items-center gap-7 flex-1 justify-center">
+  {navLinks.map((item) => (
+    <Link
+      key={item.path}
+      href={item.path}
+      className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors duration-200"
+    >
+      {item.name}
+    </Link>
+  ))}
+</div>
 
           <div className="flex items-center gap-3 flex-shrink-0">
             {/* Theme Toggle */}
