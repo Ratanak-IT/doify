@@ -5,6 +5,7 @@ import StoreProvider from "./StoreProvider";
 import { ThemeProvider } from "@/lib/contexts/ThemeContext";
 import { cn } from "@/lib/utils";
 import NavbarWrapper from "@/components/layout/NavbarWrapper";
+import FooterWrapper from "@/components/layout/FooterWrapper";
 
 
 
@@ -26,6 +27,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <StoreProvider>
           <NavbarWrapper/>
           {children}
+          <FooterWrapper/>
         </StoreProvider>
       </ThemeProvider>
       </body>
