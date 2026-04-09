@@ -1,5 +1,6 @@
 "use client";
 import CreateProjectTaskModal from "./CreateProjectTaskModal";
+import EditProjectTaskModal from "./EditProjectTaskModal";
 import { useMemo, useState } from "react";
 import {
   MessageSquare,
@@ -13,6 +14,7 @@ import {
   Send,
   ChevronDown,
   ChevronRight,
+  Settings,
 } from "lucide-react";
 
 import type { Project, Task } from "@/lib/features/types/task-type";
@@ -25,8 +27,10 @@ import {
   useUpdateCommentMutation,
   useDeleteCommentMutation,
   useGetSubtasksQuery,
+  useDeleteProjectMutation,
 } from "@/lib/features/tasks/taskApi";
 import ParentTaskDetailView from "./ParentTaskDetailView";
+import UpdateProjectModal from "./modals/UpdateProjectModal";
 
 type TaskStatus = "TODO" | "IN_PROGRESS" | "IN_REVIEW" | "DONE";
 
@@ -398,9 +402,7 @@ function TeamTaskCard({
   onOpenTask: (task: Task) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
-  const [editing, setEditing] = useState(false);
-
-  const [updateProjectTask] = useUpdateProjectTaskMutation();
+  const [showEdit, setShowEdit] = useState(false);
 
   const hasSubtasks = (task.subtaskCount ?? 0) > 0;
 
@@ -411,16 +413,6 @@ function TeamTaskCard({
   const toggleExpand = () => {
     if (hasSubtasks) setExpanded((v) => !v);
   };
-
-  const handleSave = async (title: string, description: string) => {
-    await updateProjectTask({
-      projectId,
-      taskId: task.id,
-      data: { title, description: description || undefined },
-    });
-    setEditing(false);
-  };
-  
 
   return (
     <div
@@ -443,89 +435,76 @@ function TeamTaskCard({
             )}
           </button>
 
-          {/* Title — inline edit OR open detail view */}
-          {editing ? (
-            <InlineEditForm
-              title={task.title}
-              description={task.description ?? ""}
-              onSave={handleSave}
-              onCancel={() => setEditing(false)}
-            />
-          ) : (
-            <button
-              type="button"
-              onClick={() => onOpenTask(task)}
-              className="flex-1 min-w-0 text-left"
-            >
-              <p className="text-sm font-medium text-slate-900 dark:text-white leading-snug break-words">
-                {task.title}
+          {/* Title — opens detail view */}
+          <button
+            type="button"
+            onClick={() => onOpenTask(task)}
+            className="flex-1 min-w-0 text-left"
+          >
+            <p className="text-sm font-medium text-slate-900 dark:text-white leading-snug break-words">
+              {task.title}
+            </p>
+            {task.description && (
+              <p className="text-xs text-slate-400 mt-0.5 line-clamp-1">
+                {task.description}
               </p>
-              {task.description && (
-                <p className="text-xs text-slate-400 mt-0.5 line-clamp-1">
-                  {task.description}
-                </p>
-              )}
-            </button>
-          )}
+            )}
+          </button>
         </div>
 
         {/* Action buttons */}
-        {!editing && (
-          <div className="flex gap-0.5 shrink-0">
-            <button
-              onClick={() => setEditing(true)}
-              className="w-6 h-6 flex items-center justify-center text-slate-400 hover:text-blue-600"
-              title="Edit title & description"
-            >
-              <Edit2 size={13} />
-            </button>
-            <button
-              onClick={() => onComment(task)}
-              className="w-6 h-6 flex items-center justify-center text-slate-400 hover:text-blue-600"
-            >
-              <MessageSquare size={13} />
-            </button>
-            <button
-              onClick={() => { if (confirm("Delete this task?")) onDelete(task.id); }}
-              className="w-6 h-6 flex items-center justify-center text-slate-400 hover:text-red-600"
-            >
-              <Trash2 size={13} />
-            </button>
-            <button className="w-6 h-6 flex items-center justify-center text-slate-400 hover:text-slate-600">
-              <MoreHorizontal size={13} />
-            </button>
+        <div className="flex gap-0.5 shrink-0">
+          <button
+            onClick={() => setShowEdit(true)}
+            className="w-6 h-6 flex items-center justify-center text-slate-400 hover:text-blue-600"
+            title="Edit task"
+          >
+            <Edit2 size={13} />
+          </button>
+          <button
+            onClick={() => onComment(task)}
+            className="w-6 h-6 flex items-center justify-center text-slate-400 hover:text-blue-600"
+          >
+            <MessageSquare size={13} />
+          </button>
+          <button
+            onClick={() => { if (confirm("Delete this task?")) onDelete(task.id); }}
+            className="w-6 h-6 flex items-center justify-center text-slate-400 hover:text-red-600"
+          >
+            <Trash2 size={13} />
+          </button>
+          <button className="w-6 h-6 flex items-center justify-center text-slate-400 hover:text-slate-600">
+            <MoreHorizontal size={13} />
+          </button>
+        </div>
+      </div>
+
+      {/* ── Badges row ── */}
+      <div className="items-center gap-1.5 flex-wrap mt-3">
+        <StatusBadge
+          status={task.status as TaskStatus}
+          onCycle={(next) => onMove(task.id, next)}
+        />
+        {hasSubtasks && (
+          <div className="flex justify-between mt-3">
+
+          <span className="text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
+            {task.subtaskCount ?? 0} subtask{(task.subtaskCount ?? 0) !== 1 ? "s" : ""}
+          </span>
+          <span
+          className={`text-[10px] font-semibold px-1.5 py-0.5 rounded border capitalize ${
+            PRIORITY_STYLE[task.priority] ?? ""
+          }`}
+        >
+          {task.priority?.toLowerCase()}
+        </span>
           </div>
+
         )}
       </div>
 
-      {/* ── Badges row — hidden while editing ── */}
-      {!editing && (
-        <div className="items-center gap-1.5 flex-wrap mt-3">
-          <StatusBadge
-            status={task.status as TaskStatus}
-            onCycle={(next) => onMove(task.id, next)}
-          />
-          {hasSubtasks && (
-            <div className="flex justify-between mt-3">
-
-            <span className="text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
-              {task.subtaskCount ?? 0} subtask{(task.subtaskCount ?? 0) !== 1 ? "s" : ""}
-            </span>
-            <span
-            className={`text-[10px] font-semibold px-1.5 py-0.5 rounded border capitalize ${
-              PRIORITY_STYLE[task.priority] ?? ""
-            }`}
-          >
-            {task.priority?.toLowerCase()}
-          </span>
-            </div>
-            
-          )}
-        </div>
-      )}
-
       {/* ── Subtasks ── */}
-      {expanded && !editing && (
+      {expanded && (
         <div className="pt-1 border-t border-slate-100 dark:border-slate-800">
           <div className="pl-7 space-y-2">
             {subtasksLoading ? (
@@ -549,6 +528,15 @@ function TeamTaskCard({
           </div>
         </div>
       )}
+
+      {/* Edit Modal */}
+      {showEdit && (
+        <EditProjectTaskModal
+          task={task}
+          projectId={projectId}
+          onClose={() => setShowEdit(false)}
+        />
+      )}
     </div>
   );
 }
@@ -558,6 +546,7 @@ export default function ProjectTasksPanel({ project }: { project: Project }) {
   const [search, setSearch] = useState("");
   const [commentTask, setCommentTask] = useState<Task | null>(null);
   const [showCreate, setShowCreate] = useState(false);
+  const [showUpdateProject, setShowUpdateProject] = useState(false);
   const [defaultStatus, setDefaultStatus] = useState<TaskStatus | undefined>();
   const [activeParentTask, setActiveParentTask] = useState<Task | null>(null);
 
@@ -573,6 +562,7 @@ export default function ProjectTasksPanel({ project }: { project: Project }) {
 
   const [updateProjectTask] = useUpdateProjectTaskMutation();
   const [deleteTask] = useDeleteTaskMutation();
+  const [deleteProject] = useDeleteProjectMutation();
 
   const allTasks: Task[] = tasksPage?.content ?? [];
   const tasks = allTasks.filter((t) => !t.parentTaskId);
@@ -617,6 +607,20 @@ export default function ProjectTasksPanel({ project }: { project: Project }) {
               <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{project.description}</p>
             )}
           </div>
+          <button
+            onClick={() => setShowUpdateProject(true)}
+            className="text-xs px-3 py-1.5 rounded-md border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex items-center gap-1.5"
+          >
+            <Settings size={14} />
+            Edit
+          </button>
+          <button
+            onClick={() => { if (confirm("Delete this project?")) deleteProject(project.id); }}
+            className="text-xs px-3 py-1.5 rounded-md border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors flex items-center gap-1.5"
+          >
+            <Trash2 size={14} />
+            Delete
+          </button>
           <button
             onClick={() => refetch()}
             className="text-xs px-3 py-1.5 rounded-md border border-slate-200 dark:border-slate-700"
@@ -711,6 +715,12 @@ export default function ProjectTasksPanel({ project }: { project: Project }) {
           projectId={project.id}
           defaultStatus={defaultStatus}
           onClose={() => setShowCreate(false)}
+        />
+      )}
+      {showUpdateProject && (
+        <UpdateProjectModal
+          project={project}
+          onClose={() => setShowUpdateProject(false)}
         />
       )}
     </>

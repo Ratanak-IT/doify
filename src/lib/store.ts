@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { baseApi } from "./features/api/api";
 import authReducer from "./features/auth/authSlice";
 import kanbanReducer from "./features/kanban/kanbanSlice";
+import i18nReducer from "./features/i18n/i18nSlice";
 
 // Register all endpoint modules (side-effect: injects endpoints into baseApi)
 import "./features/auth/authApi";
@@ -15,6 +16,7 @@ export const store = configureStore({
     [baseApi.reducerPath]: baseApi.reducer,
     auth: authReducer,
     kanban: kanbanReducer,
+    i18n: i18nReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(baseApi.middleware),

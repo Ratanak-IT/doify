@@ -1,4 +1,8 @@
 
+"use client";
+
+import { useTranslation } from "@/lib/i18n/useTranslation";
+
 const FEATURES = [
   {
     icon: (
@@ -78,13 +82,15 @@ const FEATURES = [
 ];
 
 export default function Features() {
+  const { t } = useTranslation();
+
   return (
     <section id="features" className="lp-section lp-section--white">
       <div className="lp-container">
         <div className="lp-section-header">
           <span className="lp-eyebrow lp-eyebrow--blue">The system</span>
-          <h2 className="lp-section-title">Everything your team needs</h2>
-          <p className="lp-section-sub">One platform to plan, track, and ship — without the complexity tax.</p>
+          <h2 className="lp-section-title">{t("landing.features.title")}</h2>
+          <p className="lp-section-sub">{t("landing.features.subtitle")}</p>
         </div>
 
         <div className="lp-features-grid">

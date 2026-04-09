@@ -2,10 +2,13 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 import KanbanDemo from "./KanbanDemo";
 
 
 export default function Hero() {
+  const { t } = useTranslation();
+
   return (
     <section className="lp-hero">
       <div className="lp-hero-bg" />
@@ -17,17 +20,16 @@ export default function Hero() {
         </div>
 
         <h1 className="lp-hero-title lp-anim-2">
-          Your team&apos;s work,<br />
-          <span className="lp-shimmer">beautifully organized</span>
+          {t("landing.hero.title")}
         </h1>
 
         <p className="lp-hero-sub lp-anim-3">
-          Boards, lists, and cards — the most visual way to see everything about your project in one place, collaborate in real time, and actually get it done.
+          {t("landing.hero.subtitle")}
         </p>
 
         <div className="lp-hero-ctas lp-anim-4">
           <Link href="/register" className="lp-btn-primary lp-btn-lg lp-btn-hero">
-            Start for free — no credit card
+            {t("landing.hero.cta")} — no credit card
           </Link>
           <Link href="/login" className="lp-btn-outline lp-btn-lg">
             Sign in to workspace

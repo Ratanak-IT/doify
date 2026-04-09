@@ -23,9 +23,9 @@ import {
 } from "@/lib/features/team/team.utils";
 
 import InviteModal from "./modals/InviteModal";
+import MembersModal from "./modals/MembersModal";
 import ProjectTasksPanel from "./ProjectTasksPanel";
 
-// Import your Create Project Modal (adjust path as needed)
 import CreateProjectModal from "../team/modals/CreateProjectModal"; 
 
 type Props = {
@@ -36,6 +36,7 @@ type Props = {
 
 export default function TeamDetailView({ team, idx, onBack }: Props) {
   const [showInvite, setShowInvite] = useState(false);
+  const [showMembers, setShowMembers] = useState(false);
   const [showCreateProject, setShowCreateProject] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [projectSearch, setProjectSearch] = useState("");
@@ -88,6 +89,14 @@ export default function TeamDetailView({ team, idx, onBack }: Props) {
               Invite
             </button>
 
+            <button
+              onClick={() => setShowMembers(true)}
+              className="flex items-center gap-1.5 px-3 h-9 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-semibold transition-colors"
+            >
+              <Users size={14} />
+              Members
+            </button>
+
             {/* New Project Button - Clean & Consistent Style */}
             <button
               onClick={() => setShowCreateProject(true)}
@@ -116,12 +125,22 @@ export default function TeamDetailView({ team, idx, onBack }: Props) {
           <div className="flex -space-x-2 ml-auto">
             {members.slice(0, 5).map((m) => {
               const name = m.user.fullName || m.user.username;
-              return (
+              return m.user.profilePhoto ? (
+                <img
+                  key={m.id}
+                  src={m.user.profilePhoto}
+                  alt={name}
+                  className="w-7 h-7 rounded-full border-2 border-white cursor-pointer hover:scale-110 transition-transform object-cover"
+                  title={name}
+                  onClick={() => setShowMembers(true)}
+                />
+              ) : (
                 <div
                   key={m.id}
-                  className="w-7 h-7 rounded-full border-2 border-white flex items-center justify-center text-white text-[10px] font-bold"
+                  className="w-7 h-7 rounded-full border-2 border-white flex items-center justify-center text-white text-[10px] font-bold cursor-pointer hover:scale-110 transition-transform"
                   style={{ backgroundColor: getAvatarColor(m.user.id) }}
                   title={name}
+                  onClick={() => setShowMembers(true)}
                 >
                   {getInitials(name)}
                 </div>
@@ -129,7 +148,10 @@ export default function TeamDetailView({ team, idx, onBack }: Props) {
             })}
 
             {members.length > 5 && (
-              <div className="w-7 h-7 rounded-full border-2 border-white bg-white/30 flex items-center justify-center text-white text-[10px] font-bold">
+              <div
+                className="w-7 h-7 rounded-full border-2 border-white bg-white/30 flex items-center justify-center text-white text-[10px] font-bold cursor-pointer hover:scale-110 transition-transform"
+                onClick={() => setShowMembers(true)}
+              >
                 +{members.length - 5}
               </div>
             )}
@@ -233,6 +255,10 @@ export default function TeamDetailView({ team, idx, onBack }: Props) {
       {/* Modals */}
       {showInvite && (
         <InviteModal teamId={team.id} onClose={() => setShowInvite(false)} />
+      )}
+
+      {showMembers && (
+        <MembersModal team={team} onClose={() => setShowMembers(false)} />
       )}
 
       {showCreateProject && (

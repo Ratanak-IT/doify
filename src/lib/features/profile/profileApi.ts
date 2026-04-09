@@ -9,7 +9,7 @@ export const profileApi = baseApi.injectEndpoints({
     }),
     updateProfile: builder.mutation<
       UserProfile,
-      { fullName: string; username: string; email: string }
+      { fullName: string; username: string; email: string; profilePhoto?: string }
     >({
       query: (body) => ({ url: "/profile", method: "PUT", body }),
       invalidatesTags: ["Profile"],
