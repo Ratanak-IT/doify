@@ -66,8 +66,8 @@ export default function RegisterPage() {
   const strengthLabel = ["", "Weak", "Fair", "Good", "Strong"][strength];
 
   const inputCls = (key: keyof Form) =>
-      `w-full h-[46px] px-4 rounded-[14px] border text-sm outline-none transition-all bg-white placeholder:text-[#717182] ${
-          errors[key] ? "border-red-400 bg-red-50" : "border-black/10 focus:border-[#4f39f6] focus:ring-2 focus:ring-[#4f39f6]/10"
+      `w-full h-[46px] px-4 rounded-[14px] border text-sm outline-none transition-all bg-white dark:bg-slate-900 placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
+          errors[key] ? "border-red-400 bg-red-50 dark:bg-red-950" : "border-slate-200 dark:border-slate-700 focus:border-[#4f39f6] focus:ring-2 focus:ring-[#4f39f6]/10"
       }`;
 
   const features = [
@@ -133,37 +133,37 @@ export default function RegisterPage() {
         </div>
 
         {/* Right Panel - Form */}
-        <div className="flex-1 flex items-center justify-center bg-[#f8fafc] px-6 py-8">
+        <div className="flex-1 flex items-center justify-center bg-slate-50 dark:bg-slate-950 px-6 py-8">
           <div className="w-full max-w-[420px]">
             {/* Mobile Logo */}
             <div className="flex items-center gap-3 mb-8 lg:hidden justify-center">
               <div className="w-10 h-10 rounded-[14px] bg-[#4f39f6] flex items-center justify-center">
                 <CheckCircle2 size={20} className="text-white" />
               </div>
-              <span className="text-[#0a0a0a] text-xl font-bold">TaskFlow</span>
+              <span className="text-slate-950 dark:text-white text-xl font-bold">TaskFlow</span>
             </div>
 
             <div className="space-y-2 mb-6">
-              <h2 className="text-[30px] font-bold text-[#0a0a0a] leading-9">Create account</h2>
-              <p className="text-[#717182] text-base">Set up your team workspace in minutes</p>
+              <h2 className="text-[30px] font-bold text-slate-950 dark:text-white leading-9">Create account</h2>
+              <p className="text-slate-500 dark:text-slate-400 text-base">Set up your team workspace in minutes</p>
             </div>
 
             {errors.general && (
-                <div className="mb-4 p-3.5 rounded-[14px] bg-red-50 border border-red-200 text-sm text-red-600">{errors.general}</div>
+                <div className="mb-4 p-3.5 rounded-[14px] bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 text-sm text-red-600 dark:text-red-400">{errors.general}</div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4" noValidate>
               {/* Full name & Username */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-[#0a0a0a] mb-1.5">Full name</label>
+                  <label className="block text-sm font-medium text-slate-950 dark:text-white mb-1.5">Full name</label>
                   <input placeholder="John Smith" value={form.fullName}
                          onChange={(e) => setForm({ ...form, fullName: e.target.value })}
                          className={inputCls("fullName")} />
                   {errors.fullName && <p className="mt-1 text-xs text-red-500">{errors.fullName}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#0a0a0a] mb-1.5">Username</label>
+                  <label className="block text-sm font-medium text-slate-950 dark:text-white mb-1.5">Username</label>
                   <input placeholder="johnsmith" value={form.username}
                          onChange={(e) => setForm({ ...form, username: e.target.value })}
                          className={inputCls("username")} />
@@ -173,7 +173,7 @@ export default function RegisterPage() {
 
               {/* Email */}
               <div>
-                <label className="block text-sm font-medium text-[#0a0a0a] mb-1.5">Work email</label>
+                <label className="block text-sm font-medium text-slate-950 dark:text-white mb-1.5">Work email</label>
                 <input type="email" placeholder="you@company.com" value={form.email}
                        onChange={(e) => setForm({ ...form, email: e.target.value })}
                        className={inputCls("email")} />
@@ -182,14 +182,14 @@ export default function RegisterPage() {
 
               {/* Password */}
               <div>
-                <label className="block text-sm font-medium text-[#0a0a0a] mb-1.5">Password</label>
+                <label className="block text-sm font-medium text-slate-950 dark:text-white mb-1.5">Password</label>
                 <div className="relative">
                   <input type={showPwd ? "text" : "password"} placeholder="Min. 8 characters"
                          value={form.password}
                          onChange={(e) => setForm({ ...form, password: e.target.value })}
                          className={`${inputCls("password")} pr-12`} />
                   <button type="button" onClick={() => setShowPwd((s) => !s)}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 text-[#717182] hover:text-[#0a0a0a] transition-colors">
+                          className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white transition-colors">
                     {showPwd ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
@@ -200,7 +200,7 @@ export default function RegisterPage() {
                             <div key={i} className={`h-1 flex-1 rounded-full transition-colors ${i < strength ? strengthColor : "bg-black/5"}`}/>
                         ))}
                       </div>
-                      <p className="text-xs text-[#717182]">Strength: <span className="font-medium">{strengthLabel}</span></p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">Strength: <span className="font-medium">{strengthLabel}</span></p>
                     </div>
                 )}
                 {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password}</p>}
@@ -208,14 +208,14 @@ export default function RegisterPage() {
 
               {/* Confirm Password */}
               <div>
-                <label className="block text-sm font-medium text-[#0a0a0a] mb-1.5">Confirm password</label>
+                <label className="block text-sm font-medium text-slate-950 dark:text-white mb-1.5">Confirm password</label>
                 <div className="relative">
                   <input type={showConfirm ? "text" : "password"} placeholder="Re-enter your password"
                          value={form.confirmPassword}
                          onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
                          className={`${inputCls("confirmPassword")} pr-12`} />
                   <button type="button" onClick={() => setConfirm((s) => !s)}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 text-[#717182] hover:text-[#0a0a0a] transition-colors">
+                          className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white transition-colors">
                     {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
@@ -225,8 +225,8 @@ export default function RegisterPage() {
               {/* Terms */}
               <div className="flex items-start gap-2.5 pt-1">
                 <input type="checkbox" id="terms" required
-                       className="w-4 h-4 mt-0.5 rounded border-black/10 accent-[#4f39f6] cursor-pointer"/>
-                <label htmlFor="terms" className="text-sm text-[#717182] cursor-pointer select-none leading-snug font-medium">
+                       className="w-4 h-4 mt-0.5 rounded border-slate-200 dark:border-slate-700 accent-[#4f39f6] cursor-pointer"/>
+                <label htmlFor="terms" className="text-sm text-slate-500 dark:text-slate-400 cursor-pointer select-none leading-snug font-medium">
                   I agree to the{" "}
                   <Link href="#" className="text-[#4f39f6] hover:underline">Terms of Service</Link>{" "}
                   and{" "}
@@ -235,7 +235,7 @@ export default function RegisterPage() {
               </div>
 
               <button type="submit" disabled={isLoading}
-                      className="w-full h-12 rounded-[14px] bg-[#4f39f6] text-white text-base font-semibold hover:bg-[#4530e0] transition-colors disabled:opacity-60 flex items-center justify-center gap-2 shadow-[0px_10px_15px_0px_#c6d2ff,0px_4px_6px_0px_#c6d2ff]">
+                      className="w-full h-12 rounded-[14px] bg-[#4f39f6] text-white text-base font-semibold hover:bg-[#4530e0] transition-colors disabled:opacity-60 flex items-center justify-center gap-2 shadow-[0px_10px_15px_0px_#c6d2ff,0px_4px_6px_0px_#c6d2ff] dark:shadow-[0px_10px_15px_0px_rgba(79,57,246,0.5),0px_4px_6px_0px_rgba(79,57,246,0.3)]">
                 {isLoading
                     ? <><svg className="animate-spin w-5 h-5" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"/><path className="opacity-75" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>Creating account…</>
                     : <>Create free account <ArrowRight size={16} /></>
@@ -243,7 +243,7 @@ export default function RegisterPage() {
               </button>
             </form>
 
-            <p className="text-center text-sm text-[#717182] mt-6">
+            <p className="text-center text-sm text-slate-500 dark:text-slate-400 mt-6">
               Already have an account?{" "}
               <Link href="/login" className="text-[#4f39f6] font-semibold hover:underline">Sign in</Link>
             </p>

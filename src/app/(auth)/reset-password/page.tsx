@@ -53,8 +53,8 @@ function ResetPasswordForm() {
             <Check size={28} className="text-[#05df72]" />
           </div>
           <div>
-            <h2 className="text-[30px] font-bold text-[#0a0a0a] mb-2">Password reset!</h2>
-            <p className="text-[#717182] text-base">Your password has been updated. Redirecting you to sign in…</p>
+            <h2 className="text-[30px] font-bold text-slate-950 dark:text-white mb-2">Password reset!</h2>
+            <p className="text-slate-500 dark:text-slate-400 text-base">Your password has been updated. Redirecting you to sign in…</p>
           </div>
         </div>
     );
@@ -63,34 +63,34 @@ function ResetPasswordForm() {
   return (
       <>
         <div className="space-y-2 mb-8">
-          <h2 className="text-[30px] font-bold text-[#0a0a0a] leading-9">Set new password</h2>
-          <p className="text-[#717182] text-base">Choose a strong new password for your account.</p>
+          <h2 className="text-[30px] font-bold text-slate-950 dark:text-white leading-9">Set new password</h2>
+          <p className="text-slate-500 dark:text-slate-400 text-base">Choose a strong new password for your account.</p>
         </div>
 
         {!token && (
-            <div className="mb-5 p-3.5 rounded-[14px] bg-amber-50 border border-amber-200 text-sm text-amber-700">
+            <div className="mb-5 p-3.5 rounded-[14px] bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 text-sm text-amber-700 dark:text-amber-300">
               No reset token found. Please use the link from your email.
             </div>
         )}
         {errors.general && (
-            <div className="mb-5 p-3.5 rounded-[14px] bg-red-50 border border-red-200 text-sm text-red-600">{errors.general}</div>
+            <div className="mb-5 p-3.5 rounded-[14px] bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 text-sm text-red-600 dark:text-red-400">{errors.general}</div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4" noValidate>
           <div>
-            <label className="block text-sm font-medium text-[#0a0a0a] mb-1.5">New password</label>
+            <label className="block text-sm font-medium text-slate-950 dark:text-white mb-1.5">New password</label>
             <div className="relative">
               <input
                   type={showPwd ? "text" : "password"}
                   placeholder="Min. 8 characters"
                   value={form.newPassword}
                   onChange={(e) => setForm({ ...form, newPassword: e.target.value })}
-                  className={`w-full h-[46px] px-4 pr-12 rounded-[14px] border text-sm outline-none transition-all bg-white placeholder:text-[#717182] ${
-                      errors.newPassword ? "border-red-400 bg-red-50" : "border-black/10 focus:border-[#4f39f6] focus:ring-2 focus:ring-[#4f39f6]/10"
+                  className={`w-full h-[46px] px-4 pr-12 rounded-[14px] border text-sm outline-none transition-all bg-white dark:bg-slate-900 placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
+                      errors.newPassword ? "border-red-400 bg-red-50 dark:bg-red-950" : "border-slate-200 dark:border-slate-700 focus:border-[#4f39f6] focus:ring-2 focus:ring-[#4f39f6]/10"
                   }`}
               />
               <button type="button" onClick={() => setShow((s) => !s)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-[#717182] hover:text-[#0a0a0a] transition-colors">
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white transition-colors">
                 {showPwd ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
@@ -98,21 +98,21 @@ function ResetPasswordForm() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[#0a0a0a] mb-1.5">Confirm new password</label>
+            <label className="block text-sm font-medium text-slate-950 dark:text-white mb-1.5">Confirm new password</label>
             <input
                 type="password"
                 placeholder="Re-enter your password"
                 value={form.confirmPassword}
                 onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
-                className={`w-full h-[46px] px-4 rounded-[14px] border text-sm outline-none transition-all bg-white placeholder:text-[#717182] ${
-                    errors.confirmPassword ? "border-red-400 bg-red-50" : "border-black/10 focus:border-[#4f39f6] focus:ring-2 focus:ring-[#4f39f6]/10"
+                className={`w-full h-[46px] px-4 rounded-[14px] border text-sm outline-none transition-all bg-white dark:bg-slate-900 placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
+                    errors.confirmPassword ? "border-red-400 bg-red-50 dark:bg-red-950" : "border-slate-200 dark:border-slate-700 focus:border-[#4f39f6] focus:ring-2 focus:ring-[#4f39f6]/10"
                 }`}
             />
             {errors.confirmPassword && <p className="mt-1 text-xs text-red-500">{errors.confirmPassword}</p>}
           </div>
 
           <button type="submit" disabled={isLoading || !token}
-                  className="w-full h-12 rounded-[14px] bg-[#4f39f6] text-white text-base font-semibold hover:bg-[#4530e0] transition-colors disabled:opacity-60 flex items-center justify-center gap-2 shadow-[0px_10px_15px_0px_#c6d2ff,0px_4px_6px_0px_#c6d2ff]">
+                  className="w-full h-12 rounded-[14px] bg-[#4f39f6] text-white text-base font-semibold hover:bg-[#4530e0] transition-colors disabled:opacity-60 flex items-center justify-center gap-2 shadow-[0px_10px_15px_0px_#c6d2ff,0px_4px_6px_0px_#c6d2ff] dark:shadow-[0px_10px_15px_0px_rgba(79,57,246,0.5),0px_4px_6px_0px_rgba(79,57,246,0.3)]">
             {isLoading
                 ? <><svg className="animate-spin w-5 h-5" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"/><path className="opacity-75" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>Resetting…</>
                 : <>Reset password <ArrowRight size={16} /></>
@@ -121,7 +121,7 @@ function ResetPasswordForm() {
         </form>
 
         <div className="mt-6 text-center">
-          <Link href="/login" className="inline-flex items-center gap-1.5 text-sm text-[#717182] hover:text-[#0a0a0a] font-medium transition-colors">
+          <Link href="/login" className="inline-flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white font-medium transition-colors">
             <ArrowLeft size={14} /> Back to sign in
           </Link>
         </div>
@@ -189,17 +189,17 @@ export default function ResetPasswordPage() {
         </div>
 
         {/* Right Panel - Form */}
-        <div className="flex-1 flex items-center justify-center bg-[#f8fafc] px-6 py-12">
+        <div className="flex-1 flex items-center justify-center bg-slate-50 dark:bg-slate-950 px-6 py-12">
           <div className="w-full max-w-[400px]">
             {/* Mobile Logo */}
             <div className="flex items-center gap-3 mb-10 lg:hidden justify-center">
               <div className="w-10 h-10 rounded-[14px] bg-[#4f39f6] flex items-center justify-center">
                 <CheckCircle2 size={20} className="text-white" />
               </div>
-              <span className="text-[#0a0a0a] text-xl font-bold">TaskFlow</span>
+              <span className="text-slate-950 dark:text-white text-xl font-bold">TaskFlow</span>
             </div>
 
-            <Suspense fallback={<div className="text-sm text-[#717182]">Loading…</div>}>
+            <Suspense fallback={<div className="text-sm text-slate-500 dark:text-slate-400">Loading…</div>}>
               <ResetPasswordForm />
             </Suspense>
           </div>

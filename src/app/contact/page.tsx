@@ -16,18 +16,15 @@ export default function ContactPage() {
     if (form.name && form.email && form.message) setSubmitted(true);
   };
 
-  /* Reusable classes */
+  /* Reusable classes with dark mode */
   const socialBtn =
-    "w-8 h-8 rounded-[7px] border border-[#e2e8f0] bg-[#eef2f7] flex items-center justify-center cursor-pointer transition-all text-[#6b7280] hover:bg-[#ede9ff] hover:border-[#6c47ff] hover:text-[#6c47ff]";
-
-  const footerSocialBtn =
-    "w-[34px] h-[34px] rounded-lg bg-[#eef2f7] border border-[#e2e8f0] flex items-center justify-center cursor-pointer text-[#6b7280] transition-all hover:bg-[#ede9ff] hover:text-[#6c47ff] hover:border-[#6c47ff]";
+    "w-8 h-8 rounded-[7px] border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 flex items-center justify-center cursor-pointer transition-all text-slate-500 dark:text-slate-400 hover:bg-violet-100 dark:hover:bg-violet-900/30 hover:border-[#6c47ff] hover:text-[#6c47ff]";
 
   const fieldInput =
-    "px-3.5 py-2.5 border-[1.5px] border-[#e2e8f0] rounded-lg bg-[#eef2f7] text-[0.88rem] text-[#1a1a2e] outline-none transition-all focus:border-[#6c47ff] focus:bg-white placeholder:text-[#adb5bd]";
+    "px-3.5 py-2.5 border-[1.5px] border-slate-200 dark:border-slate-700 rounded-lg bg-slate-100 dark:bg-slate-800 text-[0.88rem] text-slate-950 dark:text-white outline-none transition-all focus:border-[#6c47ff] focus:bg-white dark:focus:bg-slate-900 placeholder:text-slate-400 dark:placeholder:text-slate-500";
 
   return (
-    <div className="font-sans bg-[#eef2f7] text-[#1a1a2e]">
+    <div className="font-sans bg-slate-50 dark:bg-slate-950 text-slate-950 dark:text-white">
       <Navbar />
 
       {/* ── HERO ── */}
@@ -37,14 +34,14 @@ export default function ContactPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="inline-flex items-center gap-2 bg-white border border-[#e2e8f0] rounded-full px-4 py-1.5 text-[0.8rem] font-medium text-[#6b7280] mb-7">
+        <div className="inline-flex items-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-full px-4 py-1.5 text-[0.8rem] font-medium text-slate-500 dark:text-slate-400 mb-7">
           <div className="w-[7px] h-[7px] rounded-full bg-[#6c47ff]" />
           We typically respond within 24 hours
         </div>
-        <h1 className="text-[clamp(2.2rem,5vw,3.4rem)] font-extrabold tracking-[-1.5px] leading-[1.15] text-[#1a1a2e] mb-4">
+        <h1 className="text-[clamp(2.2rem,5vw,3.4rem)] font-extrabold tracking-[-1.5px] leading-[1.15] text-slate-950 dark:text-white mb-4">
           Get in <span className="text-[#6c47ff]">touch</span> with us
         </h1>
-        <p className="text-base text-[#6b7280] max-w-[500px] mx-auto leading-7">
+        <p className="text-base text-slate-500 dark:text-slate-400 max-w-[500px] mx-auto leading-7">
           Have a question, feedback, or just want to say hello? We&apos;d love to hear from you — our team is ready to help.
         </p>
       </motion.section>
@@ -57,16 +54,20 @@ export default function ContactPage() {
 
           {/* Email */}
           <motion.div
-            className="bg-white border border-[#e2e8f0] rounded-xl p-[22px]"
-            initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.4 }}
+            className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-[22px]"
+            initial={{ opacity: 0, y: 14 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ delay: 0.1, duration: 0.4 }}
           >
-            <div className="w-[38px] h-[38px] rounded-[9px] bg-[#ede9ff] flex items-center justify-center mb-3">
+            <div className="w-[38px] h-[38px] rounded-[9px] bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center mb-3">
               <svg className="w-[19px] h-[19px] text-[#6c47ff]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                 <rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/>
               </svg>
             </div>
             <h3 className="text-[0.88rem] font-semibold mb-1.5">Email us</h3>
-            <p className="text-[0.82rem] text-[#6b7280] leading-[1.6]">Send us an email and we&apos;ll get back to you as soon as possible.</p>
+            <p className="text-[0.82rem] text-slate-500 dark:text-slate-400 leading-[1.6]">
+              Send us an email and we&apos;ll get back to you as soon as possible.
+            </p>
             <a href="mailto:support@taskflow.com" className="inline-block mt-1.5 text-[0.82rem] font-medium text-[#6c47ff] no-underline hover:underline">
               support@taskflow.com
             </a>
@@ -74,33 +75,39 @@ export default function ContactPage() {
 
           {/* Office */}
           <motion.div
-            className="bg-white border border-[#e2e8f0] rounded-xl p-[22px]"
-            initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.17, duration: 0.4 }}
+            className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-[22px]"
+            initial={{ opacity: 0, y: 14 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ delay: 0.17, duration: 0.4 }}
           >
-            <div className="w-[38px] h-[38px] rounded-[9px] bg-[#ede9ff] flex items-center justify-center mb-3">
+            <div className="w-[38px] h-[38px] rounded-[9px] bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center mb-3">
               <svg className="w-[19px] h-[19px] text-[#6c47ff]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                 <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
                 <circle cx="12" cy="9" r="2.5"/>
               </svg>
             </div>
             <h3 className="text-[0.88rem] font-semibold mb-1.5">Our office</h3>
-            <p className="text-[0.82rem] text-[#6b7280] leading-[1.6]">
+            <p className="text-[0.82rem] text-slate-500 dark:text-slate-400 leading-[1.6]">
               Phnom Penh, Cambodia<br/>Mon – Fri, 9:00 AM – 6:00 PM (ICT)
             </p>
           </motion.div>
 
           {/* Social */}
           <motion.div
-            className="bg-white border border-[#e2e8f0] rounded-xl p-[22px]"
-            initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.24, duration: 0.4 }}
+            className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-[22px]"
+            initial={{ opacity: 0, y: 14 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ delay: 0.24, duration: 0.4 }}
           >
-            <div className="w-[38px] h-[38px] rounded-[9px] bg-[#ede9ff] flex items-center justify-center mb-3">
+            <div className="w-[38px] h-[38px] rounded-[9px] bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center mb-3">
               <svg className="w-[19px] h-[19px] text-[#6c47ff]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                 <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
               </svg>
             </div>
             <h3 className="text-[0.88rem] font-semibold mb-1.5">Follow us</h3>
-            <p className="text-[0.82rem] text-[#6b7280] leading-[1.6]">Stay up to date with product updates and news.</p>
+            <p className="text-[0.82rem] text-slate-500 dark:text-slate-400 leading-[1.6]">
+              Stay up to date with product updates and news.
+            </p>
             <div className="flex gap-2 mt-2.5">
               <button className={socialBtn} aria-label="Twitter">
                 <svg className="w-[14px] h-[14px] fill-current" viewBox="0 0 24 24">
@@ -123,51 +130,87 @@ export default function ContactPage() {
 
         {/* ── Form Card ── */}
         <motion.div
-          className="bg-white border border-[#e2e8f0] rounded-xl p-9 md:p-[36px]"
-          initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.14, duration: 0.5 }}
+          className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-9 md:p-[36px]"
+          initial={{ opacity: 0, y: 14 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          transition={{ delay: 0.14, duration: 0.5 }}
         >
           {submitted ? (
             <div className="text-center py-14 px-6">
-              <div className="w-[54px] h-[54px] rounded-full bg-[#ede9ff] mx-auto mb-4 flex items-center justify-center">
+              <div className="w-[54px] h-[54px] rounded-full bg-violet-100 dark:bg-violet-900/30 mx-auto mb-4 flex items-center justify-center">
                 <svg className="w-[26px] h-[26px]" viewBox="0 0 24 24" fill="none" stroke="#6c47ff" strokeWidth="2.5" strokeLinecap="round">
                   <path d="M20 6L9 17l-5-5"/>
                 </svg>
               </div>
-              <h3 className="text-[1.2rem] font-bold mb-2">Message sent!</h3>
-              <p className="text-[0.88rem] text-[#6b7280]">Thanks for reaching out. We&apos;ll get back to you within 24 hours.</p>
+              <h3 className="text-[1.2rem] font-bold mb-2 text-slate-950 dark:text-white">Message sent!</h3>
+              <p className="text-[0.88rem] text-slate-500 dark:text-slate-400">
+                Thanks for reaching out. We&apos;ll get back to you within 24 hours.
+              </p>
             </div>
           ) : (
             <>
-              <h2 className="text-[1.3rem] font-bold tracking-[-0.4px] mb-1.5">Send us a message</h2>
-              <p className="text-[0.84rem] text-[#6b7280] mb-7">Fill out the form below and we&apos;ll be in touch soon.</p>
+              <h2 className="text-[1.3rem] font-bold tracking-[-0.4px] mb-1.5 text-slate-950 dark:text-white">Send us a message</h2>
+              <p className="text-[0.84rem] text-slate-500 dark:text-slate-400 mb-7">
+                Fill out the form below and we&apos;ll be in touch soon.
+              </p>
 
               {/* Name + Email row */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[0.78rem] font-semibold text-[#1a1a2e]">Your name</label>
-                  <input className={fieldInput} type="text" name="name" value={form.name} onChange={handleChange} placeholder="John Doe" />
+                  <label className="text-[0.78rem] font-semibold text-slate-950 dark:text-white">Your name</label>
+                  <input 
+                    className={fieldInput} 
+                    type="text" 
+                    name="name" 
+                    value={form.name} 
+                    onChange={handleChange} 
+                    placeholder="John Doe" 
+                  />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[0.78rem] font-semibold text-[#1a1a2e]">Email address</label>
-                  <input className={fieldInput} type="email" name="email" value={form.email} onChange={handleChange} placeholder="john@example.com" />
+                  <label className="text-[0.78rem] font-semibold text-slate-950 dark:text-white">Email address</label>
+                  <input 
+                    className={fieldInput} 
+                    type="email" 
+                    name="email" 
+                    value={form.email} 
+                    onChange={handleChange} 
+                    placeholder="john@example.com" 
+                  />
                 </div>
               </div>
 
               {/* Subject */}
               <div className="flex flex-col gap-1.5 mb-4">
-                <label className="text-[0.78rem] font-semibold text-[#1a1a2e]">Subject</label>
-                <input className={fieldInput} type="text" name="subject" value={form.subject} onChange={handleChange} placeholder="What's this about?" />
+                <label className="text-[0.78rem] font-semibold text-slate-950 dark:text-white">Subject</label>
+                <input 
+                  className={fieldInput} 
+                  type="text" 
+                  name="subject" 
+                  value={form.subject} 
+                  onChange={handleChange} 
+                  placeholder="What's this about?" 
+                />
               </div>
 
               {/* Message */}
               <div className="flex flex-col gap-1.5 mb-4">
-                <label className="text-[0.78rem] font-semibold text-[#1a1a2e]">Message</label>
-                <textarea className={`${fieldInput} resize-none`} name="message" value={form.message} onChange={handleChange} rows={6} placeholder="Tell us how we can help…" />
+                <label className="text-[0.78rem] font-semibold text-slate-950 dark:text-white">Message</label>
+                <textarea 
+                  className={`${fieldInput} resize-none`} 
+                  name="message" 
+                  value={form.message} 
+                  onChange={handleChange} 
+                  rows={6} 
+                  placeholder="Tell us how we can help…" 
+                />
               </div>
 
               {/* Submit row */}
               <div className="mt-2 flex items-center justify-between gap-3 flex-wrap">
-                <span className="text-[0.75rem] text-[#6b7280]">We&apos;ll never share your info with anyone.</span>
+                <span className="text-[0.75rem] text-slate-500 dark:text-slate-400">
+                  We&apos;ll never share your info with anyone.
+                </span>
                 <button
                   className="flex items-center gap-2 px-[26px] py-[11px] rounded-lg bg-[#6c47ff] text-white text-[0.9rem] font-semibold cursor-pointer transition-all hover:bg-[#5535e0] hover:-translate-y-px"
                   onClick={handleSubmit}
@@ -184,7 +227,6 @@ export default function ContactPage() {
       </div>
 
       {/* ── FOOTER ── */}
-      
     </div>
   );
 }

@@ -161,15 +161,15 @@ function TaskActivityChart() {
 
 function Skeleton({ className = "" }: { className?: string }) {
   return (
-    <div className={`animate-pulse bg-[#F1F5F9] dark:bg-slate-700 rounded-lg ${className}`} />
+    <div className={`animate-pulse bg-slate-100 dark:bg-slate-700 rounded-lg ${className}`} />
   );
 }
 
 const PRIORITY_LABEL: Record<string, string> = {
-  LOW:    "bg-slate-50  text-slate-600 border border-slate-200",
-  MEDIUM: "bg-orange-50 text-orange-600 border border-orange-200",
-  HIGH:   "bg-red-50    text-red-600   border border-red-200",
-  URGENT: "bg-red-100   text-red-800   border border-red-300",
+  LOW:    "bg-slate-50  text-slate-600 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700",
+  MEDIUM: "bg-orange-50 text-orange-600 border border-orange-200 dark:bg-orange-900/40 dark:text-orange-300",
+  HIGH:   "bg-red-50    text-red-600   border border-red-200 dark:bg-red-900/40 dark:text-red-300",
+  URGENT: "bg-red-100   text-red-800   border border-red-300 dark:bg-red-900/60 dark:text-red-200",
 };
 
 export default function DashboardPage() {
@@ -243,7 +243,7 @@ const statCards = [
 
   return (
     <>
-      <header className="h-16 bg-white dark:bg-slate-900 border-b border-[#E8E8EF] dark:border-slate-800 flex items-center justify-end px-4 sm:px-6 lg:px-8 gap-3 shrink-0">
+      <header className="h-16 bg-white dark:bg-slate-900 border-b border-[#E8E8EF] dark:border-slate-700 flex items-center justify-end px-4 sm:px-6 lg:px-8 gap-3 shrink-0">
         <button
           onClick={() => setShowModal(true)}
           className="flex items-center gap-2 h-9 px-4 rounded-lg bg-[#6C5CE7] text-white text-sm font-semibold hover:bg-[#5B4BD5] transition-colors"
@@ -252,9 +252,9 @@ const statCards = [
         </button>
         <Link
           href="/dashboard/notifications"
-          className="relative w-9 h-9 rounded-lg border border-[#E8E8EF] flex items-center justify-center hover:bg-[#F8F8FC] transition-colors"
+          className="relative w-9 h-9 rounded-lg border border-[#E8E8EF] dark:border-slate-700 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
         >
-          <Bell size={16} className="text-[#64748B]" />
+          <Bell size={16} className="text-[#64748B] dark:text-slate-400" />
           {unreadCount > 0 && (
             <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#EF4444] text-white text-[10px] font-semibold flex items-center justify-center">
               {unreadCount > 9 ? "9+" : unreadCount}
@@ -263,10 +263,10 @@ const statCards = [
         </Link>
       </header>
 
-      <main className="flex-1 overflow-auto px-4 py-6 sm:px-6 lg:px-8 bg-[#F8F9FC] dark:bg-slate-950">
+      <main className="flex-1 overflow-auto px-4 py-6 sm:px-6 lg:px-8 bg-slate-50 dark:bg-slate-950">
         <div className="mx-auto max-w-7xl space-y-6">
           {/* Greeting */}
-          <div className="bg-white dark:bg-slate-900 rounded-xl border border-[#E8E8EF] dark:border-slate-800 px-6 py-5 shadow-sm">
+          <div className="bg-white dark:bg-slate-900 rounded-xl border border-[#E8E8EF] dark:border-slate-700 px-6 py-5 shadow-sm">
             <div>
               <h1 className="text-[22px] font-bold text-slate-950 dark:text-white leading-tight">
                 Good morning,{" "}
@@ -338,7 +338,7 @@ const statCards = [
                     .map(({ id, name, color, progress }) => (
                       <div
                         key={id}
-                        className="space-y-2 border border-[#E8E8EF] dark:border-slate-800 rounded-xl p-4 bg-white dark:bg-slate-900"
+                        className="space-y-2 border border-[#E8E8EF] dark:border-slate-700 rounded-xl p-4 bg-white dark:bg-slate-900"
                       >
                         <div className="flex items-center justify-between gap-3">
                           <div className="flex items-center gap-2">
@@ -354,7 +354,7 @@ const statCards = [
                             {progress}%
                           </span>
                         </div>
-                        <div className="h-2 rounded-full bg-[#E8E8EF] dark:bg-slate-800 overflow-hidden">
+                        <div className="h-2 rounded-full bg-[#E8E8EF] dark:bg-slate-700 overflow-hidden">
                           <div
                             className="h-full rounded-full transition-all"
                             style={{
@@ -398,7 +398,7 @@ const statCards = [
                   {(myTasks ?? []).slice(0, 2).map((task) => (
                     <div
                       key={task.id}
-                      className="border border-[#E8E8EF] dark:border-slate-800 rounded-xl p-4 space-y-3 hover:border-[#D1D5DB] dark:hover:border-slate-700 transition-colors bg-[#F8F9FC] dark:bg-slate-950"
+                      className="border border-[#E8E8EF] dark:border-slate-700 rounded-xl p-4 space-y-3 hover:border-[#D1D5DB] dark:hover:border-slate-600 transition-colors bg-slate-50 dark:bg-slate-900"
                     >
                       <div className="flex items-center justify-between gap-3">
                         <h4 className="text-sm font-semibold text-slate-950 dark:text-white">
@@ -416,27 +416,9 @@ const statCards = [
                         </span>
                         {task.dueDate && (
                           <span className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400 ml-auto">
-                            <Calendar size={11} />{" "}
-                            {new Date(task.dueDate).toLocaleDateString(
-                              "en-US",
-                              { month: "short", day: "numeric" },
-                            )}
+                            <Calendar size={11} /> {task.dueDate}
                           </span>
                         )}
-                      </div>
-                      <div className="flex items-center">
-                        {(task.assignees ?? []).slice(0, 3).map((a, i) => (
-                          <div
-                            key={a.id}
-                            className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[9px] font-medium ring-2 ring-white"
-                            style={{
-                              backgroundColor: a.color,
-                              marginLeft: i > 0 ? "-6px" : "0",
-                            }}
-                          >
-                            {a.initials}
-                          </div>
-                        ))}
                       </div>
                     </div>
                   ))}
@@ -444,71 +426,8 @@ const statCards = [
               )}
             </TextCard>
           </div>
-
-          {/* Recent Activity */}
-          <TextCard title="Recent Activity">
-            {activityLoading ? (
-              <div className="space-y-4">
-                {Array(5)
-                  .fill(0)
-                  .map((_, i) => (
-                    <Skeleton key={i} className="h-12" />
-                  ))}
-              </div>
-            ) : (activity ?? []).length === 0 ? (
-              <p className="text-sm text-slate-500 dark:text-slate-400 py-4 text-center">
-                No recent activity.
-              </p>
-            ) : (
-              <div className="divide-y divide-[#F1F5F9] dark:divide-slate-800">
-                {(activity ?? []).map((item) => {
-                  const mins = mounted
-                    ? Math.round(
-                        (Date.now() - new Date(item.createdAt).getTime()) /
-                          60000,
-                      )
-                    : 0;
-                  const timeStr =
-                    mins < 1
-                      ? "just now"
-                      : mins < 60
-                        ? `${mins}m ago`
-                        : mins < 1440
-                          ? `${Math.round(mins / 60)}h ago`
-                          : `${Math.round(mins / 1440)}d ago`;
-                  return (
-                    <div
-                      key={item.id}
-                      className="flex items-start gap-3 py-3 first:pt-0 last:pb-0"
-                    >
-                      <div
-                        className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-white text-xs font-medium"
-                        style={{ backgroundColor: item.user.color }}
-                      >
-                        {item.user.initials}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm text-slate-950 dark:text-white">
-                          <span className="font-semibold">
-                            {item.user.name}
-                          </span>{" "}
-                          <span className="text-slate-500 dark:text-slate-400">{item.action}</span>{" "}
-                          <span className="font-semibold">{item.target}</span>
-                        </p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                          {timeStr}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </TextCard>
         </div>
       </main>
-
-      {showModal && <NewTaskModal onClose={() => setShowModal(false)} />}
     </>
   );
 }
