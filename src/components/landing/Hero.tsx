@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -10,11 +9,11 @@ export default function Hero() {
   const { t } = useTranslation();
 
   return (
-    <section className="relative pt-32 pb-0 overflow-hidden min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 pointer-events-none" />
+    <section className="relative pt-32 pb-0 overflow-hidden min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-[#0B1120] dark:via-[#111827] dark:to-[#0B1120]">
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-[#0B1120] dark:via-[#111827] dark:to-[#0B1120] pointer-events-none" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(197,212,240,0.3)_1px,transparent_0)] bg-[length:28px_28px] opacity-45 pointer-events-none dark:bg-[radial-gradient(circle_at_1px_1px,rgba(100,116,139,0.2)_1px,transparent_0)]" />
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
-        <div className="inline-flex items-center gap-2 bg-white dark:bg-slate-800 text-purple-600 dark:text-purple-400 text-xs font-bold px-3.5 py-1.5 rounded-full border border-purple-200 dark:border-purple-800 mb-7 shadow-sm animate-pulse">
+        <div className="inline-flex items-center gap-2 bg-white dark:bg-[#111827] text-purple-600 dark:text-purple-400 text-xs font-bold px-3.5 py-1.5 rounded-full border border-purple-200 dark:border-purple-800 mb-7 shadow-sm animate-pulse">
           <span className="w-1.5 h-1.5 rounded-full bg-purple-600 dark:bg-purple-400 animate-pulse" />
           Now with AI-powered automation
         </div>
@@ -36,7 +35,7 @@ export default function Hero() {
           </Link>
           <Link
             href="/login"
-            className="inline-flex items-center justify-center gap-1.5 bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-600 font-semibold px-6 py-3 rounded-lg transition-all duration-200 hover:shadow-sm hover:-translate-y-0.5"
+            className="inline-flex items-center justify-center gap-1.5 bg-transparent hover:bg-slate-100 dark:hover:bg-[#111827] text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-gray-600 font-semibold px-6 py-3 rounded-lg transition-all duration-200 hover:shadow-sm hover:-translate-y-0.5"
           >
             Sign in to workspace
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">

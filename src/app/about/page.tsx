@@ -26,8 +26,6 @@ export default function AboutPage() {
 
   return (
     <div className="font-sans bg-slate-50 dark:bg-slate-950 text-slate-950 dark:text-white">
-      <Navbar />
-
       {/* ── HERO ── */}
       <motion.section
         className="text-center pt-[72px] pb-[60px] px-6"

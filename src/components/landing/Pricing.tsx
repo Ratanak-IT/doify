@@ -1,4 +1,3 @@
-
 const PRICING = [
   {
     name: "Free",
@@ -31,36 +30,76 @@ const PRICING = [
 
 export default function Pricing() {
   return (
-    <section id="pricing" className="lp-section lp-section--dark">
+    <section
+      id="pricing"
+      className="
+        lp-section lp-section--dark
+        bg-gray-50 text-gray-900
+        dark:bg-[#0B1120] dark:text-gray-100
+        transition-colors duration-300
+      "
+    >
       <div className="lp-container">
+
+        {/* Header */}
         <div className="lp-section-header">
-          <h2 className="lp-section-title lp-section-title--white">Simple, honest pricing</h2>
-          <p className="lp-section-sub lp-section-sub--muted">Start free. Upgrade when you need to.</p>
+          <h2 className="lp-section-title lp-section-title--white
+            text-gray-900 dark:text-gray-100">
+            Simple, honest pricing
+          </h2>
+
+          <p className="lp-section-sub lp-section-sub--muted
+            text-gray-600 dark:text-gray-400">
+            Start free. Upgrade when you need to.
+          </p>
         </div>
 
+        {/* Grid */}
         <div className="lp-pricing-grid">
           {PRICING.map((plan, i) => (
-            <div key={i} className={`lp-pricing-card${plan.highlight ? " lp-pricing-card--highlight" : ""}`}>
-              <p className="lp-plan-name" style={{ color: plan.highlight ? "#6C5CE7" : "#7c93d8" }}>
+            <div
+              key={i}
+              className={`lp-pricing-card${plan.highlight ? " lp-pricing-card--highlight" : ""}
+                bg-white
+                dark:bg-[#111827]
+                border border-gray-200
+                dark:border-gray-700
+                shadow-sm`}
+            >
+
+              {/* Plan Name */}
+              <p
+                className="lp-plan-name"
+                style={{
+                  color: plan.highlight ? "#6C5CE7" : "#7c93d8",
+                }}
+              >
                 {plan.name}
               </p>
 
+              {/* Price */}
               <div className="lp-plan-price">
-                <span className="lp-plan-amount" style={{ color: plan.highlight ? "#0a0a0a" : "#fff" }}>
+                <span className="lp-plan-amount text-gray-900 dark:text-gray-100">
                   {plan.price}
                 </span>
-                <span className="lp-plan-period" style={{ color: plan.highlight ? "#64748b" : "#7c93d8" }}>
+
+                <span className="lp-plan-period text-gray-500 dark:text-gray-400">
                   {plan.period}
                 </span>
               </div>
 
-              <p className="lp-plan-desc" style={{ color: plan.highlight ? "#64748b" : "#93afda" }}>
+              {/* Description */}
+              <p className="lp-plan-desc text-gray-600 dark:text-gray-400">
                 {plan.desc}
               </p>
 
+              {/* Features */}
               <ul className="lp-plan-features">
                 {plan.features.map((f, fi) => (
-                  <li key={fi} className="lp-plan-feature" style={{ color: plan.highlight ? "#374151" : "#cdd8f0" }}>
+                  <li
+                    key={fi}
+                    className="lp-plan-feature text-gray-700 dark:text-gray-300"
+                  >
                     <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
                       <path
                         d="M2.5 7.5l3.5 3.5 6.5-7"
@@ -75,12 +114,14 @@ export default function Pricing() {
                 ))}
               </ul>
 
+              {/* CTA */}
               <a
                 href="/register"
                 className={`lp-plan-cta${plan.highlight ? " lp-plan-cta--blue" : " lp-plan-cta--ghost"}`}
               >
                 {plan.cta}
               </a>
+
             </div>
           ))}
         </div>

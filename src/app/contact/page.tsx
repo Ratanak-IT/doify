@@ -25,7 +25,7 @@ export default function ContactPage() {
 
   return (
     <div className="font-sans bg-slate-50 dark:bg-slate-950 text-slate-950 dark:text-white">
-      <Navbar />
+      
 
       {/* ── HERO ── */}
       <motion.section

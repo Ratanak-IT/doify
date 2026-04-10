@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useTranslation } from "@/lib/i18n/useTranslation";
@@ -85,7 +84,7 @@ export default function Features() {
   const { t } = useTranslation();
 
   return (
-    <section id="features" className="lp-section lp-section--white">
+    <section id="features" className="lp-section lp-section--white bg-white text-gray-900 dark:bg-[#0B1120] dark:text-white transition-colors duration-300">
       <div className="lp-container">
         <div className="lp-section-header">
           <span className="lp-eyebrow lp-eyebrow--blue">The system</span>
