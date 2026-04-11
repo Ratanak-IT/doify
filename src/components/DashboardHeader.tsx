@@ -72,7 +72,7 @@ export default function DashboardHeader({
     <header className="h-14 sm:h-16 bg-white dark:bg-slate-900 border-b border-[#E8E8EF] dark:border-slate-700 flex items-center justify-between px-3 sm:px-5 gap-2 shrink-0 sticky top-0 z-30">
 
       {/* ── Logo ── */}
-      <Link href="/dashboard" className="flex items-center gap-2 shrink-0 group">
+      <Link href="/" className="flex items-center gap-2 shrink-0 group">
         <div className="w-8 h-8 rounded-lg bg-[#6C5CE7] flex items-center justify-center shadow-md shadow-[#6C5CE7]/30 group-hover:shadow-[#6C5CE7]/50 transition-shadow">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
             <rect x="1" y="1" width="4" height="12" rx="1" fill="white"/>
