@@ -27,7 +27,6 @@ import {
   ActivityVolumeChart,
 } from "@/components/charts";
 
-// ─────────────────────────────────────────────────────────────────────────────
 
 function Skeleton({ className = "" }: { className?: string }) {
   return <div className={`animate-pulse bg-slate-100 dark:bg-slate-700 rounded-lg ${className}`} />;
@@ -56,10 +55,13 @@ export default function DashboardPage() {
     ? new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })
     : "";
 
-  // ── ONE unified dashboard call ──────────────────────────────────────────────
-  const { data: dashboard, isLoading: dashLoading, error: dashError } = useGetDashboardQuery();
 
-  // My tasks (in-progress) — kept as separate call because it paginates
+  const { data: dashboard, isLoading: dashLoading, error: dashError } = useGetDashboardQuery(undefined, {
+  pollingInterval: 30_000,
+  refetchOnFocus: true,
+  refetchOnReconnect: true,
+});
+
   const { data: myTasksPage, isLoading: tasksLoading } =
     useGetPersonalTasksQuery({ status: "IN_PROGRESS" });
   const myTasks = myTasksPage?.content ?? [];
@@ -67,7 +69,6 @@ export default function DashboardPage() {
   const { data: unread } = useGetUnreadCountQuery();
   const unreadCount = unread?.count ?? 0;
 
-  // ── Derived values ──────────────────────────────────────────────────────────
   const statCards = [
     {
       label: "Total Tasks",

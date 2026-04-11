@@ -72,7 +72,6 @@ const ARROW_LABEL: Record<TaskStatus, string> = {
   DONE:        "→ DONE",
 };
 
-// ─── Status Badge ─────────────────────────────────────────────────────────────
 
 function StatusBadge({
   status,
@@ -97,7 +96,6 @@ function StatusBadge({
   );
 }
 
-// ─── Inline Edit Form ─────────────────────────────────────────────────────────
 
 function InlineEditForm({
   title,
@@ -155,7 +153,6 @@ function InlineEditForm({
   );
 }
 
-// ─── Subtask Row ──────────────────────────────────────────────────────────────
 
 function SubtaskRow({
   subtask,
@@ -544,6 +541,7 @@ function TeamTaskCard({
         <EditProjectTaskModal
           task={task}
           projectId={projectId}
+          teamId={project?.teamId ?? ""}
           onClose={() => setShowEdit(false)}
         />
       )}
@@ -761,6 +759,7 @@ export default function ProjectTasksPanel({ project }: { project: Project }) {
       {showCreate && (
         <CreateProjectTaskModal
           projectId={project.id}
+          teamId={project.teamId ?? ""}
           defaultStatus={defaultStatus}
           onClose={() => setShowCreate(false)}
         />
