@@ -134,7 +134,7 @@ function InlineEditForm({
         value={editDesc}
         onChange={(e) => setEditDesc(e.target.value)}
         placeholder="Description (optional)"
-        rows={2}
+        rows={3}
         className="w-full px-2 py-1 text-xs rounded border border-slate-200 outline-none resize-none dark:bg-slate-800 dark:text-white focus:border-blue-400"
       />
       <div className="flex gap-1">
@@ -285,7 +285,7 @@ function CommentsDrawer({ task, onClose }: { task: Task; onClose: () => void }) 
           </div>
           <button
             onClick={onClose}
-            className="w-7 h-7 rounded-md flex items-center justify-center text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
           >
             ✕
           </button>
@@ -371,7 +371,7 @@ function CommentsDrawer({ task, onClose }: { task: Task; onClose: () => void }) 
             <button
               onClick={submit}
               disabled={posting || !text.trim()}
-              className="w-9 h-9 rounded-md bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition-colors"
+              className="w-9 h-12 rounded-xl bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition-colors"
             >
               <Send size={14} />
             </button>

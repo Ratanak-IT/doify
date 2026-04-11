@@ -96,7 +96,7 @@ function InlineEditForm({
         value={editDesc}
         onChange={(e) => setEditDesc(e.target.value)}
         placeholder="Description (optional)"
-        rows={2}
+        rows={3}
         className="w-full px-2 py-1 text-xs rounded border border-slate-200 outline-none resize-none dark:bg-slate-800 dark:text-white focus:border-blue-400"
       />
       <div className="flex gap-1">

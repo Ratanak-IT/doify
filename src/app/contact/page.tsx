@@ -29,25 +29,25 @@ export default function ContactPage() {
 
       {/* ── HERO ── */}
       <motion.section
-        className="text-center pt-[72px] pb-[52px] px-6"
+        className="text-center pt-24 sm:pt-28 pb-10 sm:pb-14 px-4 sm:px-6"
         initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="inline-flex items-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-full px-4 py-1.5 text-[0.8rem] font-medium text-slate-500 dark:text-slate-400 mb-7">
+        <div className="inline-flex items-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-full px-4 py-1.5 text-[0.8rem] font-medium text-slate-500 dark:text-slate-400 mb-6 sm:mb-7">
           <div className="w-[7px] h-[7px] rounded-full bg-[#6c47ff]" />
           We typically respond within 24 hours
         </div>
-        <h1 className="text-[clamp(2.2rem,5vw,3.4rem)] font-extrabold tracking-[-1.5px] leading-[1.15] text-slate-950 dark:text-white mb-4">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight text-slate-950 dark:text-white mb-4">
           Get in <span className="text-[#6c47ff]">touch</span> with us
         </h1>
-        <p className="text-base text-slate-500 dark:text-slate-400 max-w-[500px] mx-auto leading-7">
+        <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 max-w-sm sm:max-w-md mx-auto leading-7">
           Have a question, feedback, or just want to say hello? We&apos;d love to hear from you — our team is ready to help.
         </p>
       </motion.section>
 
       {/* ── CONTACT GRID ── */}
-      <div className="max-w-[1060px] mx-auto px-6 pb-24 grid grid-cols-1 md:grid-cols-[1fr_1.7fr] gap-6 items-start">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 pb-14 sm:pb-20 grid grid-cols-1 md:grid-cols-[1fr_1.7fr] gap-5 sm:gap-6 items-start">
 
         {/* ── Info Cards ── */}
         <div className="flex flex-col gap-4">
@@ -130,7 +130,7 @@ export default function ContactPage() {
 
         {/* ── Form Card ── */}
         <motion.div
-          className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-9 md:p-[36px]"
+          className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-5 sm:p-7 md:p-9"
           initial={{ opacity: 0, y: 14 }} 
           animate={{ opacity: 1, y: 0 }} 
           transition={{ delay: 0.14, duration: 0.5 }}
@@ -206,13 +206,12 @@ export default function ContactPage() {
                 />
               </div>
 
-              {/* Submit row */}
-              <div className="mt-2 flex items-center justify-between gap-3 flex-wrap">
+              <div className="mt-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <span className="text-[0.75rem] text-slate-500 dark:text-slate-400">
                   We&apos;ll never share your info with anyone.
                 </span>
                 <button
-                  className="flex items-center gap-2 px-[26px] py-[11px] rounded-lg bg-[#6c47ff] text-white text-[0.9rem] font-semibold cursor-pointer transition-all hover:bg-[#5535e0] hover:-translate-y-px"
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-[#6c47ff] text-white text-[0.9rem] font-semibold cursor-pointer transition-all hover:bg-[#5535e0] hover:-translate-y-px"
                   onClick={handleSubmit}
                 >
                   Send message

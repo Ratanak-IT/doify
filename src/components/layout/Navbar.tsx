@@ -171,7 +171,7 @@ export default function Navbar() {
                 <div className="relative">
                   <button
                     onClick={() => setProfileOpen(!profileOpen)}
-                    className="w-9 h-9 rounded-full hover:ring-2 hover:ring-purple-500 transition-all duration-300 overflow-hidden flex items-center justify-center bg-purple-100 dark:bg-slate-700"
+                    className="w-9 h-12 rounded-xl hover:ring-2 hover:ring-purple-500 transition-all duration-300 overflow-hidden flex items-center justify-center bg-purple-100 dark:bg-slate-700"
                   >
                     {avatar ? (
                       <img

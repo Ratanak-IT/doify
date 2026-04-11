@@ -9,8 +9,8 @@ export default function HowItWorks() {
         transition-colors duration-300
       "
     >
-      <div className="lp-container">
-        <div className="lp-hiw-grid">
+      <div className="lp-container px-4 sm:px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
 
           <div className="lp-hiw-content">
             <span className="lp-eyebrow lp-eyebrow--green

@@ -1,5 +1,7 @@
 "use client";
 
+import DashboardHeader from "@/components/DashboardHeader";
+
 import { useState } from "react";
 import {
   Plus,
@@ -121,19 +123,19 @@ function NewProjectModal({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-md">
-        <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-[#F1F5F9]">
+    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-md max-h-[92dvh] overflow-y-auto dark:bg-slate-900">
+        <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-[#F1F5F9]">
           <h2 className="text-base font-bold text-[#1E293B]">New Project</h2>
           <button
             onClick={onClose}
-            className="w-7 h-7 rounded-md flex items-center justify-center text-[#94A3B8] hover:bg-[#F1F5F9] transition-colors"
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-[#94A3B8] hover:bg-[#F1F5F9] transition-colors"
           >
             <X size={15} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-5 space-y-4">
           {apiError && (
             <p className="text-sm text-[#EF4444] bg-[#FEE2E2] border border-[#ffd5cc] p-3 rounded-lg">
               {apiError}
@@ -148,7 +150,7 @@ function NewProjectModal({ onClose }: { onClose: () => void }) {
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               placeholder="e.g. Website Redesign"
-              className={`w-full h-10 px-3 rounded-md border text-sm outline-none bg-white transition-colors ${
+              className={`w-full h-11 px-3 rounded-md border text-sm outline-none bg-white transition-colors ${
                 errors.name
                   ? "border-[#EF4444]"
                   : "border-[#D1D5DB] focus:border-[#6C5CE7]"
@@ -168,13 +170,13 @@ function NewProjectModal({ onClose }: { onClose: () => void }) {
               onChange={(e) =>
                 setForm({ ...form, description: e.target.value })
               }
-              rows={2}
+              rows={3}
               placeholder="What is this project about?"
-              className="w-full px-3 py-2.5 rounded-md border border-[#D1D5DB] text-sm outline-none focus:border-[#6C5CE7] bg-white resize-none transition-colors"
+              className="w-full px-3 py-3 rounded-xl border border-[#D1D5DB] text-sm outline-none focus:border-[#6C5CE7] bg-white resize-none transition-colors"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-semibold text-[#64748B] mb-1.5">
                 Start date
@@ -185,7 +187,7 @@ function NewProjectModal({ onClose }: { onClose: () => void }) {
                 onChange={(e) =>
                   setForm({ ...form, startDate: e.target.value })
                 }
-                className="w-full h-10 px-3 rounded-md border border-[#D1D5DB] text-sm outline-none focus:border-[#6C5CE7] bg-white transition-colors"
+                className="w-full h-11 px-3 rounded-md border border-[#D1D5DB] text-sm outline-none focus:border-[#6C5CE7] bg-white transition-colors"
               />
             </div>
 
@@ -197,7 +199,7 @@ function NewProjectModal({ onClose }: { onClose: () => void }) {
                 type="date"
                 value={form.dueDate}
                 onChange={(e) => setForm({ ...form, dueDate: e.target.value })}
-                className="w-full h-10 px-3 rounded-md border border-[#D1D5DB] text-sm outline-none focus:border-[#6C5CE7] bg-white transition-colors"
+                className="w-full h-11 px-3 rounded-md border border-[#D1D5DB] text-sm outline-none focus:border-[#6C5CE7] bg-white transition-colors"
               />
             </div>
           </div>
@@ -210,7 +212,7 @@ function NewProjectModal({ onClose }: { onClose: () => void }) {
               <select
                 value={form.teamId}
                 onChange={(e) => setForm({ ...form, teamId: e.target.value })}
-                className="w-full h-10 px-3 rounded-md border border-[#D1D5DB] text-sm outline-none focus:border-[#6C5CE7] bg-white appearance-none"
+                className="w-full h-11 px-3 rounded-md border border-[#D1D5DB] text-sm outline-none focus:border-[#6C5CE7] bg-white appearance-none"
               >
                 <option value="">No team</option>
                 {teams.map((t) => (
@@ -247,14 +249,14 @@ function NewProjectModal({ onClose }: { onClose: () => void }) {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 h-9 rounded-md border border-[#D1D5DB] text-sm font-semibold text-[#64748B] hover:bg-[#F1F5F9] transition-colors"
+              className="flex-1 h-12 rounded-xl border border-[#D1D5DB] text-sm font-semibold text-[#64748B] hover:bg-[#F1F5F9] transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isLoading}
-              className="flex-1 h-9 rounded-md bg-[#6C5CE7] text-white text-sm font-semibold hover:bg-[#5B4BD5] transition-colors"
+              className="flex-1 h-12 rounded-xl bg-[#6C5CE7] text-white text-sm font-semibold hover:bg-[#5B4BD5] transition-colors"
             >
               {isLoading ? "Creating…" : "Create Project"}
             </button>
@@ -315,19 +317,19 @@ function EditProjectModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-md">
-        <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-[#F1F5F9]">
+    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-md max-h-[92dvh] overflow-y-auto dark:bg-slate-900">
+        <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-[#F1F5F9]">
           <h2 className="text-base font-bold text-[#1E293B]">Edit Project</h2>
           <button
             onClick={onClose}
-            className="w-7 h-7 rounded-md flex items-center justify-center text-[#94A3B8] hover:bg-[#F1F5F9] transition-colors"
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-[#94A3B8] hover:bg-[#F1F5F9] transition-colors"
           >
             <X size={15} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-5 space-y-4">
           {apiError && (
             <p className="text-sm text-[#EF4444] bg-[#FEE2E2] border border-[#ffd5cc] p-3 rounded-lg">
               {apiError}
@@ -341,7 +343,7 @@ function EditProjectModal({
             <input
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className={`w-full h-10 px-3 rounded-md border text-sm outline-none bg-white transition-colors ${
+              className={`w-full h-11 px-3 rounded-md border text-sm outline-none bg-white transition-colors ${
                 errors.name
                   ? "border-[#EF4444]"
                   : "border-[#D1D5DB] focus:border-[#6C5CE7]"
@@ -361,8 +363,8 @@ function EditProjectModal({
               onChange={(e) =>
                 setForm({ ...form, description: e.target.value })
               }
-              rows={2}
-              className="w-full px-3 py-2.5 rounded-md border border-[#D1D5DB] text-sm outline-none focus:border-[#6C5CE7] bg-white resize-none transition-colors"
+              rows={3}
+              className="w-full px-3 py-3 rounded-xl border border-[#D1D5DB] text-sm outline-none focus:border-[#6C5CE7] bg-white resize-none transition-colors"
             />
           </div>
 
@@ -374,7 +376,7 @@ function EditProjectModal({
               type="date"
               value={form.dueDate}
               onChange={(e) => setForm({ ...form, dueDate: e.target.value })}
-              className="w-full h-10 px-3 rounded-md border border-[#D1D5DB] text-sm outline-none focus:border-[#6C5CE7] bg-white transition-colors"
+              className="w-full h-11 px-3 rounded-md border border-[#D1D5DB] text-sm outline-none focus:border-[#6C5CE7] bg-white transition-colors"
             />
           </div>
 
@@ -403,14 +405,14 @@ function EditProjectModal({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 h-9 rounded-md border border-[#D1D5DB] text-sm font-semibold text-[#64748B] hover:bg-[#F1F5F9] transition-colors"
+              className="flex-1 h-12 rounded-xl border border-[#D1D5DB] text-sm font-semibold text-[#64748B] hover:bg-[#F1F5F9] transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isLoading}
-              className="flex-1 h-9 rounded-md bg-[#6C5CE7] text-white text-sm font-semibold hover:bg-[#5B4BD5] transition-colors"
+              className="flex-1 h-12 rounded-xl bg-[#6C5CE7] text-white text-sm font-semibold hover:bg-[#5B4BD5] transition-colors"
             >
               {isLoading ? "Saving…" : "Save Changes"}
             </button>
@@ -454,7 +456,7 @@ function ProjectCard({
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-center gap-2">
             <div
-              className="w-7 h-7 rounded-md flex items-center justify-center text-white text-md font-bold shrink-0"
+              className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-md font-bold shrink-0"
               style={{ backgroundColor: project.color }}
             >
               {project.name[0].toUpperCase()}
@@ -613,28 +615,10 @@ export default function ProjectsPage() {
 
   return (
     <>
-      <header className="h-16 bg-white border-b border-[#E8E8EF] flex items-center justify-between px-6 shrink-0">
-        <h1 className="text-lg font-bold text-[#1E293B]">Projects</h1>
+      <DashboardHeader onRefresh={refetch} onCreate={() => setShowNew(true)} createLabel="Create" />
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => refetch()}
-            className="w-9 h-9 rounded-md border border-[#D1D5DB] flex items-center justify-center text-[#94A3B8] hover:bg-[#F1F5F9] transition-colors"
-          >
-            <RefreshCw size={14} />
-          </button>
-
-          <button
-            onClick={() => setShowNew(true)}
-            className="flex items-center gap-2 h-9 px-4 rounded-md bg-[#6C5CE7] text-white text-sm font-semibold hover:bg-[#5B4BD5] transition-colors"
-          >
-            <Plus size={15} /> New Project
-          </button>
-        </div>
-      </header>
-
-      <div className="px-6 py-3 bg-white border-b border-[#E8E8EF]">
-        <div className="relative max-w-xs">
+      <div className="px-4 sm:px-6 py-3 bg-white dark:bg-slate-900 border-b border-[#E8E8EF] dark:border-slate-700">
+        <div className="relative w-full max-w-xs">
           <Search
             size={15}
             className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8]"
@@ -649,7 +633,7 @@ export default function ProjectsPage() {
       </div>
 
       {isError && (
-        <div className="mx-6 mt-4 p-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-600 flex items-center justify-between">
+        <div className="mx-4 sm:mx-6 mt-4 p-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-600 flex items-center justify-between">
           Failed to load projects.
           <button onClick={refetch} className="font-semibold underline">
             Retry
@@ -657,7 +641,7 @@ export default function ProjectsPage() {
         </div>
       )}
 
-      <main className="flex-1 overflow-auto p-6">
+      <main className="flex-1 overflow-auto p-4 sm:p-6">
         {isLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {Array(6)

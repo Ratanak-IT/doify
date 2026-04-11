@@ -133,7 +133,7 @@ export default function RegisterPage() {
         </div>
 
         {/* Right Panel - Form */}
-        <div className="flex-1 flex items-center justify-center bg-slate-50 dark:bg-slate-950 px-6 py-8">
+        <div className="flex-1 flex items-center justify-center bg-slate-50 dark:bg-slate-950 px-4 sm:px-6 py-8 sm:py-12">
           <div className="w-full max-w-[420px]">
             {/* Mobile Logo */}
             <div className="flex items-center gap-3 mb-8 lg:hidden justify-center">
@@ -154,7 +154,7 @@ export default function RegisterPage() {
 
             <form onSubmit={handleSubmit} className="space-y-4" noValidate>
               {/* Full name & Username */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-medium text-slate-950 dark:text-white mb-1.5">Full name</label>
                   <input placeholder="John Smith" value={form.fullName}

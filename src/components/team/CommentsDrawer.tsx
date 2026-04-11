@@ -103,7 +103,7 @@ export default function CommentsDrawer({
 
           <button
             onClick={onClose}
-            className="w-7 h-7 rounded-md flex items-center justify-center text-[#97a0af] hover:bg-[#F1F5F9] dark:hover:bg-slate-800"
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-[#97a0af] hover:bg-[#F1F5F9] dark:hover:bg-slate-800"
           >
             <X size={15} />
           </button>
@@ -171,17 +171,17 @@ export default function CommentsDrawer({
                       <input
                         value={editText}
                         onChange={(e) => setEditText(e.target.value)}
-                        className="flex-1 h-7 px-2 text-xs rounded border border-[#6C5CE7] outline-none bg-white dark:bg-slate-800 dark:text-white"
+                        className="flex-1 h-9 px-2 text-sm rounded-lg border border-[#6C5CE7] outline-none bg-white dark:bg-slate-800 dark:text-white"
                       />
                       <button
                         onClick={() => saveEdit(c.id)}
-                        className="w-7 h-7 rounded bg-[#6C5CE7] text-white flex items-center justify-center"
+                        className="w-9 h-9 rounded-lg bg-[#6C5CE7] text-white flex items-center justify-center"
                       >
                         <Check size={11} />
                       </button>
                       <button
                         onClick={cancelEdit}
-                        className="w-7 h-7 rounded border text-[#97a0af] flex items-center justify-center"
+                        className="w-9 h-9 rounded-lg border text-[#97a0af] flex items-center justify-center"
                       >
                         <X size={11} />
                       </button>
@@ -209,12 +209,12 @@ export default function CommentsDrawer({
                 }
               }}
               placeholder="Write a comment…"
-              className="flex-1 h-9 px-3 rounded-md border border-[#D1D5DB] dark:border-slate-700 text-sm outline-none focus:border-[#6C5CE7] bg-white dark:bg-slate-800 dark:text-white transition-colors"
+              className="flex-1 h-11 px-3 rounded-xl border border-[#D1D5DB] dark:border-slate-700 text-sm outline-none focus:border-[#6C5CE7] bg-white dark:bg-slate-800 dark:text-white transition-colors"
             />
             <button
               onClick={submit}
               disabled={posting || !text.trim()}
-              className="w-9 h-9 rounded-md bg-[#6C5CE7] text-white flex items-center justify-center disabled:opacity-40 hover:bg-[#5B4BD5] transition-colors"
+              className="w-9 h-12 rounded-xl bg-[#6C5CE7] text-white flex items-center justify-center disabled:opacity-40 hover:bg-[#5B4BD5] transition-colors"
             >
               <Send size={14} />
             </button>

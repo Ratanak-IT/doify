@@ -39,7 +39,7 @@ export default function Testimonials() {
         </div>
 
         {/* Grid */}
-        <div className="lp-testi-grid grid gap-6 md:grid-cols-3 mt-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 mt-8 sm:mt-10">
           {TESTIMONIALS.map((t, i) => (
             <div
               key={i}

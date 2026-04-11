@@ -39,7 +39,7 @@ export default function Pricing() {
         transition-colors duration-300
       "
     >
-      <div className="lp-container">
+      <div className="lp-container px-4 sm:px-6">
 
         {/* Header */}
         <div className="lp-section-header">
@@ -55,7 +55,7 @@ export default function Pricing() {
         </div>
 
         {/* Grid */}
-        <div className="lp-pricing-grid">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 max-w-4xl mx-auto items-center">
           {PRICING.map((plan, i) => (
             <div
               key={i}
@@ -64,7 +64,8 @@ export default function Pricing() {
                 dark:bg-[#111827]
                 border border-gray-200
                 dark:border-gray-700
-                shadow-sm`}
+                shadow-sm
+                ${plan.highlight ? "sm:scale-105 sm:-my-2" : ""}`}
             >
 
               {/* Plan Name */}

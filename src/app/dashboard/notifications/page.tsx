@@ -1,5 +1,7 @@
 "use client";
 
+import DashboardHeader from "@/components/DashboardHeader";
+
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Bell, CheckCheck, RefreshCw, ChevronLeft, ChevronRight, UserPlus } from "lucide-react";
@@ -169,41 +171,9 @@ export default function NotificationsPage() {
 
   return (
     <>
-      <header className="h-20 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-6 shrink-0">
-        <div>
-          <p className="text-sm font-medium uppercase tracking-[0.24em] text-slate-500 dark:text-slate-400">
-            Notification center
-          </p>
-          <div className="mt-2 flex items-center gap-3">
-            <Bell size={20} className="text-slate-700 dark:text-slate-200" />
-            <div>
-              <h1 className="text-2xl font-semibold text-slate-950 dark:text-white">Notifications</h1>
-              <p className="text-sm text-slate-500 dark:text-slate-400">
-                Stay on top of your tasks, teams, and comments.
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            onClick={() => refetch()}
-            className="inline-flex h-10 items-center justify-center rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-slate-600 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
-            title="Refresh"
-          >
-            <RefreshCw size={16} />
-          </button>
-          {unreadCount > 0 && (
-            <button
-              onClick={() => markAllRead()}
-              className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-slate-800"
-            >
-              <CheckCheck size={16} /> Mark all read
-            </button>
-          )}
-        </div>
-      </header>
+      <DashboardHeader onRefresh={refetch} showCreate={false} />
 
-      <main className="flex-1 overflow-auto p-6">
+      <main className="flex-1 overflow-auto p-4 sm:p-6">
         <div className="max-w-5xl mx-auto space-y-6">
           <div className="rounded-[32px] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 shadow-sm">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">

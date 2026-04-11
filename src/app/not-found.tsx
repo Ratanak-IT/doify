@@ -57,16 +57,16 @@ export default function NotFound() {
         </p>
 
         {/* Buttons */}
-        <div className="mt-9 flex flex-wrap justify-center gap-3 animate-[fadeup_0.7s_0.38s_cubic-bezier(.22,1,.36,1)_both]">
+        <div className="mt-9 flex flex-col sm:flex-row flex-wrap justify-center gap-3 w-full px-2 sm:px-0 animate-[fadeup_0.7s_0.38s_cubic-bezier(.22,1,.36,1)_both]">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 rounded-lg bg-violet-600 px-6 py-2.5 text-sm font-bold text-white transition hover:bg-violet-700 active:scale-95 dark:bg-violet-600 dark:hover:bg-violet-500"
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-violet-600 px-6 py-2.5 text-sm font-bold text-white transition hover:bg-violet-700 active:scale-95 dark:bg-violet-600 dark:hover:bg-violet-500"
           >
             ← Go home
           </Link>
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 rounded-lg border border-violet-200 bg-violet-50 px-6 py-2.5 text-sm font-bold text-violet-800 transition hover:opacity-75 active:scale-95 dark:border-zinc-700 dark:bg-zinc-800/60 dark:text-zinc-300 dark:hover:border-zinc-500"
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-violet-200 bg-violet-50 px-6 py-2.5 text-sm font-bold text-violet-800 transition hover:opacity-75 active:scale-95 dark:border-zinc-700 dark:bg-zinc-800/60 dark:text-zinc-300 dark:hover:border-zinc-500"
           >
             Report issue
           </Link>
