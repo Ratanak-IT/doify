@@ -392,6 +392,7 @@ function TeamTaskCard({
   onOpenTask,
   onDelete,
   onComment,
+  onDragStart,
 }: {
   task: Task;
   col: ColDef;
@@ -400,9 +401,11 @@ function TeamTaskCard({
   onDelete: (id: string) => void;
   onComment: (task: Task) => void;
   onOpenTask: (task: Task) => void;
+  onDragStart: (task: Task) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   const hasSubtasks = (task.subtaskCount ?? 0) > 0;
 
@@ -416,7 +419,15 @@ function TeamTaskCard({
 
   return (
     <div
-      className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 border-l-[3px] p-3.5 space-y-3 hover:shadow-md transition-all group"
+      draggable
+      onDragStart={(e) => {
+        setIsDragging(true);
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("taskId", task.id);
+        onDragStart(task);
+      }}
+      onDragEnd={() => setIsDragging(false)}
+      className={`bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 border-l-[3px] p-3.5 space-y-3 hover:shadow-md transition-all group cursor-grab active:cursor-grabbing select-none ${isDragging ? "opacity-40 scale-95 rotate-1 shadow-lg" : ""}`}
       style={{ borderLeftColor: col.accent }}
     >
       {/* ── Header row ── */}
@@ -549,6 +560,8 @@ export default function ProjectTasksPanel({ project }: { project: Project }) {
   const [showUpdateProject, setShowUpdateProject] = useState(false);
   const [defaultStatus, setDefaultStatus] = useState<TaskStatus | undefined>();
   const [activeParentTask, setActiveParentTask] = useState<Task | null>(null);
+  const [draggedTask, setDraggedTask] = useState<Task | null>(null);
+  const [dragOverCol, setDragOverCol] = useState<TaskStatus | null>(null);
 
   const openCreateModal = (status?: TaskStatus) => {
     setDefaultStatus(status);
@@ -674,8 +687,35 @@ export default function ProjectTasksPanel({ project }: { project: Project }) {
                   </div>
 
                   <div
-                    className="flex-1 rounded-xl p-2 flex flex-col gap-2"
+                    className={`flex-1 rounded-xl p-2 flex flex-col gap-2 transition-all duration-150 ${
+                      dragOverCol === col.id && draggedTask?.status !== col.id
+                        ? "ring-2 ring-violet-400 ring-offset-1 brightness-95"
+                        : ""
+                    }`}
                     style={{ backgroundColor: col.bg }}
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      e.dataTransfer.dropEffect = "move";
+                      setDragOverCol(col.id);
+                    }}
+                    onDragEnter={(e) => {
+                      e.preventDefault();
+                      setDragOverCol(col.id);
+                    }}
+                    onDragLeave={(e) => {
+                      if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                        setDragOverCol(null);
+                      }
+                    }}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      const taskId = e.dataTransfer.getData("taskId");
+                      if (taskId && draggedTask?.status !== col.id) {
+                        handleMove(taskId, col.id);
+                      }
+                      setDragOverCol(null);
+                      setDraggedTask(null);
+                    }}
                   >
                     {isLoading
                       ? Array.from({ length: 2 }).map((_, i) => (
@@ -691,12 +731,22 @@ export default function ProjectTasksPanel({ project }: { project: Project }) {
                             onDelete={handleDelete}
                             onComment={setCommentTask}
                             onOpenTask={setActiveParentTask}
+                            onDragStart={setDraggedTask}
                           />
                         ))}
 
                     {!isLoading && colTasks.length === 0 && (
-                      <div className="border-2 border-dashed border-black/10 rounded-lg p-6 text-center text-xs text-slate-400 font-medium">
-                        No tasks
+                      <div className={`border-2 border-dashed rounded-lg p-6 text-center text-xs font-medium transition-colors ${
+                        dragOverCol === col.id
+                          ? "border-violet-400 text-violet-400 bg-violet-50 dark:bg-violet-900/20"
+                          : "border-black/10 text-slate-400"
+                      }`}>
+                        {dragOverCol === col.id ? "Drop here" : "No tasks"}
+                      </div>
+                    )}
+                    {!isLoading && colTasks.length > 0 && dragOverCol === col.id && draggedTask?.status !== col.id && (
+                      <div className="border-2 border-dashed border-violet-400 rounded-lg h-16 bg-violet-50 dark:bg-violet-900/20 flex items-center justify-center text-xs text-violet-400 font-medium">
+                        Drop here
                       </div>
                     )}
                   </div>

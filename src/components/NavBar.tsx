@@ -6,10 +6,7 @@ import { useEffect, useState } from "react";
 import { useTheme } from "@/lib/contexts/ThemeContext";
 
 const NAV_LINKS = [
-  { label: "Features",   href: "/#features" },
-  { label: "Templates",  href: "/#templates" },
-  { label: "Pricing",    href: "/#pricing" },
-  { label: "Enterprise", href: "/#enterprise" },
+  { label: "Home", href: "/" },
   { label: "About Us",   href: "/about" },
   { label: "Contact Us", href: "/contact" },
 ];

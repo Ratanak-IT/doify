@@ -2,7 +2,7 @@
 
 import DashboardHeader from "@/components/DashboardHeader";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   Plus, Search, Calendar, MoreHorizontal, RefreshCw,
@@ -198,8 +198,6 @@ function CommentsDrawer({ task, onClose }: { task: Task; onClose: () => void }) 
           {isLoading && <p className="text-center text-xs text-[#94A3B8] py-8">Loading…</p>}
           {!isLoading && comments.length === 0 && <p className="text-center text-xs text-[#94A3B8] py-8">No comments yet.</p>}
           {comments.map((c) => {
-            // FIX: API returns `author` (UserResponse), not `user`.
-            // `color` and `initials` are not in the API — derive them.
             const authorName = c.author?.fullName ?? c.author?.username ?? "Unknown";
             const authorId   = c.author?.id ?? authorName;
             const initials   = getInitials(authorName);
@@ -277,17 +275,35 @@ function CommentsDrawer({ task, onClose }: { task: Task; onClose: () => void }) 
   );
 }
 
+/* ── Task Card (draggable) ──────────────────────────────────────── */
 function TaskCard({
-  task, col, onMove, onDelete, onComment,
+  task, col, onMove, onDelete, onComment, onDragStart, onDragEnd,
 }: {
   task: Task; col: ColDef;
   onMove: (id: string, status: TaskStatus) => void;
   onDelete: (id: string) => void;
   onComment: (task: Task) => void;
+  onDragStart: (task: Task) => void;
+  onDragEnd: () => void;
 }) {
+  const [isDragging, setIsDragging] = useState(false);
+
   return (
     <div
-      className="bg-white rounded-lg border border-[#E8E8EF] border-l-[3px] p-3.5 space-y-3 hover:shadow-md transition-all cursor-pointer group"
+      draggable
+      onDragStart={(e) => {
+        setIsDragging(true);
+        onDragStart(task);
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("taskId", task.id);
+      }}
+      onDragEnd={() => {
+        setIsDragging(false);
+        onDragEnd();
+      }}
+      className={`bg-white rounded-lg border border-[#E8E8EF] border-l-[3px] p-3.5 space-y-3
+                 hover:shadow-md transition-all cursor-grab active:cursor-grabbing select-none group
+                 ${isDragging ? "opacity-40 scale-95 rotate-1 shadow-lg" : ""}`}
       style={{ borderLeftColor: col.accent }}
     >
       <div className="flex items-start justify-between gap-2">
@@ -356,6 +372,10 @@ export default function TasksPage() {
   const [defaultStatus, setDefault]   = useState<TaskStatus | undefined>();
   const [commentTask, setCommentTask] = useState<Task | null>(null);
 
+  // ── Drag state ────────────────────────────────────────────────
+  const dragTaskRef = useRef<Task | null>(null);
+  const [dragOverCol, setDragOverCol] = useState<TaskStatus | null>(null);
+
   const { data: pageData, isLoading, isError, refetch } = useGetPersonalTasksQuery({ search });
   const tasks: Task[] = pageData?.content ?? [];
   const [updateTask] = useUpdateTaskMutation();
@@ -364,14 +384,34 @@ export default function TasksPage() {
   useEffect(() => {
     if (!taskId || commentTask || isLoading) return;
     const task = tasks.find((t) => t.id === taskId);
-    if (task) {
-      setCommentTask(task);
-    }
+    if (task) setCommentTask(task);
   }, [taskId, tasks, isLoading, commentTask]);
 
   const handleMove   = (id: string, status: TaskStatus) => updateTask({ id, data: { status } });
   const handleDelete = (id: string) => deleteTask(id);
   const openModal    = (status?: TaskStatus) => { setDefault(status); setModal(true); };
+
+  // Drop handlers
+  const handleDragOver = (e: React.DragEvent, colId: TaskStatus) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    setDragOverCol(colId);
+  };
+
+  const handleDrop = (e: React.DragEvent, colId: TaskStatus) => {
+    e.preventDefault();
+    const task = dragTaskRef.current ?? tasks.find((t) => t.id === e.dataTransfer.getData("taskId"));
+    if (task && task.status !== colId) {
+      handleMove(task.id, colId);
+    }
+    dragTaskRef.current = null;
+    setDragOverCol(null);
+  };
+
+  const handleDragEnd = () => {
+    dragTaskRef.current = null;
+    setDragOverCol(null);
+  };
 
   return (
     <>
@@ -394,9 +434,22 @@ export default function TasksPage() {
       <main className="flex-1 overflow-auto p-3 sm:p-4 md:p-6 bg-[#F1F5F9] dark:bg-slate-950">
         <div className="flex gap-3 sm:gap-4 min-w-max h-full">
           {COLUMNS.map((col) => {
-            const colTasks = tasks.filter((t) => t.status === col.id);
+            const colTasks  = tasks.filter((t) => t.status === col.id);
+            const isOver    = dragOverCol === col.id;
+
             return (
-              <div key={col.id} className="w-60 sm:w-68 flex flex-col gap-0">
+              <div
+                key={col.id}
+                className="w-60 sm:w-68 flex flex-col gap-0"
+                onDragOver={(e) => handleDragOver(e, col.id)}
+                onDragLeave={(e) => {
+                  // Only clear if leaving the column entirely (not a child)
+                  if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                    setDragOverCol(null);
+                  }
+                }}
+                onDrop={(e) => handleDrop(e, col.id)}
+              >
                 <div className="flex items-center justify-between mb-3 px-1">
                   <div className="flex items-center gap-2">
                     <span className="w-3 h-3 rounded-sm" style={{ backgroundColor: col.dot }} />
@@ -408,18 +461,59 @@ export default function TasksPage() {
                   </button>
                 </div>
 
-                <div className="flex-1 rounded-xl p-2 flex flex-col gap-2" style={{ backgroundColor: col.bg }}>
+                <div
+                  className="flex-1 rounded-xl p-2 flex flex-col gap-2 transition-all duration-150"
+                  style={{
+                    backgroundColor: col.bg,
+                    // Highlight the drop zone with a ring and slight tint when dragging over
+                    outline: isOver ? `2px dashed ${col.accent}` : "2px dashed transparent",
+                    outlineOffset: "-2px",
+                    opacity: isOver ? 0.92 : 1,
+                  }}
+                >
                   {isLoading
-                    ? Array(2).fill(0).map((_, i) => <div key={i} className="animate-pulse bg-white rounded-lg h-28 opacity-60" />)
+                    ? Array(2).fill(0).map((_, i) => (
+                        <div key={i} className="animate-pulse bg-white rounded-lg h-28 opacity-60" />
+                      ))
                     : colTasks.map((task) => (
-                        <TaskCard key={task.id} task={task} col={col}
-                          onMove={handleMove} onDelete={handleDelete} onComment={setCommentTask} />
+                        <TaskCard
+                          key={task.id} task={task} col={col}
+                          onMove={handleMove}
+                          onDelete={handleDelete}
+                          onComment={setCommentTask}
+                          onDragStart={(t) => { dragTaskRef.current = t; }}
+                          onDragEnd={handleDragEnd}
+                        />
                       ))
                   }
+
+                  {/* Drop indicator shown when column is empty and being hovered */}
                   {!isLoading && colTasks.length === 0 && (
-                    <div className="border-2 border-dashed border-black/10 rounded-lg p-6 text-center text-xs text-[#94A3B8] font-medium">No tasks</div>
+                    <div
+                      className="border-2 border-dashed rounded-lg p-6 text-center text-xs font-medium transition-colors"
+                      style={{
+                        borderColor: isOver ? col.accent : "rgba(0,0,0,0.1)",
+                        color: isOver ? col.accent : "#94A3B8",
+                      }}
+                    >
+                      {isOver ? "Drop here" : "No tasks"}
+                    </div>
                   )}
-                  <button onClick={() => openModal(col.id)} className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-[#94A3B8] hover:bg-white hover:text-[#6C5CE7] transition-colors font-medium mt-auto">
+
+                  {/* Extra drop target at bottom of non-empty columns */}
+                  {!isLoading && colTasks.length > 0 && isOver && (
+                    <div
+                      className="rounded-lg p-3 text-center text-xs font-medium border-2 border-dashed"
+                      style={{ borderColor: col.accent, color: col.accent }}
+                    >
+                      Drop here
+                    </div>
+                  )}
+
+                  <button
+                    onClick={() => openModal(col.id)}
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-[#94A3B8] hover:bg-white hover:text-[#6C5CE7] transition-colors font-medium mt-auto"
+                  >
                     <Plus size={13} /> Add a card
                   </button>
                 </div>
