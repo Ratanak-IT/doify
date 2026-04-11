@@ -152,14 +152,15 @@ export const taskApi = baseApi.injectEndpoints({
         { type: "Task", id: taskId },
         { type: "ProjectTask", id: projectId },
         "ProjectTask",
-        "Task", // re-fetches all getSubtasksQuery caches
+        "Project",
+        "Task",
         "Stats",
       ],
     }),
 
     deleteTask: builder.mutation<void, string>({
       query: (id) => ({ url: `/tasks/${id}`, method: "DELETE" }),
-      invalidatesTags: ["Task", "PersonalTask", "ProjectTask", "Stats"],
+      invalidatesTags: ["Task", "PersonalTask", "ProjectTask", "Project", "Stats"],
     }),
 
     getSubtasks: builder.query<Task[], string>({

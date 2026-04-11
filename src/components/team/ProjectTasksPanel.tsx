@@ -382,7 +382,6 @@ function CommentsDrawer({ task, onClose }: { task: Task; onClose: () => void }) 
   );
 }
 
-// ─── Task Card ────────────────────────────────────────────────────────────────
 
 function TeamTaskCard({
   task,
@@ -648,7 +647,6 @@ export default function ProjectTasksPanel({ project }: { project: Project }) {
           </div>
         </div>
 
-        {/* ── Kanban columns ── */}
         <main className="flex-1 overflow-auto p-5">
           <div className="flex gap-4 min-w-max h-full">
             {COLUMNS.map((col) => {

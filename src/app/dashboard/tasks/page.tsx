@@ -344,7 +344,6 @@ function TaskCard({
   );
 }
 
-/* ── Page ───────────────────────────────────────────────────────── */
 export default function TasksPage() {
   const searchParams = useSearchParams();
   const taskId = searchParams?.get("taskId");

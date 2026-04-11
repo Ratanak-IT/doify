@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import {
   useGetProjectsQuery,
+  useGetProjectTasksQuery,
   useCreateProjectMutation,
   useUpdateProjectMutation,
   useDeleteProjectMutation,
@@ -436,6 +437,20 @@ function ProjectCard({
   const [menuOpen, setMenuOpen] = useState(false);
   const progress = Math.min(100, Math.max(0, project.progress ?? 0));
   const statusKey = project.status ?? "active";
+  const { data: projectTasksPage } = useGetProjectTasksQuery({
+    projectId: project.id,
+    size: 100,
+  });
+
+  const parentTasks = projectTasksPage?.content.filter((task) => !task.parentTaskId) ?? [];
+  const queryHasTasks = projectTasksPage?.content !== undefined;
+  const parentTasksCount = queryHasTasks
+    ? parentTasks.length
+    : project.tasksCount ?? project.totalTasks ?? 0;
+  const parentTasksDone = queryHasTasks
+    ? parentTasks.filter((task) => task.status === "DONE").length
+    : project.tasksDone ?? Math.round((progress / 100) * parentTasksCount);
+
   function formatDate(dateStr: string) {
   const months = ["Jan","Feb","Mar","Apr","May","Jun",
                   "Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -540,8 +555,7 @@ function ProjectCard({
 
         <div className="flex items-center justify-between pt-3 text-md text-[#94A3B8]">
           <span className="flex items-center gap-1">
-            <TrendingUp size={11} /> {project.tasksDone ?? 0}/
-            {project.tasksCount ?? 0} tasks
+            <TrendingUp size={11} /> {parentTasksDone}/{parentTasksCount} tasks
           </span>
 
           {project.members && project.members.length > 0 && (
