@@ -1,5 +1,7 @@
 "use client";
 
+import DashboardHeader from "@/components/DashboardHeader";
+
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import type { Team } from "@/lib/features/types/task-type";
@@ -54,11 +56,7 @@ export default function TeamPageClient() {
 
   return (
     <>
-      <TeamHeader
-        count={teams.length}
-        onRefresh={refetch}
-        onCreate={() => setShowCreate(true)}
-      />
+      <DashboardHeader onRefresh={refetch} onCreate={() => setShowCreate(true)} createLabel="Create" />
 
       <TeamGrid
         teams={teams}

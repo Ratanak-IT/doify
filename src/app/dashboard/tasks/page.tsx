@@ -1,5 +1,7 @@
 "use client";
 
+import DashboardHeader from "@/components/DashboardHeader";
+
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
@@ -100,15 +102,15 @@ function NewTaskModal({ defaultStatus, onClose }: { defaultStatus?: TaskStatus; 
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-md">
-        <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-[#F1F5F9]">
+    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-md max-h-[92dvh] overflow-y-auto dark:bg-slate-900">
+        <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-[#F1F5F9]">
           <h2 className="text-base font-bold text-[#1E293B]">New Task</h2>
-          <button onClick={onClose} className="w-7 h-7 rounded-md flex items-center justify-center text-[#94A3B8] hover:bg-[#F1F5F9] transition-colors">
+          <button onClick={onClose} className="w-9 h-9 rounded-xl flex items-center justify-center text-[#94A3B8] hover:bg-[#F1F5F9] transition-colors">
             <X size={15} />
           </button>
         </div>
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-5 space-y-4">
           {apiError && (
             <p className="text-sm text-[#EF4444] bg-[#FEE2E2] border border-[#ffd5cc] p-3 rounded-lg">{apiError}</p>
           )}
@@ -116,20 +118,20 @@ function NewTaskModal({ defaultStatus, onClose }: { defaultStatus?: TaskStatus; 
             <label className="block text-sm font-semibold text-[#64748B] mb-1.5">Title *</label>
             <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })}
               placeholder="What needs to be done?"
-              className={`w-full h-10 px-3 rounded-md border text-sm outline-none bg-white transition-colors ${errors.title ? "border-[#EF4444]" : "border-[#D1D5DB] focus:border-[#6C5CE7]"}`} />
+              className={`w-full h-11 px-3 rounded-md border text-sm outline-none bg-white transition-colors ${errors.title ? "border-[#EF4444]" : "border-[#D1D5DB] focus:border-[#6C5CE7]"}`} />
             {errors.title && <p className="text-xs text-[#EF4444] mt-1">{errors.title}</p>}
           </div>
           <div>
             <label className="block text-sm font-semibold text-[#64748B] mb-1.5">Description</label>
             <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })}
-              rows={2} placeholder="Add more details…"
-              className="w-full px-3 py-2.5 rounded-md border border-[#D1D5DB] text-sm outline-none focus:border-[#6C5CE7] bg-white resize-none transition-colors" />
+              rows={3} placeholder="Add more details…"
+              className="w-full px-3 py-3 rounded-xl border border-[#D1D5DB] text-sm outline-none focus:border-[#6C5CE7] bg-white resize-none transition-colors" />
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-semibold text-[#64748B] mb-1.5">Priority</label>
               <select value={form.priority} onChange={(e) => setForm({ ...form, priority: e.target.value as TaskForm["priority"] })}
-                className="w-full h-10 px-3 rounded-md border border-[#D1D5DB] text-sm outline-none focus:border-[#6C5CE7] bg-white">
+                className="w-full h-11 px-3 rounded-md border border-[#D1D5DB] text-sm outline-none focus:border-[#6C5CE7] bg-white">
                 <option value="LOW">Low</option>
                 <option value="MEDIUM">Medium</option>
                 <option value="HIGH">High</option>
@@ -139,12 +141,12 @@ function NewTaskModal({ defaultStatus, onClose }: { defaultStatus?: TaskStatus; 
             <div>
               <label className="block text-sm font-semibold text-[#64748B] mb-1.5">Due date</label>
               <input type="date" value={form.dueDate} onChange={(e) => setForm({ ...form, dueDate: e.target.value })}
-                className="w-full h-10 px-3 rounded-md border border-[#D1D5DB] text-sm outline-none focus:border-[#6C5CE7] bg-white transition-colors" />
+                className="w-full h-11 px-3 rounded-md border border-[#D1D5DB] text-sm outline-none focus:border-[#6C5CE7] bg-white transition-colors" />
             </div>
           </div>
           <div className="flex gap-3 pt-2">
-            <button type="button" onClick={onClose} className="flex-1 h-9 rounded-md border border-[#D1D5DB] text-sm font-semibold text-[#64748B] hover:bg-[#F1F5F9] transition-colors">Cancel</button>
-            <button type="submit" disabled={isLoading} className="flex-1 h-9 rounded-md bg-[#6C5CE7] text-white text-sm font-semibold hover:bg-[#5B4BD5] transition-colors disabled:opacity-60">
+            <button type="button" onClick={onClose} className="flex-1 h-12 rounded-xl border border-[#D1D5DB] text-sm font-semibold text-[#64748B] hover:bg-[#F1F5F9] active:bg-[#E2E8F0] transition-colors">Cancel</button>
+            <button type="submit" disabled={isLoading} className="flex-1 h-12 rounded-xl bg-[#6C5CE7] text-white text-sm font-semibold hover:bg-[#5B4BD5] transition-colors disabled:opacity-60">
               {isLoading ? "Creating…" : "Create Task"}
             </button>
           </div>
@@ -190,7 +192,7 @@ function CommentsDrawer({ task, onClose }: { task: Task; onClose: () => void }) 
             <p className="text-sm font-semibold text-[#1E293B] line-clamp-1">{task.title}</p>
             <p className="text-xs text-[#94A3B8]">{comments.length} comment{comments.length !== 1 ? "s" : ""}</p>
           </div>
-          <button onClick={onClose} className="w-7 h-7 rounded-md flex items-center justify-center text-[#94A3B8] hover:bg-[#F1F5F9]"><X size={15} /></button>
+          <button onClick={onClose} className="w-9 h-9 rounded-xl flex items-center justify-center text-[#94A3B8] hover:bg-[#F1F5F9]"><X size={15} /></button>
         </div>
         <div className="flex-1 overflow-y-auto p-5 space-y-4">
           {isLoading && <p className="text-center text-xs text-[#94A3B8] py-8">Loading…</p>}
@@ -264,7 +266,7 @@ function CommentsDrawer({ task, onClose }: { task: Task; onClose: () => void }) 
             <button
               onClick={submit}
               disabled={posting || !text.trim()}
-              className="w-9 h-9 rounded-md bg-[#6C5CE7] text-white flex items-center justify-center disabled:opacity-40 hover:bg-[#5B4BD5] transition-colors"
+              className="w-9 h-12 rounded-xl bg-[#6C5CE7] text-white flex items-center justify-center disabled:opacity-40 hover:bg-[#5B4BD5] transition-colors"
             >
               <Send size={14} />
             </button>
@@ -372,38 +374,28 @@ export default function TasksPage() {
 
   return (
     <>
-      <header className="h-16 bg-white border-b border-[#E8E8EF] flex items-center justify-between px-6 shrink-0">
-        <h1 className="text-lg font-bold text-[#1E293B]">My Tasks</h1>
-        <div className="flex items-center gap-2">
-          <button onClick={() => refetch()} className="w-9 h-9 rounded-md border border-[#D1D5DB] flex items-center justify-center text-[#94A3B8] hover:bg-[#F1F5F9] transition-colors">
-            <RefreshCw size={14} />
-          </button>
-          <button onClick={() => openModal()} className="flex items-center gap-2 h-9 px-4 rounded-md bg-[#6C5CE7] text-white text-sm font-semibold hover:bg-[#5B4BD5] transition-colors">
-            <Plus size={15} /> New Task
-          </button>
-        </div>
-      </header>
+      <DashboardHeader onRefresh={refetch} onCreate={() => openModal()} createLabel="Create" />
 
-      <div className="px-6 py-3 bg-white border-b border-[#E8E8EF]">
-        <div className="relative max-w-xs">
+      <div className="px-4 sm:px-6 py-3 bg-white dark:bg-slate-900 border-b border-[#E8E8EF] dark:border-slate-700">
+        <div className="relative w-full max-w-xs">
           <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8]" />
           <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search tasks…"
-            className="w-full h-9 pl-9 pr-3 rounded-md border border-[#D1D5DB] text-sm bg-white outline-none focus:border-[#6C5CE7] transition-colors placeholder:text-[#94A3B8]" />
+            className="w-full h-9 pl-9 pr-3 rounded-md border border-[#D1D5DB] dark:border-slate-600 text-sm bg-white dark:bg-slate-800 dark:text-white outline-none focus:border-[#6C5CE7] transition-colors placeholder:text-[#94A3B8]" />
         </div>
       </div>
 
       {isError && (
-        <div className="mx-6 mt-4 p-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-600 flex items-center justify-between">
+        <div className="mx-4 sm:mx-6 mt-4 p-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-600 flex items-center justify-between">
           Failed to load tasks. <button onClick={refetch} className="font-semibold underline">Retry</button>
         </div>
       )}
 
-      <main className="flex-1 overflow-auto p-6 bg-[#F1F5F9]">
-        <div className="flex gap-4 min-w-max h-full">
+      <main className="flex-1 overflow-auto p-3 sm:p-4 md:p-6 bg-[#F1F5F9] dark:bg-slate-950">
+        <div className="flex gap-3 sm:gap-4 min-w-max h-full">
           {COLUMNS.map((col) => {
             const colTasks = tasks.filter((t) => t.status === col.id);
             return (
-              <div key={col.id} className="w-68 flex flex-col gap-0">
+              <div key={col.id} className="w-60 sm:w-68 flex flex-col gap-0">
                 <div className="flex items-center justify-between mb-3 px-1">
                   <div className="flex items-center gap-2">
                     <span className="w-3 h-3 rounded-sm" style={{ backgroundColor: col.dot }} />

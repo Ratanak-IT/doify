@@ -292,12 +292,15 @@ a { color: inherit; text-decoration: none; }
 /* -----------------------------------------------
    SECTIONS
 ----------------------------------------------- */
-.lp-section        { padding: 88px 0; }
+.lp-section        { padding: 52px 0; }
 .lp-section--white { background: #fff; }
 .lp-section--gray  { background: #f4f5f7; }
 .lp-section--dark  { background: #1E293B; }
-.lp-container      { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
-.lp-section-header { text-align: center; margin-bottom: 52px; }
+.lp-container      { max-width: 1160px; margin: 0 auto; padding: 0 16px; }
+.lp-section-header { text-align: center; margin-bottom: 36px; }
+@media (min-width: 640px)  { .lp-section { padding: 72px 0; } .lp-container { padding: 0 24px; } .lp-section-header { margin-bottom: 48px; } }
+@media (min-width: 1024px) { .lp-section { padding: 88px 0; } .lp-section-header { margin-bottom: 52px; } }
+@media (min-width: 1280px) { .lp-container { padding: 0 40px; } }
 .lp-eyebrow        {
   display: inline-block; font-size: 11px; font-weight: 800;
   text-transform: uppercase; letter-spacing: .1em; margin-bottom: 12px;
@@ -313,7 +316,10 @@ a { color: inherit; text-decoration: none; }
 .lp-section-sub--muted  { color: #7c93d8; }
 
 /* --- Features --- */
-.lp-features-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
+/* lp-features-grid: layout now handled by Tailwind grid classes in Features.tsx */
+.lp-features-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+@media (min-width: 640px)  { .lp-features-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
+@media (min-width: 1024px) { .lp-features-grid { grid-template-columns: repeat(3, 1fr); gap: 18px; } }
 .lp-feature-card  {
   background: #fff; border: 1.5px solid #dfe1e6; border-radius: 12px; padding: 26px;
   transition: transform .2s, box-shadow .2s, border-color .2s;
@@ -324,8 +330,9 @@ a { color: inherit; text-decoration: none; }
 .lp-feature-desc  { font-size: 13px; color: #44526e; line-height: 1.65; }
 
 /* --- How It Works --- */
-.lp-hiw-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
-@media (max-width: 768px) { .lp-hiw-grid { grid-template-columns: 1fr; gap: 40px; } }
+/* lp-hiw-grid: layout now handled by Tailwind grid in HowItWorks.tsx */
+.lp-hiw-grid { display: grid; grid-template-columns: 1fr; gap: 36px; align-items: center; }
+@media (min-width: 1024px) { .lp-hiw-grid { grid-template-columns: 1fr 1fr; gap: 64px; } }
 .lp-steps    { display: flex; flex-direction: column; gap: 28px; margin-top: 28px; }
 .lp-step     { display: flex; gap: 18px; }
 .lp-step-num {
@@ -363,7 +370,9 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* --- Testimonials --- */
-.lp-testi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+/* lp-testi-grid: layout now handled by Tailwind grid in Testimonials.tsx */
+.lp-testi-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+@media (min-width: 768px) { .lp-testi-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; } }
 .lp-testi-card {
   background: #f4f5f7; border: 1px solid #dfe1e6; border-radius: 14px; padding: 26px;
   display: flex; flex-direction: column; transition: transform .2s, box-shadow .2s;
@@ -377,19 +386,21 @@ a { color: inherit; text-decoration: none; }
 .lp-testi-role  { font-size: 11px; color: #8993a4; }
 
 /* --- Pricing --- */
+/* lp-pricing-grid: layout now handled by Tailwind grid in Pricing.tsx */
 .lp-pricing-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 16px; max-width: 920px; margin: 0 auto; align-items: center;
+  display: grid; grid-template-columns: 1fr;
+  gap: 14px; max-width: 920px; margin: 0 auto; align-items: center;
 }
+@media (min-width: 640px)  { .lp-pricing-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
+@media (min-width: 1024px) { .lp-pricing-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; } }
 .lp-pricing-card {
   border-radius: 14px; padding: 28px;
   background: rgba(255,255,255,.08); border: 1.5px solid rgba(255,255,255,.15);
 }
 .lp-pricing-card--highlight {
   background: #fff; box-shadow: 0 24px 60px rgba(0,0,0,.28);
-  transform: scale(1.04); border-color: transparent;
+  border-color: transparent;
 }
-@media (max-width: 768px) { .lp-pricing-card--highlight { transform: none; } }
 .lp-plan-name    { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 8px; }
 .lp-plan-price   { display: flex; align-items: baseline; gap: 3px; margin-bottom: 6px; }
 .lp-plan-amount  { font-size: 32px; font-weight: 800; line-height: 1; }
@@ -468,4 +479,34 @@ body {
 
 .font-khmer {
   font-family: "Sovaphum", sans-serif;
+}
+
+/* ── Responsive logos strip ── */
+.lp-logos {
+  padding: 28px 16px;
+  background: #fff;
+  border-top: 1px solid #ebecf0;
+  border-bottom: 1px solid #ebecf0;
+  margin-top: 48px;
+}
+@media (min-width: 640px) { .lp-logos { padding: 40px 24px; margin-top: 64px; } }
+.lp-logos-label {
+  text-align: center; font-size: 10px; font-weight: 700; color: #8993a4;
+  text-transform: uppercase; letter-spacing: .12em; margin-bottom: 18px;
+}
+.lp-logos-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 18px; opacity: .28; }
+@media (min-width: 640px) { .lp-logos-row { gap: 36px; } }
+
+/* ── Feature card / Testi card: no hover transform on touch ── */
+@media (hover: none) {
+  .lp-feature-card:hover { transform: none; box-shadow: none; }
+  .lp-testi-card:hover   { transform: none; box-shadow: none; }
+  .kb-card:hover         { transform: none; box-shadow: none; }
+}
+
+/* ── Pricing card: responsive padding ── */
+@media (max-width: 639px) {
+  .lp-pricing-card { padding: 20px; }
+  .lp-feature-card { padding: 18px; }
+  .lp-section-title { font-size: clamp(22px, 6vw, 34px); }
 }

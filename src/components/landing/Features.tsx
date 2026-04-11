@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useTranslation } from "@/lib/i18n/useTranslation";
@@ -85,15 +84,15 @@ export default function Features() {
   const { t } = useTranslation();
 
   return (
-    <section id="features" className="lp-section lp-section--white">
-      <div className="lp-container">
+    <section id="features" className="lp-section lp-section--white bg-white text-gray-900 dark:bg-[#0B1120] dark:text-white transition-colors duration-300">
+      <div className="lp-container px-4 sm:px-6">
         <div className="lp-section-header">
           <span className="lp-eyebrow lp-eyebrow--blue">The system</span>
           <h2 className="lp-section-title">{t("landing.features.title")}</h2>
           <p className="lp-section-sub">{t("landing.features.subtitle")}</p>
         </div>
 
-        <div className="lp-features-grid">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {FEATURES.map((f, i) => (
             <div key={i} className="lp-feature-card">
               <div className="lp-feature-icon" style={{ background: f.bg, color: f.color }}>

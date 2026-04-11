@@ -59,7 +59,7 @@ export default function TeamDetailView({ team, idx, onBack }: Props) {
   return (
     <div className="flex flex-col h-full">
       {/* Header with gradient */}
-      <div className={`bg-gradient-to-r ${gradientCls} px-6 pt-6 pb-5`}>
+      <div className={`bg-gradient-to-r ${gradientCls} px-4 sm:px-6 pt-4 sm:pt-6 pb-4 sm:pb-5`}>
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-4 flex-1 min-w-0">
             <button
@@ -80,10 +80,10 @@ export default function TeamDetailView({ team, idx, onBack }: Props) {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
             <button
               onClick={() => setShowInvite(true)}
-              className="flex items-center gap-1.5 px-3 h-9 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-semibold transition-colors"
+              className="flex items-center gap-1.5 px-3 h-12 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-semibold transition-colors"
             >
               <UserPlus size={14} />
               Invite
@@ -91,7 +91,7 @@ export default function TeamDetailView({ team, idx, onBack }: Props) {
 
             <button
               onClick={() => setShowMembers(true)}
-              className="flex items-center gap-1.5 px-3 h-9 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-semibold transition-colors"
+              className="flex items-center gap-1.5 px-3 h-12 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-semibold transition-colors"
             >
               <Users size={14} />
               Members
@@ -100,7 +100,7 @@ export default function TeamDetailView({ team, idx, onBack }: Props) {
             {/* New Project Button - Clean & Consistent Style */}
             <button
               onClick={() => setShowCreateProject(true)}
-              className="flex items-center gap-1.5 px-4 h-9 rounded-xl bg-white text-slate-900 hover:bg-white/90 font-semibold text-sm transition-all active:scale-[0.98]"
+              className="flex items-center gap-1.5 px-4 h-12 rounded-xl bg-white text-slate-900 hover:bg-white/90 font-semibold text-sm transition-all active:scale-[0.98]"
             >
               <Plus size={15} />
               New Project

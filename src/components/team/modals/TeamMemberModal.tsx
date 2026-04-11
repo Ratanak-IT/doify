@@ -27,14 +27,14 @@ export default function TeamMemberModal({
   const isSelf = user.id === currentUserId;
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-      <div className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-md">
-        <div className="p-6 border-b dark:border-slate-700 flex justify-between">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
+      <div className="bg-white dark:bg-slate-900 rounded-t-2xl sm:rounded-2xl w-full sm:max-w-md max-h-[92dvh] overflow-y-auto">
+        <div className="px-5 py-4 border-b dark:border-slate-700 flex items-center justify-between sticky top-0 bg-white dark:bg-slate-900 z-10">
           <h3 className="text-lg font-semibold">Member Profile</h3>
-          <button onClick={onClose}><X size={20} /></button>
+          <button onClick={onClose} aria-label="Close" className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors"><X size={18} /></button>
         </div>
 
-        <div className="p-8 flex flex-col items-center">
+        <div className="p-5 sm:p-8 flex flex-col items-center">
           <div
             className="w-24 h-24 rounded-2xl text-5xl font-bold flex items-center justify-center text-white mb-4"
             style={{ backgroundColor: getAvatarColor(user.id) }}
@@ -50,7 +50,7 @@ export default function TeamMemberModal({
               defaultValue={role}
               onChange={(e) => onRoleChange(member.id, e.target.value as any)}
               disabled={!isCurrentUserOwner || isSelf}
-              className="w-full px-4 py-3 rounded-xl border dark:border-slate-700 bg-white dark:bg-slate-800 disabled:opacity-60"
+              className="w-full h-11 px-4 rounded-xl border dark:border-slate-700 bg-white dark:bg-slate-800 dark:text-white text-sm outline-none disabled:opacity-60"
             >
               <option value="MEMBER">Member</option>
               <option value="ADMIN">Admin</option>
@@ -60,10 +60,10 @@ export default function TeamMemberModal({
         </div>
 
         {isCurrentUserOwner && !isSelf && (
-          <div className="p-6 border-t dark:border-slate-700">
+          <div className="px-5 py-4 border-t dark:border-slate-700">
             <button
               onClick={() => onRemoveMember(user.id, name)}
-              className="w-full py-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-xl font-medium"
+              className="w-full h-12 text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 active:bg-red-100 rounded-xl font-semibold text-sm transition-colors"
             >
               Remove from Team
             </button>

@@ -1,4 +1,3 @@
-
 const TESTIMONIALS = [
   {
     name: "Sarah Chen",
@@ -25,38 +24,74 @@ const TESTIMONIALS = [
 
 export default function Testimonials() {
   return (
-    <section className="lp-section lp-section--white">
+    <section className="lp-section bg-white text-gray-900 dark:bg-[#0B1120] dark:text-white transition-colors duration-300">
       <div className="lp-container">
-        <div className="lp-section-header">
-          <h2 className="lp-section-title">Loved by 50,000+ teams</h2>
-          <p className="lp-section-sub">Don&apos;t take our word for it.</p>
+
+        {/* Header */}
+        <div className="lp-section-header text-center">
+          <h2 className="lp-section-title text-2xl md:text-3xl font-bold">
+            Loved by 50,000+ teams
+          </h2>
+
+          <p className="lp-section-sub text-gray-500 dark:text-white/70">
+            Don&apos;t take our word for it.
+          </p>
         </div>
 
-        <div className="lp-testi-grid">
+        {/* Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 mt-8 sm:mt-10">
           {TESTIMONIALS.map((t, i) => (
-            <div key={i} className="lp-testi-card">
-              <div className="lp-stars">
-                {Array(5)
-                  .fill(0)
-                  .map((_, s) => (
-                    <svg key={s} width="14" height="14" viewBox="0 0 14 14" fill="#f59e0b">
-                      <path d="M7 1l1.545 3.09L12 4.635l-2.5 2.43.59 3.435L7 8.91l-3.09 1.59L4.5 7.065 2 4.635l3.455-.545z" />
-                    </svg>
-                  ))}
+            <div
+              key={i}
+              className="lp-testi-card rounded-xl p-6 shadow-md
+              bg-white dark:bg-[#111827]
+              border border-gray-100 dark:border-gray-700
+              transition-all duration-300 hover:shadow-lg"
+            >
+
+              {/* Stars */}
+              <div className="lp-stars flex gap-1 mb-3">
+                {Array(5).fill(0).map((_, s) => (
+                  <svg
+                    key={s}
+                    width="14"
+                    height="14"
+                    viewBox="0 0 14 14"
+                    fill="#f59e0b"
+                  >
+                    <path d="M7 1l1.545 3.09L12 4.635l-2.5 2.43.59 3.435L7 8.91l-3.09 1.59L4.5 7.065 2 4.635l3.455-.545z" />
+                  </svg>
+                ))}
               </div>
-              <p className="lp-testi-text">&ldquo;{t.text}&rdquo;</p>
-              <div className="lp-testi-author">
-                <div className="lp-testi-av" style={{ background: t.color }}>
+
+              {/* Text */}
+              <p className="lp-testi-text text-gray-700 dark:text-white mb-5">
+                “{t.text}”
+              </p>
+
+              {/* Author */}
+              <div className="lp-testi-author flex items-center gap-3">
+                <div
+                  className="lp-testi-av w-10 h-10 flex items-center justify-center rounded-full text-white font-bold"
+                  style={{ background: t.color }}
+                >
                   {t.initials}
                 </div>
+
                 <div>
-                  <p className="lp-testi-name">{t.name}</p>
-                  <p className="lp-testi-role">{t.role}</p>
+                  <p className="lp-testi-name font-semibold text-gray-900 dark:text-white">
+                    {t.name}
+                  </p>
+                  <p className="lp-testi-role text-sm text-gray-500 dark:text-white/70">
+                    {t.role}
+                  </p>
                 </div>
               </div>
+
             </div>
           ))}
         </div>
+
       </div>
     </section>
   );

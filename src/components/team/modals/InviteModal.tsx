@@ -41,7 +41,7 @@ export default function InviteModal({ teamId, onClose }: Props) {
 
   return (
     <Modal title="Invite Member" onClose={onClose}>
-      <form onSubmit={handleSubmit} className="p-6 space-y-4">
+      <form onSubmit={handleSubmit} className="p-5 space-y-4">
         {msg && (
           <p
             className={`text-sm p-3 rounded-xl border ${
@@ -63,7 +63,7 @@ export default function InviteModal({ teamId, onClose }: Props) {
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
             placeholder="teammate@company.com"
-            className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-700 text-sm outline-none focus:border-violet-500 bg-white dark:bg-slate-800 dark:text-white transition-colors"
+            className="w-full h-11 px-3 rounded-xl border border-slate-200 dark:border-slate-700 text-sm outline-none focus:border-violet-500 bg-white dark:bg-slate-800 dark:text-white transition-colors"
           />
         </div>
 
@@ -76,7 +76,7 @@ export default function InviteModal({ teamId, onClose }: Props) {
             onChange={(e) =>
               setForm({ ...form, role: e.target.value as "MEMBER" | "ADMIN" })
             }
-            className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-700 text-sm outline-none focus:border-violet-500 bg-white dark:bg-slate-800 dark:text-white appearance-none"
+            className="w-full h-11 px-3 rounded-xl border border-slate-200 dark:border-slate-700 text-sm outline-none focus:border-violet-500 bg-white dark:bg-slate-800 dark:text-white appearance-none"
           >
             <option value="MEMBER">Member</option>
             <option value="ADMIN">Admin</option>
@@ -87,7 +87,7 @@ export default function InviteModal({ teamId, onClose }: Props) {
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 h-9 rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+            className="flex-1 h-12 rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
           >
             Cancel
           </button>
@@ -95,7 +95,7 @@ export default function InviteModal({ teamId, onClose }: Props) {
           <button
             type="submit"
             disabled={isLoading}
-            className="flex-1 h-9 rounded-xl bg-violet-600 text-white text-sm font-semibold hover:bg-violet-700 transition-colors disabled:opacity-60"
+            className="flex-1 h-12 rounded-xl bg-violet-600 text-white text-sm font-semibold hover:bg-violet-700 transition-colors disabled:opacity-60"
           >
             {isLoading ? "Sending..." : "Send Invite"}
           </button>

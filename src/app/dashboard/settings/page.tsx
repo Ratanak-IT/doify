@@ -1,5 +1,6 @@
 "use client";
 
+import DashboardHeader from "@/components/DashboardHeader";
 import { useState, useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "@/lib/hooks";
 import { setCredentials, updateUser } from "@/lib/features/auth/authSlice";
@@ -171,8 +172,10 @@ export default function SettingsPage() {
   ];
 
   return (
+    <>
+      <DashboardHeader showCreate={false} />
     <div className="flex-1 bg-white dark:bg-slate-900 min-h-screen">
-      <div className="max-w-4xl mx-auto px-6 py-8">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Settings</h1>
@@ -347,5 +350,6 @@ export default function SettingsPage() {
 
       </div>
     </div>
+  </>
   );
 }

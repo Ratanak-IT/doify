@@ -61,7 +61,7 @@ export default function EditProjectModal({ project, onClose, onSave }: Props) {
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[60]">
       <div className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-lg mx-4 overflow-hidden shadow-xl">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b dark:border-slate-700">
+        <div className="flex items-center justify-between px-5 py-5 border-b dark:border-slate-700">
           <div className="flex items-center gap-3">
             <div
               className="w-8 h-8 rounded-xl flex items-center justify-center"
@@ -80,7 +80,7 @@ export default function EditProjectModal({ project, onClose, onSave }: Props) {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="p-5 space-y-5">
           {/* Project Name */}
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
@@ -111,7 +111,7 @@ export default function EditProjectModal({ project, onClose, onSave }: Props) {
           </div>
 
           {/* Dates */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-2">
                 <Calendar size={16} />

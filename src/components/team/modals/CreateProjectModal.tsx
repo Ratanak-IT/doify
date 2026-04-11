@@ -58,7 +58,7 @@ const CreateProjectModal = ({ defaultTeamId, onClose }: Props) => {
     <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-200 dark:border-slate-700">
+        <div className="flex items-center justify-between px-5 py-5 border-b border-slate-200 dark:border-slate-700">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-2xl bg-violet-100 dark:bg-violet-900/50 flex items-center justify-center">
               <Plus className="text-violet-600 dark:text-violet-400" size={22} />
@@ -67,13 +67,13 @@ const CreateProjectModal = ({ defaultTeamId, onClose }: Props) => {
           </div>
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="w-9 h-12 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
             <X size={20} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="p-5 space-y-5">
           {error && (
             <div className="p-4 rounded-2xl bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-900 text-red-600 dark:text-red-400 text-sm">
               {error}
@@ -129,7 +129,7 @@ const CreateProjectModal = ({ defaultTeamId, onClose }: Props) => {
           )}
 
           {/* Dates */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Start Date</label>
               <input
