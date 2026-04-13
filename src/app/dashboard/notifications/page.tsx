@@ -32,11 +32,11 @@ function getNotificationHref(notif: Notification): string {
     case "TASK_ASSIGNED":
     case "DUE_DATE_REMINDER":
     case "OVERDUE_TASK":
+    case "COMMENT_ADDED":        // ← navigate to the task, not comment
       return refId ? `/dashboard/tasks?taskId=${refId}` : "/dashboard/tasks";
 
-    case "COMMENT_ADDED":
-    case "MENTIONED_IN_COMMENT":
-      return "/dashboard/tasks";
+    case "MENTIONED_IN_COMMENT": // ← stays on comment destination
+      return "/dashboard/tasks"; // or wherever your comment view lives
 
     case "PROJECT_UPDATED":
       return "/dashboard/projects";
@@ -45,7 +45,6 @@ function getNotificationHref(notif: Notification): string {
       return "/dashboard/team";
 
     case "INVITATION_ACCEPTED":
-      // referenceId = teamId
       return refId ? `/dashboard/team/${refId}` : "/dashboard/team";
 
     default:
