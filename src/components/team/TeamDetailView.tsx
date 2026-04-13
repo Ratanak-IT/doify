@@ -26,7 +26,7 @@ import InviteModal from "./modals/InviteModal";
 import MembersModal from "./modals/MembersModal";
 import ProjectTasksPanel from "./ProjectTasksPanel";
 
-import CreateProjectModal from "../team/modals/CreateProjectModal"; 
+import CreateProjectModal from "../team/modals/CreateProjectModal";
 
 type Props = {
   team: Team;
@@ -59,9 +59,9 @@ export default function TeamDetailView({ team, idx, onBack }: Props) {
   return (
     <div className="flex flex-col h-full">
       {/* Header with gradient */}
-      <div className={`bg-gradient-to-r ${gradientCls} px-4 sm:px-6 pt-4 sm:pt-6 pb-4 sm:pb-5`}>
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-start gap-4 flex-1 min-w-0">
+      <div className={`bg-gradient-to-r ${gradientCls} px-3 sm:px-6 pt-3 sm:pt-6 pb-3 sm:pb-5`}>
+        <div className="flex items-start justify-between gap-2 sm:gap-4">
+          <div className="flex items-start gap-2 sm:gap-4 flex-1 min-w-0">
             <button
               onClick={onBack}
               className="mt-0.5 w-8 h-8 rounded-xl bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors shrink-0"
@@ -71,53 +71,56 @@ export default function TeamDetailView({ team, idx, onBack }: Props) {
 
             <div className="flex-1 min-w-0">
               <p className="text-white/70 text-xs font-medium mb-0.5">Team</p>
-              <h2 className="text-white text-xl font-bold truncate">{team.name}</h2>
+              <h2 className="text-white text-lg sm:text-xl font-bold truncate">{team.name}</h2>
               {team.description && (
-                <p className="text-white/80 text-sm mt-1 line-clamp-2">
+                <p className="text-white/80 text-xs sm:text-sm mt-0.5 sm:mt-1 line-clamp-1 sm:line-clamp-2">
                   {team.description}
                 </p>
               )}
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 shrink-0">
+          {/* Action buttons — icon-only on small screens, labeled on sm+ */}
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             <button
               onClick={() => setShowInvite(true)}
-              className="flex items-center gap-1.5 px-3 h-12 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-semibold transition-colors"
+              className="flex items-center gap-1.5 px-2 sm:px-3 h-9 sm:h-11 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-semibold transition-colors"
+              aria-label="Invite"
             >
               <UserPlus size={14} />
-              Invite
+              <span className="hidden sm:inline">Invite</span>
             </button>
 
             <button
               onClick={() => setShowMembers(true)}
-              className="flex items-center gap-1.5 px-3 h-12 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-semibold transition-colors"
+              className="flex items-center gap-1.5 px-2 sm:px-3 h-9 sm:h-11 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-semibold transition-colors"
+              aria-label="Members"
             >
               <Users size={14} />
-              Members
+              <span className="hidden sm:inline">Members</span>
             </button>
 
-            {/* New Project Button - Clean & Consistent Style */}
             <button
               onClick={() => setShowCreateProject(true)}
-              className="flex items-center gap-1.5 px-4 h-12 rounded-xl bg-white text-slate-900 hover:bg-white/90 font-semibold text-sm transition-all active:scale-[0.98]"
+              className="flex items-center gap-1.5 px-2 sm:px-4 h-9 sm:h-11 rounded-xl bg-white text-slate-900 hover:bg-white/90 font-semibold text-xs sm:text-sm transition-all active:scale-[0.98]"
+              aria-label="New Project"
             >
               <Plus size={15} />
-              New Project
+              <span className="hidden sm:inline">New Project</span>
             </button>
           </div>
         </div>
 
         {/* Stats Row */}
-        <div className="flex items-center gap-4 mt-6">
-          <div className="flex items-center gap-1.5 text-white/90 text-sm">
-            <Users size={14} />
+        <div className="flex items-center gap-3 sm:gap-4 mt-3 sm:mt-6">
+          <div className="flex items-center gap-1.5 text-white/90 text-xs sm:text-sm">
+            <Users size={13} />
             <span className="font-semibold">{team.memberCount}</span>
             <span className="text-white/60 text-xs">members</span>
           </div>
 
-          <div className="flex items-center gap-1.5 text-white/90 text-sm">
-            <FolderKanban size={14} />
+          <div className="flex items-center gap-1.5 text-white/90 text-xs sm:text-sm">
+            <FolderKanban size={13} />
             <span className="font-semibold">{projects.length}</span>
             <span className="text-white/60 text-xs">projects</span>
           </div>
@@ -130,14 +133,14 @@ export default function TeamDetailView({ team, idx, onBack }: Props) {
                   key={m.id}
                   src={m.user.profilePhoto}
                   alt={name}
-                  className="w-7 h-7 rounded-full border-2 border-white cursor-pointer hover:scale-110 transition-transform object-cover"
+                  className="w-6 h-6 sm:w-7 sm:h-7 rounded-full border-2 border-white cursor-pointer hover:scale-110 transition-transform object-cover"
                   title={name}
                   onClick={() => setShowMembers(true)}
                 />
               ) : (
                 <div
                   key={m.id}
-                  className="w-7 h-7 rounded-full border-2 border-white flex items-center justify-center text-white text-[10px] font-bold cursor-pointer hover:scale-110 transition-transform"
+                  className="w-6 h-6 sm:w-7 sm:h-7 rounded-full border-2 border-white flex items-center justify-center text-white text-[9px] sm:text-[10px] font-bold cursor-pointer hover:scale-110 transition-transform"
                   style={{ backgroundColor: getAvatarColor(m.user.id) }}
                   title={name}
                   onClick={() => setShowMembers(true)}
@@ -149,7 +152,7 @@ export default function TeamDetailView({ team, idx, onBack }: Props) {
 
             {members.length > 5 && (
               <div
-                className="w-7 h-7 rounded-full border-2 border-white bg-white/30 flex items-center justify-center text-white text-[10px] font-bold cursor-pointer hover:scale-110 transition-transform"
+                className="w-6 h-6 sm:w-7 sm:h-7 rounded-full border-2 border-white bg-white/30 flex items-center justify-center text-white text-[9px] sm:text-[10px] font-bold cursor-pointer hover:scale-110 transition-transform"
                 onClick={() => setShowMembers(true)}
               >
                 +{members.length - 5}
@@ -161,8 +164,20 @@ export default function TeamDetailView({ team, idx, onBack }: Props) {
 
       {/* Main Content */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Projects Sidebar */}
-        <div className="w-56 shrink-0 border-r border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 overflow-auto">
+        {/*
+          Projects Sidebar
+          · Mobile  → full-width, shown ONLY when no project is selected
+          · Desktop → fixed 224px sidebar, always visible
+        */}
+        <div
+          className={[
+            "flex-col shrink-0 border-r border-slate-200 dark:border-slate-700",
+            "bg-slate-50 dark:bg-slate-900/50 overflow-auto",
+            selectedProject
+              ? "hidden md:flex md:w-56"
+              : "flex w-full md:w-56",
+          ].join(" ")}
+        >
           <div className="px-4 pt-4 pb-2">
             <p className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
               Projects
@@ -179,7 +194,7 @@ export default function TeamDetailView({ team, idx, onBack }: Props) {
                 value={projectSearch}
                 onChange={(e) => setProjectSearch(e.target.value)}
                 placeholder="Search projects..."
-                className="w-full h-9 pl-9 pr-3 rounded-md border border-slate-200 dark:border-slate-700 text-sm bg-white dark:bg-slate-800 dark:text-white outline-none focus:border-blue-500"
+                className="w-full h-10 pl-9 pr-3 rounded-md border border-slate-200 dark:border-slate-700 text-sm bg-white dark:bg-slate-800 dark:text-white outline-none focus:border-blue-500"
               />
             </div>
           </div>
@@ -208,7 +223,7 @@ export default function TeamDetailView({ team, idx, onBack }: Props) {
                     prev?.id === project.id ? null : project
                   )
                 }
-                className={`w-full flex items-center gap-2.5 px-3 py-2.5 mx-1 rounded-xl text-left transition-all mb-1 ${
+                className={`w-full flex items-center gap-2.5 px-3 py-3 mx-1 rounded-xl text-left transition-all mb-1 ${
                   selectedProject?.id === project.id
                     ? "bg-white dark:bg-slate-800 shadow-sm text-slate-900 dark:text-white"
                     : "hover:bg-white dark:hover:bg-slate-800/50 text-slate-600 dark:text-slate-400"
@@ -218,7 +233,7 @@ export default function TeamDetailView({ team, idx, onBack }: Props) {
                   className="w-2 h-2 rounded-full shrink-0"
                   style={{ backgroundColor: project.color || "#6d28d9" }}
                 />
-                <span className="text-xs font-medium truncate flex-1">
+                <span className="text-sm font-medium truncate flex-1">
                   {project.name}
                 </span>
 
@@ -232,11 +247,26 @@ export default function TeamDetailView({ team, idx, onBack }: Props) {
           )}
         </div>
 
-        {/* Project Tasks Area */}
-        <div className="flex-1 overflow-hidden bg-white dark:bg-slate-900">
+        {/*
+          Project Tasks Area
+          · Mobile  → full-width, shown ONLY when a project IS selected
+          · Desktop → flex-1, always visible
+        */}
+        <div
+          className={[
+            "overflow-hidden bg-white dark:bg-slate-900",
+            selectedProject
+              ? "flex flex-col flex-1"
+              : "hidden md:flex md:flex-col md:flex-1",
+          ].join(" ")}
+        >
           {selectedProject ? (
-            <ProjectTasksPanel project={selectedProject} />
+            <ProjectTasksPanel
+              project={selectedProject}
+              onBack={() => setSelectedProject(null)}
+            />
           ) : (
+            /* Desktop empty-state (never visible on mobile since this panel is hidden) */
             <div className="flex flex-col items-center justify-center h-full gap-3 text-center p-8">
               <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${iconBgCls}`}>
                 <FolderKanban size={22} />
@@ -263,7 +293,7 @@ export default function TeamDetailView({ team, idx, onBack }: Props) {
 
       {showCreateProject && (
         <CreateProjectModal
-          defaultTeamId={team.id}        // Pre-selects this team in the modal
+          defaultTeamId={team.id}
           onClose={() => setShowCreateProject(false)}
         />
       )}
