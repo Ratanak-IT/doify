@@ -13,7 +13,7 @@ export default function FooterWrapper() {
                 <path d="M3 5h14M3 10h10M3 15h7" stroke="white" strokeWidth="2.2" strokeLinecap="round" />
               </svg>
             </div>
-            <span className="font-bold text-base text-slate-900 dark:text-white">TaskFlow</span>
+            <span className="font-bold text-base text-slate-900 dark:text-white">Doify</span>
           </div>
           <p className="text-xs leading-relaxed text-slate-500 dark:text-slate-400 max-w-[220px]">
             Simplifying teamwork and productivity for everyone, everywhere.
@@ -54,8 +54,8 @@ export default function FooterWrapper() {
       <hr className="border-slate-200 dark:border-slate-800 max-w-5xl mx-auto mb-6" />
 
       <div className="max-w-5xl mx-auto flex items-center justify-between flex-wrap gap-2">
-        <span className="text-xs text-slate-400 dark:text-slate-600">© 2026 TaskFlow. All rights reserved.</span>
-        <span className="text-xs text-slate-400 dark:text-slate-600">Made with ♥ in Phnom Penh</span>
+        <span className="text-xs text-slate-400 dark:text-slate-600">© 2026 Doify. All rights reserved.</span>
+        <span className="text-xs text-slate-400 dark:text-slate-600">Made by student from ISTAD</span>
       </div>
     </footer>
   );

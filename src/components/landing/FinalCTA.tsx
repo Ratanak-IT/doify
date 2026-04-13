@@ -20,7 +20,7 @@ export default function FinalCTA() {
 
         {/* Subtitle */}
         <p className="mb-7 sm:mb-8 text-sm sm:text-base text-gray-600 dark:text-gray-400 max-w-md mx-auto">
-          Join 50,000+ teams who plan, track, and ship faster with TaskFlow.
+          Join 50,000+ teams who plan, track, and ship faster with Doify.
         </p>
 
         {/* Buttons — stack on mobile */}

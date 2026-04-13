@@ -24,36 +24,37 @@ const TYPE_STYLE: Record<string, { bg: string; dot: string }> = {
   TEAM_INVITATION:     { bg: "bg-indigo-50 dark:bg-indigo-950", dot: "bg-indigo-500" },
 };
 
-function getNotificationHref(notif: Notification) {
-  const referenceType = String(notif.referenceType ?? "").trim().toLowerCase();
-  const referenceId = notif.referenceId ? encodeURIComponent(notif.referenceId) : null;
+function getNotificationHref(notif: Notification): string {
+  const refType = String(notif.referenceType ?? "").trim().toUpperCase();
+  const refId   = notif.referenceId ? encodeURIComponent(notif.referenceId) : null;
 
-  if (referenceType === "team") {
-    return referenceId ? `/dashboard/team/${referenceId}` : "/dashboard/team";
-  }
+  switch (notif.type) {
+    case "TASK_ASSIGNED":
+    case "DUE_DATE_REMINDER":
+    case "OVERDUE_TASK":
+      return refId ? `/dashboard/tasks?taskId=${refId}` : "/dashboard/tasks";
 
-  if (referenceType === "project") {
-    return "/dashboard/projects";
-  }
+    case "COMMENT_ADDED":
+    case "MENTIONED_IN_COMMENT":
+      return "/dashboard/tasks";
 
-  if (referenceType === "task") {
-    return referenceId ? `/dashboard/tasks?taskId=${referenceId}` : "/dashboard/tasks";
-  }
+    case "PROJECT_UPDATED":
+      return "/dashboard/projects";
 
-  if (referenceType === "comment") {
-    return "/dashboard/tasks";
-  }
+    case "TEAM_INVITATION":
+      return "/dashboard/team";
 
-  if (notif.type === "TEAM_INVITATION") return "/dashboard/team";
-  if (notif.type === "PROJECT_UPDATED") return "/dashboard/projects";
-  if (notif.type === "TASK_ASSIGNED" || notif.type === "DUE_DATE_REMINDER" || notif.type === "OVERDUE_TASK") {
-    return referenceId ? `/dashboard/tasks?taskId=${referenceId}` : "/dashboard/tasks";
-  }
-  if (notif.type === "MENTIONED_IN_COMMENT" || notif.type === "COMMENT_ADDED") {
-    return referenceId ? `/dashboard/team?taskId=${referenceId}` : "/dashboard/team";
-  }
+    case "INVITATION_ACCEPTED":
+      // referenceId = teamId
+      return refId ? `/dashboard/team/${refId}` : "/dashboard/team";
 
-  return "/dashboard/notifications";
+    default:
+      if (refType === "TASK")    return refId ? `/dashboard/tasks?taskId=${refId}` : "/dashboard/tasks";
+      if (refType === "PROJECT") return "/dashboard/projects";
+      if (refType === "TEAM")    return refId ? `/dashboard/team/${refId}` : "/dashboard/team";
+      if (refType === "COMMENT") return "/dashboard/tasks";
+      return "/dashboard/notifications";
+  }
 }
 
 function Skeleton() {
@@ -77,7 +78,7 @@ function NotifCard({
   onClick: () => void;
   onAcceptInvite: (invitationId: string, notifId: string) => void;
 }) {
-  const style = TYPE_STYLE[notif.type] ?? { bg: "bg-slate-50 dark:bg-slate-900", dot: "bg-slate-400" };
+  const style = TYPE_STYLE[notif.type] ?? { bg: "bg-slate-50 dark:bg-[#1a1c2e]", dot: "bg-slate-400" };
   const [accepting, setAccepting] = useState(false);
 
   const timeAgo = (iso: string) => {
@@ -94,8 +95,8 @@ function NotifCard({
     <div
       className={`group rounded-3xl border p-5 transition-all ${
         notif.isRead 
-          ? "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm" 
-          : "border-transparent bg-slate-50 dark:bg-slate-900 shadow-md"
+          ? "border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1a1c2e] shadow-sm" 
+          : "border-transparent bg-slate-50 dark:bg-[#1a1c2e] shadow-md"
       } hover:-translate-y-0.5 hover:shadow-lg cursor-pointer`}
       onClick={onClick}
     >
@@ -173,15 +174,24 @@ export default function NotificationsPage() {
     <>
       <DashboardHeader onRefresh={refetch} showCreate={false} />
 
-      <main className="flex-1 overflow-auto p-4 sm:p-6">
+      <main className="flex-1 overflow-auto p-4 sm:p-6 bg-[#F8F9FC] dark:bg-[#1E1B2E]">
         <div className="max-w-5xl mx-auto space-y-6">
-          <div className="rounded-[32px] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 shadow-sm">
+          <div className="rounded-[32px] border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1a1c2e] p-6 shadow-sm">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Filtered view</p>
                 <h2 className="mt-2 text-xl font-semibold text-slate-950 dark:text-white">{filter === "all" ? "All notifications" : "Unread notifications"}</h2>
               </div>
               <div className="flex flex-wrap items-center gap-2">
+                {unreadCount > 0 && (
+                  <button
+                    onClick={() => markAllRead()}
+                    className="flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors"
+                  >
+                    <CheckCheck size={14} />
+                    Mark all read
+                  </button>
+                )}
                 {(["all", "unread"] as const).map((f) => (
                   <button
                     key={f}

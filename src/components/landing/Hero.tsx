@@ -14,9 +14,9 @@ export default function Hero() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(197,212,240,0.3)_1px,transparent_0)] bg-[length:28px_28px] opacity-45 pointer-events-none dark:bg-[radial-gradient(circle_at_1px_1px,rgba(100,116,139,0.2)_1px,transparent_0)]" />
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
         {/* Badge */}
-        <div className="inline-flex items-center gap-2 bg-white dark:bg-[#111827] text-purple-600 dark:text-purple-400 text-xs font-bold px-3.5 py-1.5 rounded-full border border-purple-200 dark:border-purple-800 mb-5 sm:mb-7 shadow-sm">
-          <span className="w-1.5 h-1.5 rounded-full bg-purple-600 dark:bg-purple-400 animate-pulse" />
-          Now with AI-powered automation
+        <div className="inline-flex items-center gap-2 bg-white dark:bg-[#111827] text-blue-600 dark:text-gray-200 text-xs font-bold px-3.5 py-1.5 rounded-full border border-purple-200 dark:border-blue-800 mb-5 sm:mb-7 shadow-sm">
+          <span className="w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-green-400 animate-pulse" />
+          Now you can start manage your task now!
         </div>
 
         {/* Title */}
@@ -33,15 +33,15 @@ export default function Hero() {
         <div className="flex flex-col w-full sm:w-auto sm:flex-row gap-3 sm:gap-4 mb-6 sm:mb-8 px-4 sm:px-0">
           <Link
             href="/register"
-            className="inline-flex items-center justify-center gap-1.5 bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 shadow-purple-500/25 text-sm sm:text-base"
+            className="inline-flex items-center justify-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 shadow-purple-500/25 text-sm sm:text-base"
           >
-            {t("landing.hero.cta")} — no credit card
+            {t("landing.hero.cta")}
           </Link>
           <Link
             href="/login"
-            className="inline-flex items-center justify-center gap-1.5 bg-transparent hover:bg-slate-100 dark:hover:bg-[#111827] text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-gray-600 font-semibold px-6 py-3 rounded-lg transition-all duration-200 hover:shadow-sm hover:-translate-y-0.5 text-sm sm:text-base"
+            className="inline-flex items-center justify-center gap-1.5 bg-transparent hover:bg-slate-100 dark:hover:bg-[#111827] text-gray-800 dark:text-gray-200 border border-slate-300 dark:border-gray-600 font-semibold px-6 py-3 rounded-lg transition-all duration-200 hover:shadow-sm hover:-translate-y-0.5 text-sm sm:text-base"
           >
-            Sign in to workspace
+            Sign in to Dashboard
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>

@@ -6,6 +6,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useAppSelector, useAppDispatch } from "@/lib/hooks";
 import { logout } from "@/lib/features/auth/authSlice";
 import { useGetUnreadCountQuery } from "@/lib/features/notifications/notificationsApi";
+import { useTheme } from "@/lib/contexts/ThemeContext";
 import {
   MoreHorizontal,
   X,
@@ -18,6 +19,8 @@ import {
   LogOut,
   Plus,
   RefreshCw,
+  Sun,
+  Moon,
 } from "lucide-react";
 
 const NAV = [
@@ -30,13 +33,9 @@ const NAV = [
 ];
 
 interface Props {
-  /** Primary CTA label — shown as the purple Create button */
   createLabel?: string;
-  /** Called when the Create button is tapped */
   onCreate?: () => void;
-  /** Icon-only on very small screens */
   showCreate?: boolean;
-  /** Refresh handler */
   onRefresh?: () => void;
 }
 
@@ -50,6 +49,7 @@ export default function DashboardHeader({
   const router    = useRouter();
   const pathname  = usePathname();
   const user      = useAppSelector((s) => s.auth.user);
+  const { theme, toggleTheme } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const { data: unread } = useGetUnreadCountQuery();
@@ -69,9 +69,9 @@ export default function DashboardHeader({
   };
 
   return (
-    <header className="h-14 sm:h-16 bg-white dark:bg-slate-900 border-b border-[#E8E8EF] dark:border-slate-700 flex items-center justify-between px-3 sm:px-5 gap-2 shrink-0 sticky top-0 z-30">
+    <header className="h-14 sm:h-16 bg-white dark:bg-[#1a1c2e] border-b border-[#E8E8EF] dark:border-[#2a2d45] flex items-center justify-between px-3 sm:px-5 gap-2 shrink-0 sticky top-0 z-30">
 
-      {/* ── Logo ── */}
+      {/* Logo */}
       <Link href="/" className="flex items-center gap-2 shrink-0 group">
         <div className="w-8 h-8 rounded-lg bg-[#6C5CE7] flex items-center justify-center shadow-md shadow-[#6C5CE7]/30 group-hover:shadow-[#6C5CE7]/50 transition-shadow">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -84,14 +84,14 @@ export default function DashboardHeader({
         </span>
       </Link>
 
-      {/* ── Actions ── */}
-      <div className="flex items-center gap-1.5">
+      {/* Actions */}
+      <div className="flex items-center gap-1">
 
-        {/* Refresh (optional) */}
+        {/* Refresh */}
         {onRefresh && (
           <button
             onClick={onRefresh}
-            className="w-9 h-9 rounded-lg flex items-center justify-center text-[#64748B] dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="w-9 h-9 rounded-lg flex items-center justify-center text-[#64748B] dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#252840] transition-colors"
             aria-label="Refresh"
           >
             <RefreshCw size={15} />
@@ -109,10 +109,23 @@ export default function DashboardHeader({
           </button>
         )}
 
+        {/* Theme toggle */}
+        <button
+          onClick={toggleTheme}
+          className="w-9 h-9 rounded-lg flex items-center justify-center text-[#64748B] dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#252840] transition-colors"
+          aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+        >
+          {theme === "dark" ? (
+            <Sun size={17} className="text-amber-400" />
+          ) : (
+            <Moon size={17} className="text-[#6C5CE7]" />
+          )}
+        </button>
+
         {/* Notifications bell */}
         <Link
           href="/dashboard/notifications"
-          className="relative w-9 h-9 rounded-lg flex items-center justify-center text-[#64748B] dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          className="relative w-9 h-9 rounded-lg flex items-center justify-center text-[#64748B] dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#252840] transition-colors"
           aria-label="Notifications"
         >
           <Bell size={17} />
@@ -123,14 +136,14 @@ export default function DashboardHeader({
           )}
         </Link>
 
-        {/* ··· Menu */}
+        {/* More menu */}
         <div className="relative">
           <button
             onClick={() => setMenuOpen((o) => !o)}
             className={`w-9 h-9 rounded-lg flex items-center justify-center transition-colors ${
               menuOpen
                 ? "bg-[#6C5CE7] text-white"
-                : "text-[#64748B] dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                : "text-[#64748B] dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#252840]"
             }`}
             aria-label="More options"
             aria-expanded={menuOpen}
@@ -140,22 +153,29 @@ export default function DashboardHeader({
 
           {menuOpen && (
             <>
-              {/* Backdrop */}
               <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
 
-              {/* Dropdown */}
-              <div className="absolute right-0 top-full mt-2 w-72 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl shadow-black/15 border border-[#E8E8EF] dark:border-slate-700 z-50 overflow-hidden">
+              <div className="absolute right-0 top-full mt-2 w-72 bg-white dark:bg-[#1a1c2e] rounded-2xl shadow-2xl shadow-black/15 dark:shadow-black/40 border border-[#E8E8EF] dark:border-[#2a2d45] z-50 overflow-hidden">
 
                 {/* User row */}
                 {user && (
-                  <div className="flex items-center gap-3 px-4 py-3.5 border-b border-[#F1F5F9] dark:border-slate-800">
-                    <div className="w-9 h-9 rounded-full bg-[#6C5CE7]/10 flex items-center justify-center text-[#6C5CE7] text-sm font-bold shrink-0">
+                  <div className="flex items-center gap-3 px-4 py-3.5 border-b border-[#F1F5F9] dark:border-[#2a2d45]">
+                    <div className="w-9 h-9 rounded-full bg-[#6C5CE7]/10 dark:bg-[#6C5CE7]/20 flex items-center justify-center text-[#6C5CE7] text-sm font-bold shrink-0">
                       {initials}
                     </div>
                     <div className="min-w-0">
                       <p className="text-sm font-semibold text-[#1E293B] dark:text-white truncate">{user.name}</p>
-                      <p className="text-xs text-[#94A3B8] truncate">{user.email}</p>
+                      <p className="text-xs text-[#94A3B8] dark:text-slate-500 truncate">{user.email}</p>
                     </div>
+                    <button
+                      onClick={toggleTheme}
+                      className="ml-auto w-8 h-8 rounded-lg flex items-center justify-center bg-slate-100 dark:bg-[#252840] hover:bg-slate-200 dark:hover:bg-[#2a2d45] transition-colors shrink-0"
+                      aria-label="Toggle theme"
+                    >
+                      {theme === "dark"
+                        ? <Sun size={14} className="text-amber-400" />
+                        : <Moon size={14} className="text-[#6C5CE7]" />}
+                    </button>
                   </div>
                 )}
 
@@ -171,7 +191,7 @@ export default function DashboardHeader({
                         onClick={() => setMenuOpen(false)}
                         className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors group ${
                           isActive
-                            ? "bg-[#F0EDFF] text-[#6C5CE7]"
+                            ? "bg-[#F0EDFF] dark:bg-[#6C5CE7]/15 text-[#6C5CE7]"
                             : "text-[#64748B] dark:text-slate-300 hover:bg-[#F0EDFF] hover:text-[#6C5CE7] dark:hover:bg-[#6C5CE7]/10 dark:hover:text-[#6C5CE7]"
                         }`}
                       >
@@ -196,10 +216,10 @@ export default function DashboardHeader({
                 </nav>
 
                 {/* Sign out */}
-                <div className="px-2 pb-2 pt-1 border-t border-[#F1F5F9] dark:border-slate-800">
+                <div className="px-2 pb-2 pt-1 border-t border-[#F1F5F9] dark:border-[#2a2d45]">
                   <button
                     onClick={handleLogout}
-                    className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-[#EF4444] hover:bg-red-50 dark:hover:bg-red-950/30 active:bg-red-100 transition-colors"
+                    className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-[#EF4444] hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
                   >
                     <LogOut size={16} className="shrink-0" />
                     Sign out

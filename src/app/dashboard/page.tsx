@@ -2,15 +2,12 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  Bell, Plus, CheckCircle2, Clock, AlertTriangle, ListTodo,
+  AlertTriangle, ListTodo,
   ChevronRight, MoreHorizontal, Calendar, Users, FolderKanban,
-  Search, Settings, LayoutDashboard, CheckSquare, X, LogOut,
 } from "lucide-react";
-import { useAppSelector, useAppDispatch } from "@/lib/hooks";
-import { logout } from "@/lib/features/auth/authSlice";
-import { useRouter } from "next/navigation";
-import { useGetUnreadCountQuery } from "@/lib/features/notifications/notificationsApi";
+import { useAppSelector } from "@/lib/hooks";
 import { useGetPersonalTasksQuery } from "@/lib/features/tasks/taskApi";
+import DashboardHeader from "@/components/DashboardHeader";
 import { StatCard } from "@/components/Card";
 import { TextCard } from "@/components/TextCard";
 import { NewTaskModal } from "@/components/forms/NewTaskModal";
@@ -27,7 +24,6 @@ import {
   ActivityVolumeChart,
 } from "@/components/charts";
 
-// ─────────────────────────────────────────────────────────────────────────────
 
 function Skeleton({ className = "" }: { className?: string }) {
   return <div className={`animate-pulse bg-slate-100 dark:bg-slate-700 rounded-lg ${className}`} />;
@@ -41,33 +37,27 @@ const PRIORITY_LABEL: Record<string, string> = {
 };
 
 export default function DashboardPage() {
-  const dispatch = useAppDispatch();
-  const router   = useRouter();
   const user = useAppSelector((s) => s.auth.user);
   const [showModal, setShowModal] = useState(false);
-  const [menuOpen,  setMenuOpen]  = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => { setMounted(true); }, []);
-
-  const handleLogout = () => { dispatch(logout()); router.push("/login"); };
 
   const today = mounted
     ? new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })
     : "";
 
-  // ── ONE unified dashboard call ──────────────────────────────────────────────
-  const { data: dashboard, isLoading: dashLoading, error: dashError } = useGetDashboardQuery();
 
-  // My tasks (in-progress) — kept as separate call because it paginates
+  const { data: dashboard, isLoading: dashLoading, error: dashError } = useGetDashboardQuery(undefined, {
+  pollingInterval: 30_000,
+  refetchOnFocus: true,
+  refetchOnReconnect: true,
+});
+
   const { data: myTasksPage, isLoading: tasksLoading } =
     useGetPersonalTasksQuery({ status: "IN_PROGRESS" });
   const myTasks = myTasksPage?.content ?? [];
 
-  const { data: unread } = useGetUnreadCountQuery();
-  const unreadCount = unread?.count ?? 0;
-
-  // ── Derived values ──────────────────────────────────────────────────────────
   const statCards = [
     {
       label: "Total Tasks",
@@ -99,88 +89,7 @@ export default function DashboardPage() {
 
   return (
     <>
-      {/* ── Header (unchanged from your original) ── */}
-      <header className="h-14 sm:h-16 bg-white dark:bg-slate-900 border-b border-[#E8E8EF] dark:border-slate-700 flex items-center justify-between px-3 sm:px-5 gap-2 shrink-0 sticky top-0 z-30">
-        <Link href="/" className="flex items-center gap-2 shrink-0 group">
-          <div className="w-8 h-8 rounded-lg bg-[#6C5CE7] flex items-center justify-center shadow-md shadow-[#6C5CE7]/30">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <rect x="1" y="1" width="4" height="12" rx="1" fill="white"/>
-              <rect x="7" y="1" width="6" height="8" rx="1" fill="white" opacity=".8"/>
-            </svg>
-          </div>
-          <span className="font-bold text-[15px] text-[#1E293B] dark:text-white tracking-tight hidden xs:block">Doify</span>
-        </Link>
-
-        <div className="flex items-center gap-1.5">
-          <button className="w-9 h-9 sm:w-auto sm:h-9 sm:px-3 flex items-center gap-2 rounded-lg text-[#64748B] dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
-            <Search size={16} />
-            <span className="hidden sm:inline text-sm font-medium">Search</span>
-          </button>
-          <button
-            onClick={() => setShowModal(true)}
-            className="flex items-center gap-1.5 h-9 px-3 sm:px-4 rounded-lg bg-[#6C5CE7] hover:bg-[#5B4BD5] text-white text-sm font-bold shadow-sm shadow-[#6C5CE7]/30"
-          >
-            <Plus size={15} strokeWidth={2.5} />
-            <span className="hidden xs:inline">Create</span>
-          </button>
-          <Link href="/dashboard/notifications" className="relative w-9 h-9 rounded-lg flex items-center justify-center text-[#64748B] dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
-            <Bell size={17} />
-            {unreadCount > 0 && (
-              <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-[#EF4444] text-white text-[9px] font-bold flex items-center justify-center">
-                {unreadCount > 9 ? "9+" : unreadCount}
-              </span>
-            )}
-          </Link>
-          <div className="relative">
-            <button
-              onClick={() => setMenuOpen((o) => !o)}
-              className={`w-9 h-9 rounded-lg flex items-center justify-center ${menuOpen ? "bg-[#6C5CE7] text-white" : "text-[#64748B] dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"}`}
-            >
-              {menuOpen ? <X size={17} /> : <MoreHorizontal size={18} />}
-            </button>
-            {menuOpen && (
-              <>
-                <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
-                <div className="absolute right-0 top-full mt-2 w-72 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl shadow-black/15 border border-[#E8E8EF] dark:border-slate-700 z-50 overflow-hidden">
-                  {user && (
-                    <div className="flex items-center gap-3 px-4 py-3.5 border-b border-[#F1F5F9] dark:border-slate-800">
-                      <div className="w-9 h-9 rounded-full bg-[#6C5CE7]/10 flex items-center justify-center text-[#6C5CE7] text-sm font-bold shrink-0">
-                        {user.name?.split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2)}
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-sm font-semibold text-[#1E293B] dark:text-white truncate">{user.name}</p>
-                        <p className="text-xs text-[#94A3B8] truncate">{user.email}</p>
-                      </div>
-                    </div>
-                  )}
-                  <nav className="p-2">
-                    {[
-                      { label: "Dashboard",    href: "/dashboard",               icon: LayoutDashboard },
-                      { label: "Projects",      href: "/dashboard/projects",      icon: FolderKanban },
-                      { label: "My Tasks",      href: "/dashboard/tasks",         icon: CheckSquare },
-                      { label: "Team",          href: "/dashboard/team",          icon: Users },
-                      { label: "Notifications", href: "/dashboard/notifications", icon: Bell, badge: unreadCount },
-                      { label: "Settings",      href: "/dashboard/settings",      icon: Settings },
-                    ].map(({ label, href, icon: Icon, badge }) => (
-                      <Link key={href} href={href} onClick={() => setMenuOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-[#64748B] dark:text-slate-300 hover:bg-[#F0EDFF] hover:text-[#6C5CE7] dark:hover:bg-[#6C5CE7]/10 transition-colors group">
-                        <Icon size={17} className="shrink-0 text-[#94A3B8] group-hover:text-[#6C5CE7]" />
-                        <span className="flex-1">{label}</span>
-                        {badge ? <span className="bg-[#EF4444] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{badge > 9 ? "9+" : badge}</span> : null}
-                      </Link>
-                    ))}
-                  </nav>
-                  <div className="px-2 pb-2 border-t border-[#F1F5F9] dark:border-slate-800 pt-1">
-                    <button onClick={handleLogout} className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-[#EF4444] hover:bg-red-50 dark:hover:bg-red-950/30">
-                      <LogOut size={16} className="shrink-0" />Sign out
-                    </button>
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      </header>
+      <DashboardHeader onCreate={() => setShowModal(true)} createLabel="Create" />
 
       {showModal && <NewTaskModal onClose={() => setShowModal(false)} />}
 

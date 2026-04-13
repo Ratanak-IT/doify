@@ -10,7 +10,7 @@ import NavBar from "@/components/NavBar";
 
 export default function HomePage() {
   return (
-    <div className="lp-root">
+    <div className="dark:bg-gray-900">
       <Hero />
       <Logos />
       <Features />

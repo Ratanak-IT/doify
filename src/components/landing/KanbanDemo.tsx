@@ -86,18 +86,14 @@ export default function KanbanDemo() {
           <button className="kb-tb-btn kb-tb-btn--active text-gray-900 dark:text-white">
             Board
           </button>
-          <button className="kb-tb-btn text-gray-600 dark:text-gray-400">Timeline</button>
-          <button className="kb-tb-btn text-gray-600 dark:text-gray-400">List</button>
+          
         </div>
 
-        <div className="kb-toolbar-right">
-          <button className="kb-tb-btn text-gray-600 dark:text-gray-400">Filter</button>
-          <button className="kb-tb-btn text-gray-600 dark:text-gray-400">+ Column</button>
-        </div>
+        
       </div>
 
       {/* Board */}
-      <div className="kb-board">
+      <div className="kb-board dark:bg-gray-700">
         {columns.map((col) => (
           <div
             key={col.id}
@@ -146,7 +142,7 @@ export default function KanbanDemo() {
                     </span>
                   )}
 
-                  <p className={`kb-card-title font-medium ${card.checked ? " line-through" : ""}`}>
+                  <p className={`text-[15px] pb-2 font-medium ${card.checked ? " line-through" : ""}`}>
                     {card.title}
                   </p>
 
@@ -186,7 +182,7 @@ export default function KanbanDemo() {
       {selectedCard && (
         <div className="kb-hint bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900">
           <span>
-            ✨ Click <strong>Move →</strong> on another column to move this card
+            Click <strong>Move →</strong> on another column to move this card
           </span>
           <button
             onClick={() => dispatch(selectCard(null))}

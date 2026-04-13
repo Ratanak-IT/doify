@@ -18,7 +18,7 @@ export default function AboutPage() {
   ];
 
   const stats = [
-    { value: "50K+",  label: "Teams using TaskFlow" },
+    { value: "50K+",  label: "Teams using Doify" },
     { value: "120+",  label: "Countries reached" },
     { value: "99.9%", label: "Uptime SLA" },
     { value: "4.9★",  label: "Average rating" },
@@ -45,7 +45,7 @@ export default function AboutPage() {
           Every task. Every deadline. Every sprint.
         </p>
         <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 max-w-md sm:max-w-lg mx-auto mb-7 leading-7">
-          TaskFlow is a modern task management platform designed to help teams
+          Doify is a modern task management platform designed to help teams
           plan smarter, collaborate in real time, and ship work without the chaos.
           From daily to-dos to full project pipelines — we&apos;ve got it covered.
         </p>
@@ -60,7 +60,7 @@ export default function AboutPage() {
         <div className="mt-8 sm:mt-12 mx-auto max-w-3xl rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-[0_20px_60px_rgba(108,71,255,0.1),0_4px_16px_rgba(0,0,0,0.06)]">
           <img
             src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1200&q=80"
-            alt="TaskFlow team at work"
+            alt="Doify team at work"
             className="w-full h-48 sm:h-64 md:h-80 lg:h-[380px] object-cover block"
           />
         </div>
@@ -95,7 +95,7 @@ export default function AboutPage() {
           </h2>
           <p className="text-sm sm:text-[0.95rem] text-slate-500 dark:text-slate-400 max-w-xs sm:max-w-md mx-auto leading-relaxed">
             Our advisors bring deep expertise in productivity tools, software engineering,
-            and agile project management — shaping TaskFlow into a world-class platform.
+            and agile project management — shaping Doify into a world-class platform.
           </p>
         </div>
 
@@ -128,7 +128,7 @@ export default function AboutPage() {
             Our Team
           </span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-slate-950 dark:text-white mb-2 leading-tight">
-            The people <span className="text-[#6c47ff]">behind TaskFlow</span>
+            The people <span className="text-[#6c47ff]">behind Doify</span>
           </h2>
           <p className="text-sm sm:text-[0.95rem] text-slate-500 dark:text-slate-400 max-w-xs sm:max-w-md mx-auto leading-relaxed">
             We&apos;re a small, passionate team obsessed with making task management

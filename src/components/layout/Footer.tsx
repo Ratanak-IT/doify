@@ -12,7 +12,7 @@ export default function Footer() {
             </svg>
           </div>
           <div>
-            <span className="lp-footer-name">TaskFlow</span>
+            <span className="lp-footer-name">Doify</span>
             <p className="lp-footer-brand-copy">
               Professional task management for teams, projects, and workflows.
             </p>
@@ -56,7 +56,7 @@ export default function Footer() {
 
       <div className="lp-footer-bottom">
         <span>
-          © {new Date().getFullYear()} TaskFlow — Professional task management for teams and managers.
+          © {new Date().getFullYear()} Doify — Professional task management for teams and managers.
         </span>
       </div>
     </footer>

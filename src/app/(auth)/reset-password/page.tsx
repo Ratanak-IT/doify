@@ -140,7 +140,7 @@ export default function ResetPasswordPage() {
             <div className="w-10 h-10 rounded-[14px] bg-white/20 flex items-center justify-center">
               <CheckCircle2 size={24} className="text-white" />
             </div>
-            <span className="text-white text-2xl font-bold">TaskFlow</span>
+            <span className="text-white text-2xl font-bold">Doify</span>
           </div>
 
           {/* Hero */}
@@ -196,7 +196,7 @@ export default function ResetPasswordPage() {
               <div className="w-10 h-10 rounded-[14px] bg-[#4f39f6] flex items-center justify-center">
                 <CheckCircle2 size={20} className="text-white" />
               </div>
-              <span className="text-slate-950 dark:text-white text-xl font-bold">TaskFlow</span>
+              <span className="text-slate-950 dark:text-white text-xl font-bold">Doify</span>
             </div>
 
             <Suspense fallback={<div className="text-sm text-slate-500 dark:text-slate-400">Loading…</div>}>

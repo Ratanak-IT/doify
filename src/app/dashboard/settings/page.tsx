@@ -174,7 +174,7 @@ export default function SettingsPage() {
   return (
     <>
       <DashboardHeader showCreate={false} />
-    <div className="flex-1 bg-white dark:bg-slate-900 min-h-screen">
+    <div className="flex-1 bg-white dark:bg-[#1E1B2E] min-h-screen">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
         <div className="mb-8">

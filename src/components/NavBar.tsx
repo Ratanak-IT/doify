@@ -70,7 +70,7 @@ export default function NavBar() {
               <path d="M3 5h14M3 10h10M3 15h7" stroke="white" strokeWidth="2.2" strokeLinecap="round" />
             </svg>
           </div>
-          <span className="text-[17px] font-bold tracking-tight text-white">TaskFlow</span>
+          <span className="text-[17px] font-bold tracking-tight text-white">Doify</span>
         </Link>
 
         {/* Desktop nav links */}

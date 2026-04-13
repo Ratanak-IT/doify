@@ -113,6 +113,7 @@ export interface Project {
   progress: number;
   tasksCount: number;
   tasksDone?: number;
+  totalTasks?: number;
   description?: string;
   status?: string;
   dueDate?: string;

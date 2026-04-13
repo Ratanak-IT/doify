@@ -75,7 +75,7 @@ export default function Navbar() {
                 <rect x="9" y="2" width="5" height="8" rx="1.5" fill="white" opacity=".8" />
               </svg>
             </div>
-            <span className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">TaskFlow</span>
+            <span className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">Doify</span>
           </Link>
 
 <div className="hidden md:flex items-center gap-7 flex-1 justify-center">

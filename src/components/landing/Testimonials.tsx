@@ -4,7 +4,7 @@ const TESTIMONIALS = [
     role: "Product Manager · Shopify",
     initials: "SC",
     color: "#6C5CE7",
-    text: "TaskFlow transformed how our team ships features. We went from chaos to clarity in two weeks flat. Now every sprint is predictable.",
+    text: "Doify transformed how our team ships features. We went from chaos to clarity in two weeks flat. Now every sprint is predictable.",
   },
   {
     name: "Marcus Reid",
@@ -29,11 +29,11 @@ export default function Testimonials() {
 
         {/* Header */}
         <div className="lp-section-header text-center">
-          <h2 className="lp-section-title text-2xl md:text-3xl font-bold">
+          <h2 className="lp-section-title text-2xl md:text-3xl font-bold dark:text-gray-300">
             Loved by 50,000+ teams
           </h2>
 
-          <p className="lp-section-sub text-gray-500 dark:text-white/70">
+          <p className="lp-section-sub text-gray-500 dark:text-gray-300">
             Don&apos;t take our word for it.
           </p>
         </div>

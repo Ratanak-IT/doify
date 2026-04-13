@@ -19,7 +19,7 @@ export function CompletionGauge({ completedTasks, totalTasks }: Props) {
   }
 
   const startDeg = 180;
-  const endDeg = 180 - (pct / 100) * 180; 
+  const endDeg = 180 + (pct / 100) * 180;
   const s = arcPt(startDeg);
   const e = arcPt(endDeg);
   const large = pct > 50 ? 1 : 0;
@@ -48,7 +48,7 @@ export function CompletionGauge({ completedTasks, totalTasks }: Props) {
           {/* value arc */}
           {pct > 0 && (
             <path
-              d={`M ${s.x} ${s.y} A ${R} ${R} 0 ${large} 0 ${e.x} ${e.y}`}
+              d={`M ${s.x} ${s.y} A ${R} ${R} 0 ${large} 1 ${e.x} ${e.y}`}
               fill="none"
               stroke={color}
               strokeWidth={14}

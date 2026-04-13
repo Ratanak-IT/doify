@@ -105,7 +105,8 @@ export default function MembersModal({ team, onClose }: Props) {
             <div className="space-y-2">
               {members.map((member) => {
                 const displayName =
-                  member.user.fullName || member.user.username;
+                  member.user.fullName;
+                  const username=member.user.username;
                 const initials = getInitials(displayName);
                 const avatarColor = getAvatarColor(member.user.id);
 
@@ -114,7 +115,6 @@ export default function MembersModal({ team, onClose }: Props) {
                     key={member.id}
                     className="flex items-center gap-3 px-4 py-3 rounded-lg dark:hover:bg-slate-800 transition-colors group"
                   >
-                    {/* Avatar */}
                     {member.user.profilePhoto ? (
                       <img
                         src={member.user.profilePhoto}
@@ -133,7 +133,7 @@ export default function MembersModal({ team, onClose }: Props) {
                     {/* Member Info */}
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
-                        {displayName}
+                        {displayName} & {username}
                       </p>
                       <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
                         {member.user.email}

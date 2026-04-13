@@ -172,7 +172,7 @@ export default function TeamDetailView({ team, idx, onBack }: Props) {
         <div
           className={[
             "flex-col shrink-0 border-r border-slate-200 dark:border-slate-700",
-            "bg-slate-50 dark:bg-slate-900/50 overflow-auto",
+            "bg-[#F4F5F7] dark:bg-[#1a1c2e] overflow-auto",
             selectedProject
               ? "hidden md:flex md:w-56"
               : "flex w-full md:w-56",
@@ -254,7 +254,7 @@ export default function TeamDetailView({ team, idx, onBack }: Props) {
         */}
         <div
           className={[
-            "overflow-hidden bg-white dark:bg-slate-900",
+            "overflow-hidden bg-white dark:bg-[#1E1B2E]",
             selectedProject
               ? "flex flex-col flex-1"
               : "hidden md:flex md:flex-col md:flex-1",

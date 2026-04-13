@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import RootProviders from "./RootProviders";
 
 export const metadata: Metadata = {
-  title: "TaskFlow — Where teams move work forward",
+  title: "Doify — Where teams move work forward",
   description:
     "Boards, lists, and cards. The simplest way to manage your projects.",
 };

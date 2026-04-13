@@ -4,7 +4,7 @@ const PRICING = [
     price: "$0",
     period: "/mo",
     cta: "Get started free",
-    highlight: false,
+    highlight: true,
     desc: "Perfect for individuals and small teams getting started.",
     features: ["Unlimited cards", "10 boards", "Up to 2 members", "Basic automation", "7-day activity log"],
   },
@@ -22,9 +22,9 @@ const PRICING = [
     price: "Custom",
     period: "",
     cta: "Contact sales",
-    highlight: false,
+    highlight: true,
     desc: "For large organizations with compliance and security needs.",
-    features: ["Everything in Pro", "SSO & SAML", "Audit logs", "SLA guarantee", "Dedicated support", "Custom contracts"],
+    features: ["Everything in Pro", "SSO & SAML", "Audit logs", "SLA guarantee", "Custom contracts"],
   },
 ];
 
@@ -33,8 +33,8 @@ export default function Pricing() {
     <section
       id="pricing"
       className="
-        lp-section lp-section--dark
-        bg-gray-50 text-gray-900
+        lp-section bg-gray-200
+         text-gray-900
         dark:bg-[#0B1120] dark:text-gray-100
         transition-colors duration-300
       "
@@ -43,13 +43,13 @@ export default function Pricing() {
 
         {/* Header */}
         <div className="lp-section-header">
-          <h2 className="lp-section-title lp-section-title--white
-            text-gray-900 dark:text-gray-100">
+          <h2 className="lp-section-title
+            text-gray-700 dark:text-gray-100">
             Simple, honest pricing
           </h2>
 
           <p className="lp-section-sub lp-section-sub--muted
-            text-gray-600 dark:text-gray-400">
+            text-gray-600 dark:text-gray-200">
             Start free. Upgrade when you need to.
           </p>
         </div>

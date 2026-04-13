@@ -68,8 +68,8 @@ export default function ContactPage() {
             <p className="text-[0.82rem] text-slate-500 dark:text-slate-400 leading-[1.6]">
               Send us an email and we&apos;ll get back to you as soon as possible.
             </p>
-            <a href="mailto:support@taskflow.com" className="inline-block mt-1.5 text-[0.82rem] font-medium text-[#6c47ff] no-underline hover:underline">
-              support@taskflow.com
+            <a href="mailto:support@Doify.com" className="inline-block mt-1.5 text-[0.82rem] font-medium text-[#6c47ff] no-underline hover:underline">
+              support@Doify.com
             </a>
           </motion.div>
 
