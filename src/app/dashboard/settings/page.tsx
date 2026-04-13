@@ -10,12 +10,12 @@ import {
   useChangePasswordMutation,
   type UpdateProfilePayload,
 } from "@/lib/features/profile/profileApi";
-import { Eye, EyeOff, Loader, Check } from "lucide-react";
+import { Eye, EyeOff, Loader, Check, User, Lock, ChevronRight, Shield } from "lucide-react";
 import { updateProfileSchema, changePasswordSchema } from "@/lib/schemas";
 import AvatarUpload from "@/components/avatar/AvatarUpload";
 
 const GENDER_ENUM = ["MALE", "FEMALE", "OTHER", "PREFER_NOT_TO_SAY"] as const;
-type GenderEnum = typeof GENDER_ENUM[number];
+type GenderEnum = (typeof GENDER_ENUM)[number];
 
 function isValidGender(val: string): val is GenderEnum {
   return GENDER_ENUM.includes(val as GenderEnum);
@@ -23,45 +23,46 @@ function isValidGender(val: string): val is GenderEnum {
 
 export default function SettingsPage() {
   const dispatch = useAppDispatch();
-  const user  = useAppSelector((s) => s.auth.user);
+  const user = useAppSelector((s) => s.auth.user);
   const token = useAppSelector((s) => s.auth.token);
 
   const { data: profile, isLoading: profileLoading } = useGetProfileQuery();
-  const [updateProfile]  = useUpdateProfileMutation();
+  const [updateProfile] = useUpdateProfileMutation();
   const [changePassword] = useChangePasswordMutation();
 
-  const [saving,       setSaving]       = useState(false);
-  const [saveSuccess,  setSaveSuccess]  = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [errors,       setErrors]       = useState<string[]>([]);
+  const [errors, setErrors] = useState<string[]>([]);
+  const [activeSection, setActiveSection] = useState<"profile" | "password">("profile");
 
   const [form, setForm] = useState({
-    fullName:     "",
-    username:     "",
-    email:        "",
-    gender:       "",
+    fullName: "",
+    username: "",
+    email: "",
+    gender: "",
     profilePhoto: "",
   });
 
   const [pwdForm, setPwdForm] = useState({
     currentPassword: "",
-    newPassword:     "",
+    newPassword: "",
     confirmPassword: "",
   });
 
   const [show, setShow] = useState({
     currentPassword: false,
-    newPassword:     false,
+    newPassword: false,
     confirmPassword: false,
   });
 
   useEffect(() => {
     if (profile) {
       setForm({
-        fullName:     profile.fullName     ?? "",
-        username:     profile.username     ?? "",
-        email:        profile.email        ?? "",
-        gender:       profile.gender       ?? "",
+        fullName: profile.fullName ?? "",
+        username: profile.username ?? "",
+        email: profile.email ?? "",
+        gender: profile.gender ?? "",
         profilePhoto: profile.profilePhoto ?? "",
       });
     }
@@ -75,7 +76,6 @@ export default function SettingsPage() {
     setSaving(true);
     setSaveSuccess(false);
     setErrors([]);
-
     try {
       if (!profile) {
         setErrors(["Profile not loaded yet. Please wait and try again."]);
@@ -83,10 +83,10 @@ export default function SettingsPage() {
       }
 
       const hasChanges =
-        form.fullName     !== (profile.fullName     ?? "") ||
-        form.username     !== (profile.username     ?? "") ||
-        form.email        !== (profile.email        ?? "") ||
-        form.gender       !== (profile.gender       ?? "") ||
+        form.fullName !== (profile.fullName ?? "") ||
+        form.username !== (profile.username ?? "") ||
+        form.email !== (profile.email ?? "") ||
+        form.gender !== (profile.gender ?? "") ||
         form.profilePhoto !== (profile.profilePhoto ?? "");
 
       if (!hasChanges) {
@@ -97,8 +97,8 @@ export default function SettingsPage() {
       const validation = updateProfileSchema.safeParse({
         fullName: form.fullName,
         username: form.username,
-        email:    form.email,
-        gender:   form.gender || undefined,
+        email: form.email,
+        gender: form.gender || undefined,
       });
 
       if (!validation.success) {
@@ -107,12 +107,12 @@ export default function SettingsPage() {
       }
 
       const payload: UpdateProfilePayload = {
-  fullName:     form.fullName,
-  profilePhoto: form.profilePhoto || undefined,
-  ...(form.username !== profile.username && { username: form.username }),
-  ...(form.email    !== profile.email    && { email:    form.email    }),
-  ...(isValidGender(form.gender)         && { gender:   form.gender   }),
-};
+        fullName: form.fullName,
+        profilePhoto: form.profilePhoto || undefined,
+        ...(form.username !== profile.username && { username: form.username }),
+        ...(form.email !== profile.email && { email: form.email }),
+        ...(isValidGender(form.gender) && { gender: form.gender }),
+      };
 
       const updated = await updateProfile(payload).unwrap();
 
@@ -121,8 +121,8 @@ export default function SettingsPage() {
           setCredentials({
             user: {
               ...user,
-              name:   updated.fullName,
-              email:  updated.email,
+              name: updated.fullName,
+              email: updated.email,
               avatar: updated.profilePhoto ?? form.profilePhoto,
             },
             token,
@@ -135,7 +135,6 @@ export default function SettingsPage() {
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (err: any) {
       setErrors([err?.data?.message ?? err?.message ?? "Failed to save profile."]);
-      console.error("Profile save error:", err);
     } finally {
       setSaving(false);
     }
@@ -149,9 +148,10 @@ export default function SettingsPage() {
         setErrors(result.error.issues.map((i) => i.message));
         return;
       }
+
       await changePassword({
         currentPassword: result.data.currentPassword,
-        newPassword:     result.data.newPassword,
+        newPassword: result.data.newPassword,
       }).unwrap();
 
       setShowPassword(false);
@@ -159,197 +159,266 @@ export default function SettingsPage() {
       alert("Password changed successfully!");
     } catch (err: any) {
       alert(err?.data?.message ?? "Failed to change password.");
-      console.error("Password change error:", err);
     }
   };
 
   const genderOptions = [
-    { value: "",                  label: "Not specified"     },
-    { value: "MALE",              label: "Male"              },
-    { value: "FEMALE",            label: "Female"            },
-    { value: "OTHER",             label: "Other"             },
+    { value: "", label: "Not specified" },
+    { value: "MALE", label: "Male" },
+    { value: "FEMALE", label: "Female" },
+    { value: "OTHER", label: "Other" },
     { value: "PREFER_NOT_TO_SAY", label: "Prefer not to say" },
+  ];
+
+  const navItems = [
+    { id: "profile" as const, label: "Profile", icon: User, desc: "Personal info & avatar" },
+    { id: "password" as const, label: "Security", icon: Shield, desc: "Password & access" },
   ];
 
   return (
     <>
       <DashboardHeader showCreate={false} />
-    <div className="flex-1 bg-white dark:bg-[#1E1B2E] min-h-screen">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Settings</h1>
-          <p className="text-slate-600 dark:text-slate-400">Manage your profile and account</p>
-        </div>
+      <div className="flex-1 min-h-screen bg-slate-50 dark:bg-[#080814]">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
 
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-6">Profile</h2>
-
-          <div className="flex items-center gap-6 mb-8 pb-8 border-b border-slate-200 dark:border-slate-700">
-            <AvatarUpload
-              currentUrl={form.profilePhoto}
-              displayName={form.fullName}
-              onUpload={handleAvatarUpload}
-              disabled={saving}
-              size={96}
-            />
-            <div>
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-1">
-                {form.fullName || "—"}
-              </h3>
-              <p className="text-sm text-slate-500 dark:text-slate-400">
-                {form.username && <>@{form.username}</>}
-                {isValidGender(form.gender) && (
-                  <><br />{genderOptions.find((o) => o.value === form.gender)?.label}</>
-                )}
-              </p>
-            </div>
+          {/* Page heading */}
+          <div className="mb-5">
+            <span className="inline-block px-3 py-1 text-xs font-semibold tracking-widest uppercase bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-400 rounded-lg">
+              Account
+            </span>
+            <h1 className="text-4xl font-bold text-slate-900 dark:text-white mt-3 tracking-tight">
+              Profile
+            </h1>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="flex flex-col md:flex-row gap-8">
 
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Full Name</label>
-              <input
-                type="text"
-                value={form.fullName}
-                onChange={(e) => setForm({ ...form, fullName: e.target.value })}
-                className="w-full px-4 py-2 rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-slate-400 dark:focus:border-slate-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Username</label>
-              <input
-                type="text"
-                value={form.username}
-                onChange={(e) => setForm({ ...form, username: e.target.value })}
-                className="w-full px-4 py-2 rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-slate-400 dark:focus:border-slate-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Email Address</label>
-              <input
-                type="email"
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="w-full px-4 py-2 rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-slate-400 dark:focus:border-slate-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Gender</label>
-              <select
-                value={form.gender}
-                onChange={(e) => setForm({ ...form, gender: e.target.value })}
-                className="w-full px-4 py-2 rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-slate-400 dark:focus:border-slate-500"
-              >
-                {genderOptions.map((opt) => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
-              </select>
-            </div>
-
-            {profile?.createdAt && (
-              <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Member Since</label>
-                <div className="w-full px-4 py-2 rounded-md border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-sm">
-                  {new Date(profile.createdAt).toLocaleDateString("en-US", {
-                    year: "numeric", month: "long", day: "numeric",
-                  })}
-                </div>
-              </div>
-            )}
-          </div>
-
-          <button
-            onClick={handleSave}
-            disabled={saving || profileLoading}
-            style={{ backgroundColor: "#6C5CE7" }}
-            className="px-6 py-2 text-white font-medium rounded-md hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
-          >
-            {profileLoading ? (
-              <><Loader size={16} className="animate-spin" /> Loading…</>
-            ) : saving ? (
-              <><Loader size={16} className="animate-spin" /> Saving…</>
-            ) : saveSuccess ? (
-              <><Check size={16} /> Saved!</>
-            ) : (
-              <><Check size={16} /> Save Changes</>
-            )}
-          </button>
-
-          {errors.length > 0 && (
-            <div className="mt-3 space-y-1 text-sm text-red-600 dark:text-red-400">
-              {errors.map((e, i) => <p key={i}>{e}</p>)}
-            </div>
-          )}
-        </div>
-
-        <div className="pt-8 border-t border-slate-200 dark:border-slate-700">
-          <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-6">Password</h2>
-
-          {!showPassword ? (
-            <button
-              onClick={() => setShowPassword(true)}
-              className="px-6 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-medium rounded-md hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
-            >
-              Change My Password
-            </button>
-          ) : (
-            <div className="space-y-4 max-w-md mb-4">
-              {(
-                [
-                  { key: "currentPassword", label: "Current Password" },
-                  { key: "newPassword",     label: "New Password"     },
-                  { key: "confirmPassword", label: "Confirm Password" },
-                ] as const
-              ).map(({ key, label }) => (
-                <div key={key} className="relative">
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                    {label}
-                  </label>
-                  <input
-                    type={show[key] ? "text" : "password"}
-                    value={pwdForm[key]}
-                    onChange={(e) => setPwdForm({ ...pwdForm, [key]: e.target.value })}
-                    className="w-full px-4 py-2 pr-10 rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-slate-400"
-                  />
+            {/* Sidebar Navigation */}
+            <aside className="w-full md:w-60 shrink-0">
+              <nav className="space-y-1">
+                {navItems.map(({ id, label, icon: Icon, desc }) => (
                   <button
-                    type="button"
-                    onClick={() => setShow({ ...show, [key]: !show[key] })}
-                    className="absolute right-3 top-8 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+                    key={id}
+                    onClick={() => {
+                      setActiveSection(id);
+                      setErrors([]);
+                    }}
+                    className={`w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl text-left transition-all font-bold text-2xl
+                      ${activeSection === id
+                        ? "bg-gray-300 text-black"
+                        : "hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-600 dark:text-slate-400"
+                      }`}
                   >
-                    {show[key] ? <EyeOff size={16} /> : <Eye size={16} />}
+                    <div className={`p-2 rounded-xl ${activeSection === id ? "bg-white/20" : "bg-slate-200 dark:bg-slate-800"}`}>
+                      <Icon size={16} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-bold text-lg">{label}</div>
+                      <div className="text-xs text-slate-500 dark:text-slate-500 mt-0.5 ">{desc}</div>
+                    </div>
+                    <ChevronRight size={16} className={`transition-transform ${activeSection === id ? "translate-x-1" : "opacity-40"}`} />
+                  </button>
+                ))}
+              </nav>
+            </aside>
+
+            {/* Main Content */}
+            <main className="flex-1">
+
+              {/* PROFILE SECTION */}
+              {activeSection === "profile" && (
+                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8">
+
+                  <div className="flex items-center gap-6 mb-10">
+                    <div className="ring-2 ring-blue-200 dark:ring-blue-900 rounded-full p-1">
+                      <AvatarUpload
+                        currentUrl={form.profilePhoto}
+                        displayName={form.fullName}
+                        onUpload={handleAvatarUpload}
+                        disabled={saving}
+                        size={88}
+                      />
+                    </div>
+
+                    <div>
+                      <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">
+                        {form.fullName || "Your Name"}
+                      </h2>
+                      {form.username && <p className="text-slate-500 dark:text-slate-400">@{form.username}</p>}
+                      {isValidGender(form.gender) && (
+                        <span className="inline-block mt-2 px-4 py-1 text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-full">
+                          {genderOptions.find((o) => o.value === form.gender)?.label}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="h-px bg-slate-200 dark:bg-slate-800 my-8" />
+
+                  <h3 className="font-semibold text-slate-900 dark:text-white mb-6">Personal Information</h3>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    {[
+                      { id: "fullName", label: "Full Name", type: "text", key: "fullName" },
+                      { id: "username", label: "Username", type: "text", key: "username" },
+                      { id: "email", label: "Email Address", type: "email", key: "email" },
+                    ].map(({ id, label, type, key }) => (
+                      <div key={id}>
+                        <label htmlFor={id} className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-2 tracking-wide">
+                          {label}
+                        </label>
+                        <input
+                          id={id}
+                          type={type}
+                          value={form[key as keyof typeof form]}
+                          onChange={(e) => setForm({ ...form, [key]: e.target.value })}
+                          className="w-full px-4 py-3 rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:border-blue-500 transition-colors"
+                        />
+                      </div>
+                    ))}
+
+                    <div>
+                      <label htmlFor="gender" className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-2 tracking-wide">
+                        Gender
+                      </label>
+                      <select
+                        id="gender"
+                        value={form.gender}
+                        onChange={(e) => setForm({ ...form, gender: e.target.value })}
+                        className="w-full px-4 py-3 rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:border-blue-500 transition-colors"
+                      >
+                        {genderOptions.map((opt) => (
+                          <option key={opt.value} value={opt.value}>{opt.label}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {profile?.createdAt && (
+                      <div>
+                        <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-2 tracking-wide">
+                          Member Since
+                        </label>
+                        <div className="w-full px-4 py-3 rounded-2xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-500 text-sm">
+                          {new Date(profile.createdAt).toLocaleDateString("en-US", {
+                            year: "numeric", month: "long", day: "numeric",
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {errors.length > 0 && (
+                    <div className="mt-6 p-4 rounded-2xl bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-900 text-red-600 dark:text-red-400 text-sm">
+                      {errors.map((e, i) => (
+                        <p key={i} className="flex items-start gap-2">✕ {e}</p>
+                      ))}
+                    </div>
+                  )}
+
+                  <button
+                    onClick={handleSave}
+                    disabled={saving || profileLoading}
+                    className={`mt-8 w-full sm:w-auto px-8 py-3 text-sm font-semibold rounded-2xl flex items-center justify-center gap-2 transition-all
+                      ${saveSuccess 
+                        ? "bg-emerald-600 text-white" 
+                        : "bg-blue-600 hover:bg-blue-700 text-white"
+                      } disabled:opacity-70`}
+                  >
+                    {saving ? (
+                      <><Loader size={18} className="animate-spin" /> Saving...</>
+                    ) : saveSuccess ? (
+                      <><Check size={18} /> Saved Successfully</>
+                    ) : (
+                      <><Check size={18} /> Save Changes</>
+                    )}
                   </button>
                 </div>
-              ))}
+              )}
 
-              <div className="flex gap-3 pt-2">
-                <button
-                  onClick={handlePasswordSave}
-                  style={{ backgroundColor: "#6C5CE7" }}
-                  className="flex-1 px-6 py-2 text-white font-medium rounded-md hover:opacity-90 transition-opacity"
-                >
-                  Update Password
-                </button>
-                <button
-                  onClick={() => {
-                    setShowPassword(false);
-                    setPwdForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
-                  }}
-                  className="px-6 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-medium rounded-md hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          )}
+              {/* PASSWORD SECTION */}
+              {activeSection === "password" && (
+                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8">
+
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="p-3 bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 rounded-2xl">
+                      <Lock size={20} />
+                    </div>
+                    <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">Security</h2>
+                  </div>
+                  <p className="text-slate-500 dark:text-slate-400 mt-1">Keep your account secure with a strong password.</p>
+
+                  <div className="h-px bg-slate-200 dark:bg-slate-800 my-8" />
+
+                  {!showPassword ? (
+                    <button
+                      onClick={() => setShowPassword(true)}
+                      className="flex items-center gap-2 px-6 py-3 border border-slate-300 dark:border-slate-700 rounded-2xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                    >
+                      <Lock size={18} /> Change Password
+                    </button>
+                  ) : (
+                    <div className="max-w-md space-y-6">
+                      {[
+                        { key: "currentPassword", label: "Current Password" },
+                        { key: "newPassword", label: "New Password" },
+                        { key: "confirmPassword", label: "Confirm Password" },
+                      ].map(({ key, label }) => (
+                        <div key={key}>
+                          <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-2 tracking-wide">
+                            {label}
+                          </label>
+                          <div className="relative">
+                            <input
+                              type={show[key as keyof typeof show] ? "text" : "password"}
+                              value={pwdForm[key as keyof typeof pwdForm]}
+                              onChange={(e) => setPwdForm({ ...pwdForm, [key]: e.target.value })}
+                              className="w-full px-4 py-3 rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:border-blue-500 transition-colors"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShow((prev) => ({ ...prev, [key]: !prev[key as keyof typeof show] }))}
+                              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"
+                            >
+                              {show[key as keyof typeof show] ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+
+                      {errors.length > 0 && (
+                        <div className="p-4 rounded-2xl bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-900 text-red-600 dark:text-red-400 text-sm">
+                          {errors.map((e, i) => <p key={i}>✕ {e}</p>)}
+                        </div>
+                      )}
+
+                      <div className="flex gap-3 pt-4">
+                        <button
+                          onClick={handlePasswordSave}
+                          className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-2xl font-semibold flex items-center justify-center gap-2 transition-colors"
+                        >
+                          <Lock size={18} /> Update Password
+                        </button>
+                        <button
+                          onClick={() => {
+                            setShowPassword(false);
+                            setErrors([]);
+                            setPwdForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+                          }}
+                          className="px-6 py-3 border border-slate-300 dark:border-slate-700 rounded-2xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+            </main>
+          </div>
         </div>
-
       </div>
-    </div>
-  </>
+    </>
   );
 }

@@ -26,11 +26,11 @@ import {
 
 
 function Skeleton({ className = "" }: { className?: string }) {
-  return <div className={`animate-pulse bg-slate-100 dark:bg-slate-700 rounded-lg ${className}`} />;
+  return <div className={`animate-pulse bg-slate-100 dark:bg-[#2a2d45] rounded-lg ${className}`} />;
 }
 
 const PRIORITY_LABEL: Record<string, string> = {
-  LOW:    "bg-slate-50  text-slate-600 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700",
+  LOW:    "bg-slate-50  text-slate-600 border border-slate-200 dark:bg-[#252840] dark:text-slate-300 dark:border-[#2a2d45]",
   MEDIUM: "bg-orange-50 text-orange-600 border border-orange-200 dark:bg-orange-900/40 dark:text-orange-300",
   HIGH:   "bg-red-50    text-red-600   border border-red-200 dark:bg-red-900/40 dark:text-red-300",
   URGENT: "bg-red-100   text-red-800   border border-red-300 dark:bg-red-900/60 dark:text-red-200",
@@ -93,11 +93,11 @@ export default function DashboardPage() {
 
       {showModal && <NewTaskModal onClose={() => setShowModal(false)} />}
 
-      <main className="flex-1 overflow-auto px-4 py-6 sm:px-6 lg:px-8 bg-slate-50 dark:bg-slate-950">
+      <main className="flex-1 overflow-auto px-4 py-6 sm:px-6 lg:px-8 bg-slate-50 dark:bg-[#1E1B2E]">
         <div className="mx-auto max-w-7xl space-y-6">
 
           {/* Greeting */}
-          <div className="bg-white dark:bg-slate-900 rounded-xl border border-[#E8E8EF] dark:border-slate-700 px-4 sm:px-6 py-4 sm:py-5 shadow-sm">
+          <div className="bg-white dark:bg-[#1a1c2e] rounded-xl border border-[#E8E8EF] dark:border-[#2a2d45] px-4 sm:px-6 py-4 sm:py-5 shadow-sm">
             <h1 className="text-[22px] font-bold text-slate-950 dark:text-white leading-tight">
               Good morning, {mounted ? (user?.name?.split(" ")[0] ?? "there") : "there"} 👋
             </h1>
@@ -193,12 +193,12 @@ export default function DashboardPage() {
               ) : (
                 <div className="space-y-4">
                   {projects.slice(0, 4).map(({ projectId, projectName, progressPercent }) => (
-                    <div key={projectId} className="space-y-2 border border-[#E8E8EF] dark:border-slate-700 rounded-xl p-4 bg-white dark:bg-slate-900">
+                    <div key={projectId} className="space-y-2 border border-[#E8E8EF] dark:border-[#2a2d45] rounded-xl p-4 bg-white dark:bg-[#1a1c2e]">
                       <div className="flex items-center justify-between gap-3">
                         <span className="text-sm font-medium text-slate-950 dark:text-white">{projectName}</span>
                         <span className="text-sm font-semibold text-slate-500">{progressPercent}%</span>
                       </div>
-                      <div className="h-2 rounded-full bg-[#E8E8EF] dark:bg-slate-700 overflow-hidden">
+                      <div className="h-2 rounded-full bg-[#E8E8EF] dark:bg-[#2a2d45] overflow-hidden">
                         <div className="h-full rounded-full bg-[#6C5CE7]" style={{ width: `${progressPercent}%` }} />
                       </div>
                     </div>
@@ -222,7 +222,7 @@ export default function DashboardPage() {
               ) : (
                 <div className="space-y-3">
                   {myTasks.slice(0, 2).map((task) => (
-                    <div key={task.id} className="border border-[#E8E8EF] dark:border-slate-700 rounded-xl p-4 space-y-3 hover:border-[#D1D5DB] transition-colors bg-slate-50 dark:bg-slate-900">
+                    <div key={task.id} className="border border-[#E8E8EF] dark:border-[#2a2d45] rounded-xl p-4 space-y-3 hover:border-[#D1D5DB] transition-colors bg-slate-50 dark:bg-[#1a1c2e]">
                       <div className="flex items-center justify-between gap-3">
                         <h4 className="text-sm font-semibold text-slate-950 dark:text-white">{task.title}</h4>
                         <button className="text-slate-500"><MoreHorizontal size={15} /></button>

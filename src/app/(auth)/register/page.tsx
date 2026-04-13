@@ -10,17 +10,21 @@ import { registerSchema } from "@/lib/schemas";
 import type { z } from "zod";
 import { Eye, EyeOff, CheckCircle2, ArrowRight, Check } from "lucide-react";
 
+// TODO: Update your registerSchema in "@/lib/schemas" to include gender:
+// gender: z.enum(["male", "female", "non-binary", "other", "prefer-not-to-say"]).optional(),
+
 type Form = z.infer<typeof registerSchema>;
-type Errors = Partial<Record<keyof Form | "general", string>>;
+type Errors = Partial<Record<keyof Form | "gender" | "general", string>>;
 
 export default function RegisterPage() {
   const router   = useRouter();
   const dispatch = useAppDispatch();
   const [register, { isLoading }] = useRegisterMutation();
 
-  const [form, setForm] = useState<Form>({
+  const [form, setForm] = useState<Form & { gender: string }>({
     fullName: "", username: "", email: "",
     password: "", confirmPassword: "",
+    gender: "",
   });
   const [errors, setErrors] = useState<Errors>({});
   const [showPwd, setShowPwd]     = useState(false);
@@ -47,6 +51,8 @@ export default function RegisterPage() {
         username: result.data.username,
         email: result.data.email,
         password: result.data.password,
+        // Only send gender if the user selected one (optional field)
+        ...(form.gender && { gender: form.gender }),
       }).unwrap();
       dispatch(setCredentials({ user: res.user, token: res.token, refreshToken: res.refreshToken }));
       router.push("/dashboard");
@@ -65,7 +71,7 @@ export default function RegisterPage() {
   const strengthColor = ["", "bg-red-400", "bg-orange-400", "bg-yellow-400", "bg-green-500"][strength];
   const strengthLabel = ["", "Weak", "Fair", "Good", "Strong"][strength];
 
-  const inputCls = (key: keyof Form) =>
+  const inputCls = (key: keyof Form | "gender") =>
       `w-full h-[46px] px-4 rounded-[14px] border text-sm outline-none transition-all bg-white dark:bg-slate-900 placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
           errors[key] ? "border-red-400 bg-red-50 dark:bg-red-950" : "border-slate-200 dark:border-slate-700 focus:border-[#4f39f6] focus:ring-2 focus:ring-[#4f39f6]/10"
       }`;
@@ -178,6 +184,26 @@ export default function RegisterPage() {
                        onChange={(e) => setForm({ ...form, email: e.target.value })}
                        className={inputCls("email")} />
                 {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
+              </div>
+
+              {/* Gender - NEW FIELD */}
+              <div>
+                <label className="block text-sm font-medium text-slate-950 dark:text-white mb-1.5">
+                  Gender <span className="text-slate-400 text-xs font-normal">(optional)</span>
+                </label>
+                <select
+                  value={form.gender}
+                  onChange={(e) => setForm({ ...form, gender: e.target.value })}
+                  className={inputCls("gender")}
+                >
+                  <option value="">Select your gender</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="non-binary">Non-binary</option>
+                  <option value="other">Other</option>
+                  <option value="prefer-not-to-say">Prefer not to say</option>
+                </select>
+                {errors.gender && <p className="mt-1 text-xs text-red-500">{errors.gender}</p>}
               </div>
 
               {/* Password */}
