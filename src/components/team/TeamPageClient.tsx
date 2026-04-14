@@ -20,7 +20,7 @@ export default function TeamPageClient() {
   const router       = useRouter();
   const searchParams = useSearchParams();
   const taskId      = searchParams?.get("taskId");
-  const teamIdParam = searchParams?.get("teamId"); // persisted in URL
+  const teamIdParam = searchParams?.get("teamId");
 
   const [showCreate, setShowCreate] = useState(false);
   const [editTeam,   setEditTeam]   = useState<Team | null>(null);
@@ -33,7 +33,6 @@ export default function TeamPageClient() {
 
   const teams = teamsPage?.content ?? [];
 
-  // Restore team from URL on load or when teams data arrives
   useEffect(() => {
     if (teams.length === 0) return;
 
@@ -45,15 +44,14 @@ export default function TeamPageClient() {
       }
     }
 
-    // taskId-based auto-select
+
     if (project && project.teamId && !activeTeam) {
       const team = teams.find((t) => t.id === project.teamId);
       if (team) selectTeam(team, teams.indexOf(team));
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+ 
   }, [teams, teamIdParam, project]);
 
-  // Select a team → store its ID in the URL so refresh restores it
   function selectTeam(team: Team, idx: number) {
     setActiveTeam({ team, idx });
     const params = new URLSearchParams(searchParams?.toString() ?? "");
