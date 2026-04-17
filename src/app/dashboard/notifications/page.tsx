@@ -15,45 +15,32 @@ import type { Notification } from "@/lib/features/types/task-type";
 
 const TYPE_STYLE: Record<string, { bg: string; dot: string }> = {
   TASK_ASSIGNED:       { bg: "bg-blue-50 dark:bg-blue-950",   dot: "bg-blue-500" },
+  TASK_CREATED:        { bg: "bg-blue-50 dark:bg-blue-950",   dot: "bg-blue-400" },
   DUE_DATE_REMINDER:   { bg: "bg-orange-50 dark:bg-orange-950", dot: "bg-orange-500" },
   OVERDUE_TASK:        { bg: "bg-red-50 dark:bg-red-950",    dot: "bg-red-500" },
   MENTIONED_IN_COMMENT:{ bg: "bg-yellow-50 dark:bg-yellow-950", dot: "bg-yellow-500" },
   INVITATION_ACCEPTED: { bg: "bg-green-50 dark:bg-green-950",  dot: "bg-green-500" },
   COMMENT_ADDED:       { bg: "bg-purple-50 dark:bg-purple-950", dot: "bg-purple-500" },
   PROJECT_UPDATED:     { bg: "bg-cyan-50 dark:bg-cyan-950",   dot: "bg-cyan-500" },
+  PROJECT_CREATED:     { bg: "bg-cyan-50 dark:bg-cyan-950",   dot: "bg-cyan-400" },
   TEAM_INVITATION:     { bg: "bg-indigo-50 dark:bg-indigo-950", dot: "bg-indigo-500" },
+  TEAM_MEMBER_JOINED:  { bg: "bg-green-50 dark:bg-green-950",  dot: "bg-green-400" },
 };
 
-function getNotificationHref(notif: Notification): string {
-  const refType = String(notif.referenceType ?? "").trim().toUpperCase();
-  const refId   = notif.referenceId ? encodeURIComponent(notif.referenceId) : null;
+function notifHref(notif: Notification): string {
+  if (notif.type === "TEAM_INVITATION") return "/dashboard/team";
+  if (!notif.referenceId) return "/dashboard/notifications";
 
-  switch (notif.type) {
-    case "TASK_ASSIGNED":
-    case "DUE_DATE_REMINDER":
-    case "OVERDUE_TASK":
-    case "COMMENT_ADDED":
-      return refId ? `/dashboard/tasks?taskId=${refId}` : "/dashboard/tasks";
-
-    case "MENTIONED_IN_COMMENT":
-      return "/dashboard/tasks";
-
-    case "PROJECT_UPDATED":
-      return "/dashboard/projects";
-
-    case "TEAM_INVITATION":
-      return "/dashboard/team";
-
-    case "INVITATION_ACCEPTED":
-      return refId ? `/dashboard/team?teamId=${refId}` : "/dashboard/team";
-
-    default:
-      if (refType === "TASK")    return refId ? `/dashboard/tasks?taskId=${refId}` : "/dashboard/tasks";
-      if (refType === "PROJECT") return "/dashboard/projects";
-      if (refType === "TEAM")    return refId ? `/dashboard/team/${refId}` : "/dashboard/team";
-      if (refType === "COMMENT") return "/dashboard/tasks";
-      return "/dashboard/notifications";
+  if (["INVITATION_ACCEPTED", "TEAM_MEMBER_JOINED"].includes(notif.type)) {
+    return `/dashboard/team?teamId=${encodeURIComponent(notif.referenceId)}&notifType=${notif.type}`;
   }
+
+  const q = new URLSearchParams({
+    notifRef:  notif.referenceId,
+    notifType: notif.type,
+  });
+  if (notif.referenceType) q.set("notifRefType", notif.referenceType);
+  return `/dashboard/team?${q}`;
 }
 
 function Skeleton() {
@@ -92,7 +79,7 @@ function NotifCard({
 
   return (
     <div
-      className={`group rounded-3xl border p-5 transition-all ${
+      className={`mb-1 group rounded-3xl border p-5 transition-all ${
         notif.isRead 
           ? "border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1a1c2e] shadow-sm" 
           : "border-transparent bg-slate-50 dark:bg-[#1a1c2e] shadow-md"
@@ -160,13 +147,9 @@ export default function NotificationsPage() {
 
   const handleCardClick = async (notif: Notification) => {
     if (!notif.isRead) {
-      try {
-        await markRead(notif.id);
-      } catch {
-        // swallow errors and continue navigation
-      }
+      try { await markRead(notif.id); } catch { /* swallow */ }
     }
-    router.push(getNotificationHref(notif));
+    router.push(notifHref(notif));
   };
 
   return (
@@ -214,13 +197,13 @@ export default function NotificationsPage() {
           </div>
 
           {isError && (
-            <div className="p-4 rounded-xl bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 text-sm text-red-600 dark:text-red-400 flex items-center justify-between">
+            <div className="p-4 rounded-xl bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 text-sm text-red-600 dark:text-red-400 flex items-center justify-between mt-3">
               Failed to load notifications.
               <button onClick={() => refetch()} className="font-semibold underline">Retry</button>
             </div>
           )}
 
-          <div className="space-y-2">
+          <div className="space-y-2 mt-3">
             {isLoading
               ? Array(5).fill(0).map((_, i) => <Skeleton key={i} />)
               : displayed.length === 0

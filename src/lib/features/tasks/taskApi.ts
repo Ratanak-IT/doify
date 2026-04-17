@@ -37,7 +37,7 @@ export const taskApi = baseApi.injectEndpoints({
         method: "POST",
         body,
       }),
-      invalidatesTags: ["PersonalTask", "Task", "Stats", "Dashboard"],
+      invalidatesTags: ["PersonalTask", "Task", "Stats", "Dashboard", "Notification"],
     }),
 
     getProjectTasks: builder.query<
@@ -88,6 +88,7 @@ export const taskApi = baseApi.injectEndpoints({
         "Task",
         "Stats",
         "Dashboard",
+        "Notification",
       ],
     }),
 
@@ -198,7 +199,7 @@ export const taskApi = baseApi.injectEndpoints({
         method: "POST",
         body: { content },
       }),
-      invalidatesTags: ["Comment"],
+      invalidatesTags: ["Comment", "Notification"],
     }),
 
     updateComment: builder.mutation<Comment, { taskId: string; commentId: string; content: string }>({
@@ -254,7 +255,7 @@ export const taskApi = baseApi.injectEndpoints({
       }
     >({
       query: (body) => ({ url: "/projects", method: "POST", body }),
-      invalidatesTags: ["Project", "Dashboard"],
+      invalidatesTags: ["Project", "Dashboard", "Notification"],
     }),
 
     updateProject: builder.mutation<

@@ -77,8 +77,8 @@ function ResetPasswordForm() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-          <div>
-            <label className="block text-sm font-medium text-slate-950 dark:text-white mb-1.5">New password</label>
+          <div className="mb-3">
+            <label className="block text-sm font-medium text-slate-950 dark:text-white ">New password</label>
             <div className="relative">
               <input
                   type={showPwd ? "text" : "password"}
@@ -97,8 +97,8 @@ function ResetPasswordForm() {
             {errors.newPassword && <p className="mt-1 text-xs text-red-500">{errors.newPassword}</p>}
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-slate-950 dark:text-white mb-1.5">Confirm new password</label>
+          <div className="mb-3">
+            <label className="block text-sm font-medium text-slate-950 dark:text-white ">Confirm new password</label>
             <input
                 type="password"
                 placeholder="Re-enter your password"
@@ -133,15 +133,16 @@ export default function ResetPasswordPage() {
   return (
       <div className="min-h-screen flex">
         {/* Left Panel - Branding */}
-        <div className="hidden lg:flex lg:w-[58%] relative overflow-hidden flex-col justify-between p-12"
-             style={{ background: "linear-gradient(131deg, #312c85 0%, #59168b 50%, #372aac 100%)" }}>
-          {/* Logo */}
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-[14px] bg-white/20 flex items-center justify-center">
-              <CheckCircle2 size={24} className="text-white" />
-            </div>
-            <span className="text-white text-2xl font-bold">Doify</span>
+        <div
+        className="hidden lg:flex lg:w-[58%] flex-col justify-between p-12 overflow-hidden"
+        style={{ background: "linear-gradient(131deg, #312c85 0%, #59168b 50%, #372aac 100%)" }}
+      >
+        <Link href="/" className="flex items-center gap-3 w-fit group">
+          <div className="w-10 h-10 rounded-[14px] bg-white/20 group-hover:bg-white/30 flex items-center justify-center transition-colors">
+            <CheckCircle2 size={24} className="text-white" />
           </div>
+          <span className="text-white text-2xl font-bold">Doify</span>
+        </Link>
 
           {/* Hero */}
           <div className="space-y-8">
@@ -160,7 +161,7 @@ export default function ResetPasswordPage() {
                 { icon: <Shield size={20} />, title: "Encrypted storage", desc: "Your password is securely hashed and encrypted" },
                 { icon: <KeyRound size={20} />, title: "One-time link", desc: "Reset links can only be used once for safety" },
               ].map((f) => (
-                  <div key={f.title} className="flex items-center gap-4 bg-white/10 border border-white/10 rounded-2xl px-5 py-4">
+                  <div key={f.title} className=" mt-3 flex items-center gap-4 bg-white/10 border border-white/10 rounded-2xl px-5 py-4">
                     <div className="w-10 h-10 rounded-[14px] bg-[rgba(97,95,255,0.5)] flex items-center justify-center text-white shrink-0">
                       {f.icon}
                     </div>

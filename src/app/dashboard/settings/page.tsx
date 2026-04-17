@@ -191,7 +191,7 @@ export default function SettingsPage() {
       <DashboardHeader showCreate={false} />
 
       {/* pb-20 on mobile to avoid content hiding behind bottom tab bar */}
-      <div className="flex-1 min-h-screen bg-slate-50 dark:bg-[#080814] pb-20 md:pb-0">
+      <div className="flex-1 min-h-screen bg-[#F8F9FC] dark:bg-[#1E1B2E] pb-20 md:pb-0">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
 
           {/* Page heading */}

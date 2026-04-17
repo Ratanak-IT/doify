@@ -6,7 +6,8 @@ import TaskCard, { COLUMNS, type ColDef } from "@/components/tasks/TaskCard";
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import {
-  Plus, Search, X, Send, Edit2, Check, Trash2,
+  Plus, Search, Calendar, RefreshCw,
+  Trash2, X, Send, Edit2, Check, Pencil,
 } from "lucide-react";
 import {
   useGetPersonalTasksQuery,
@@ -17,6 +18,7 @@ import {
   useAddCommentMutation,
   useUpdateCommentMutation,
   useDeleteCommentMutation,
+  useGetTaskQuery,
 } from "@/lib/features/tasks/taskApi";
 import type { Task, TaskStatus, Comment } from "@/lib/features/types/task-type";
 import { createPersonalTaskSchema } from "@/lib/schemas";
@@ -233,15 +235,198 @@ function CommentsDrawer({ task, onClose }: { task: Task; onClose: () => void }) 
   );
 }
 
+/* ── Edit Task Modal ────────────────────────────────────────────── */
+function EditTaskModal({ task, onClose }: { task: Task; onClose: () => void }) {
+  const [updateTask, { isLoading }] = useUpdateTaskMutation();
+  const [form, setForm] = useState({
+    title: task.title ?? "",
+    description: task.description ?? "",
+    priority: task.priority ?? "MEDIUM",
+    dueDate: task.dueDate ?? "",
+  });
+  const [apiError, setApiError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setApiError("");
+    if (!form.title.trim()) { setApiError("Title is required."); return; }
+    try {
+      await updateTask({ id: task.id, data: { ...form } }).unwrap();
+      onClose();
+    } catch (err: unknown) {
+      const e = err as { data?: { message?: string } };
+      setApiError(e?.data?.message ?? "Failed to update task.");
+    }
+  };
+
+  const inputCls = (hasErr?: boolean) =>
+    `w-full h-11 px-3 rounded-md border text-sm outline-none bg-white dark:bg-[#252840] dark:text-white transition-colors placeholder:text-slate-400 dark:placeholder:text-slate-600 ${
+      hasErr
+        ? "border-red-400 dark:border-red-700"
+        : "border-[#D1D5DB] dark:border-[#2a2d45] focus:border-[#6C5CE7] dark:focus:border-[#6C5CE7]"
+    }`;
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div className="bg-white dark:bg-[#1a1c2e] rounded-t-2xl sm:rounded-xl shadow-2xl dark:shadow-black/50 w-full sm:max-w-md max-h-[92dvh] overflow-y-auto border-0 dark:border dark:border-[#2a2d45]">
+        <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-[#F1F5F9] dark:border-[#2a2d45]">
+          <h2 className="text-base font-bold text-[#1E293B] dark:text-white">Edit Task</h2>
+          <button onClick={onClose} className="w-9 h-9 rounded-xl flex items-center justify-center text-[#94A3B8] dark:text-slate-500 hover:bg-[#F1F5F9] dark:hover:bg-[#252840] transition-colors">
+            <X size={15} />
+          </button>
+        </div>
+        <form onSubmit={handleSubmit} className="p-5 space-y-4">
+          {apiError && (
+            <p className="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/40 p-3 rounded-lg">{apiError}</p>
+          )}
+          <div>
+            <label className="block text-sm font-semibold text-[#64748B] dark:text-slate-400 mb-1.5">Title *</label>
+            <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })}
+              placeholder="What needs to be done?" className={inputCls(!form.title.trim())} />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-[#64748B] dark:text-slate-400 mb-1.5">Description</label>
+            <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })}
+              rows={3} placeholder="Add more details…"
+              className="w-full px-3 py-3 rounded-xl border border-[#D1D5DB] dark:border-[#2a2d45] text-sm outline-none focus:border-[#6C5CE7] dark:focus:border-[#6C5CE7] bg-white dark:bg-[#252840] dark:text-white resize-none transition-colors placeholder:text-slate-400 dark:placeholder:text-slate-600" />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm font-semibold text-[#64748B] dark:text-slate-400 mb-1.5">Priority</label>
+              <select value={form.priority} onChange={(e) => setForm({ ...form, priority: e.target.value as Task["priority"] })}
+                className="w-full h-11 px-3 rounded-md border border-[#D1D5DB] dark:border-[#2a2d45] text-sm outline-none focus:border-[#6C5CE7] bg-white dark:bg-[#252840] dark:text-white">
+                <option value="LOW">Low</option>
+                <option value="MEDIUM">Medium</option>
+                <option value="HIGH">High</option>
+                <option value="URGENT">Urgent</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-[#64748B] dark:text-slate-400 mb-1.5">Due date</label>
+              <input type="date" value={form.dueDate} onChange={(e) => setForm({ ...form, dueDate: e.target.value })}
+                className="w-full h-11 px-3 rounded-md border border-[#D1D5DB] dark:border-[#2a2d45] text-sm outline-none focus:border-[#6C5CE7] bg-white dark:bg-[#252840] dark:text-white transition-colors" />
+            </div>
+          </div>
+          <div className="flex gap-3 pt-2">
+            <button type="button" onClick={onClose}
+              className="flex-1 h-12 rounded-xl border border-[#D1D5DB] dark:border-[#2a2d45] text-sm font-semibold text-[#64748B] dark:text-slate-400 hover:bg-[#F1F5F9] dark:hover:bg-[#252840] transition-colors">
+              Cancel
+            </button>
+            <button type="submit" disabled={isLoading}
+              className="flex-1 h-12 rounded-xl bg-[#6C5CE7] hover:bg-[#5B4BD5] text-white text-sm font-semibold transition-colors disabled:opacity-60">
+              {isLoading ? "Saving…" : "Save Changes"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+
+function TaskCard({
+  task, col, onMove, onDelete, onEdit, onDragStart, onDragEnd,
+}: {
+  task: Task; col: ColDef;
+  onMove: (id: string, status: TaskStatus) => void;
+  onDelete: (id: string) => void;
+  onEdit: (task: Task) => void;
+  onDragStart: (task: Task) => void;
+  onDragEnd: () => void;
+}) {
+  const [isDragging, setIsDragging] = useState(false);
+
+  return (
+    <div
+      draggable
+      onDragStart={(e) => {
+        setIsDragging(true);
+        onDragStart(task);
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("taskId", task.id);
+      }}
+      onDragEnd={() => { setIsDragging(false); onDragEnd(); }}
+      className={`bg-white dark:bg-[#1a1c2e] rounded-xl border border-[#E8E8EF] dark:border-[#2a2d45] border-l-[3px] p-3.5 space-y-3
+                 hover:shadow-md dark:hover:shadow-black/30 transition-all cursor-grab active:cursor-grabbing select-none
+                 ${isDragging ? "opacity-40 scale-95 rotate-1 shadow-lg" : ""}`}
+      style={{ borderLeftColor: col.accent }}
+    >
+      {/* Title + actions */}
+      <div className="flex items-start justify-between gap-2">
+        <p className="text-sm font-semibold text-[#1E293B] dark:text-white leading-snug">{task.title}</p>
+        <div className="flex gap-0.5 shrink-0">
+          <button onClick={() => onEdit(task)} title="Edit task"
+            className="w-6 h-6 flex items-center justify-center text-[#94A3B8] dark:text-slate-600 hover:text-[#6C5CE7] transition-colors">
+            <Pencil size={13} />
+          </button>
+          <button onClick={() => { if (confirm("Delete this task?")) onDelete(task.id); }} title="Delete"
+            className="w-6 h-6 flex items-center justify-center text-[#94A3B8] dark:text-slate-600 hover:text-red-500 transition-colors">
+            <Trash2 size={13} />
+          </button>
+        </div>
+      </div>
+
+      {/* Priority + subtask badges */}
+      <div className="flex items-center gap-1.5 flex-wrap">
+        <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded border capitalize ${PRIORITY_STYLE[task.priority] ?? ""}`}>
+          {task.priority.toLowerCase()}
+        </span>
+        {task.subtaskCount != null && task.subtaskCount > 0 && (
+          <span className="text-[10px] text-[#94A3B8] dark:text-slate-500 bg-[#F1F5F9] dark:bg-[#252840] px-1.5 py-0.5 rounded border border-[#D1D5DB] dark:border-[#2a2d45]">
+            {task.subtaskCount} subtask{task.subtaskCount !== 1 ? "s" : ""}
+          </span>
+        )}
+      </div>
+
+      {/* Assignees + due date */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center">
+          {(task.assignees ?? []).slice(0, 3).map((a, i) => (
+            <div key={a.id}
+              className="w-5 h-5 rounded-full flex items-center justify-center text-white text-[8px] font-medium ring-[1.5px] ring-white dark:ring-[#1a1c2e]"
+              style={{ backgroundColor: a.color, marginLeft: i > 0 ? "-4px" : "0" }}>
+              {a.initials}
+            </div>
+          ))}
+        </div>
+        {task.dueDate && (
+          <span className="flex items-center gap-1 text-[10px] text-[#94A3B8] dark:text-slate-500">
+            <Calendar size={10} />
+            {new Date(task.dueDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+          </span>
+        )}
+      </div>
+
+      {/* ── Status move buttons — colored per target column ── */}
+      <div className="flex gap-1 flex-wrap">
+        {COLUMNS.filter((c) => c.id !== task.status).map((c) => (
+          <button
+            key={c.id}
+            onClick={() => onMove(task.id, c.id)}
+            className="text-[9px] px-2 py-0.5 rounded border font-bold uppercase tracking-wide transition-all hover:opacity-80 hover:scale-105"
+            style={{
+              color: c.accent,
+              borderColor: c.accent,
+              backgroundColor: `${c.accent}18`, // ~10% opacity tint
+            }}
+          >
+            → {c.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ── Page ───────────────────────────────────────────────────────── */
 export default function TasksPage() {
   const searchParams = useSearchParams();
   const taskId = searchParams?.get("taskId");
 
-  const [search, setSearch] = useState("");
-  const [showModal, setModal] = useState(false);
-  const [defaultStatus, setDefault] = useState<TaskStatus | undefined>();
-  const [commentTask, setCommentTask] = useState<Task | null>(null);
-  const [subtaskParent, setSubtaskParent] = useState<Task | null>(null);
+  const [search, setSearch]           = useState("");
+  const [showModal, setModal]         = useState(false);
+  const [defaultStatus, setDefault]   = useState<TaskStatus | undefined>();
+  const [editTask, setEditTask]       = useState<Task | null>(null);
 
   const dragTaskRef = useRef<Task | null>(null);
   const [dragOverCol, setDragOverCol] = useState<TaskStatus | null>(null);
@@ -251,11 +436,15 @@ export default function TasksPage() {
   const [updateTask] = useUpdateTaskMutation();
   const [deleteTask] = useDeleteTaskMutation();
 
+  // taskId arrives here only for personal tasks — no longer auto-opens comments drawer
+  const { data: fetchedTask, isSuccess: taskFetched } = useGetTaskQuery(taskId ?? "", {
+    skip: !taskId,
+  });
+
   useEffect(() => {
-    if (!taskId || commentTask || isLoading) return;
-    const task = tasks.find((t) => t.id === taskId);
-    if (task) setCommentTask(task);
-  }, [taskId, tasks, isLoading, commentTask]);
+    if (!taskId || !taskFetched || !fetchedTask || editTask) return;
+    // Could open edit modal from URL param if desired; left as-is for now
+  }, [taskId, taskFetched, fetchedTask, editTask]);
 
   const handleMove = (id: string, status: TaskStatus) => updateTask({ id, data: { status } });
   const handleDelete = (id: string) => deleteTask(id);
@@ -350,8 +539,7 @@ export default function TasksPage() {
                           col={col}
                           onMove={handleMove}
                           onDelete={handleDelete}
-                          onComment={setCommentTask}
-                          onAddSubtask={(t) => setSubtaskParent(t)}
+                          onEdit={setEditTask}
                           onDragStart={(t) => { dragTaskRef.current = t; }}
                           onDragEnd={handleDragEnd}
                         />
@@ -390,13 +578,7 @@ export default function TasksPage() {
       </main>
 
       {showModal && <NewTaskModal defaultStatus={defaultStatus} onClose={() => setModal(false)} />}
-      {commentTask && <CommentsDrawer task={commentTask} onClose={() => setCommentTask(null)} />}
-      {/* {subtaskParent && (
-        <CreateSubtaskModal
-          parentTaskId={subtaskParent.id}
-          onClose={() => setSubtaskParent(null)}
-        />
-      )} */}
+      {editTask && <EditTaskModal task={editTask} onClose={() => setEditTask(null)} />}
     </>
   );
 }

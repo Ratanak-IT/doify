@@ -1,17 +1,20 @@
-// ── Enums ──────────────────────────────────────────────────────────────────
+
 export type TaskStatus   = "TODO" | "IN_PROGRESS" | "IN_REVIEW" | "DONE";
 export type TaskPriority = "LOW" | "MEDIUM" | "HIGH" | "URGENT";
 export type MemberRole   = "OWNER" | "ADMIN" | "MEMBER";
 
 export type NotificationType =
   | "TASK_ASSIGNED"
+  | "TASK_CREATED"
   | "DUE_DATE_REMINDER"
   | "OVERDUE_TASK"
   | "MENTIONED_IN_COMMENT"
   | "INVITATION_ACCEPTED"
   | "COMMENT_ADDED"
   | "PROJECT_UPDATED"
-  | "TEAM_INVITATION";
+  | "PROJECT_CREATED"
+  | "TEAM_INVITATION"
+  | "TEAM_MEMBER_JOINED";
 
 export interface PageResponse<T> {
   content: T[];

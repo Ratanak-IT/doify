@@ -33,16 +33,17 @@ export default function ForgotPasswordPage() {
 
   return (
       <div className="min-h-screen flex">
-        {/* Left Panel - Branding */}
-        <div className="hidden lg:flex lg:w-[58%] relative overflow-hidden flex-col justify-between p-12"
-             style={{ background: "linear-gradient(131deg, #312c85 0%, #59168b 50%, #372aac 100%)" }}>
-          {/* Logo */}
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-[14px] bg-white/20 flex items-center justify-center">
-              <CheckCircle2 size={24} className="text-white" />
-            </div>
-            <span className="text-white text-2xl font-bold">Doify</span>
+         {/* Left Panel - Branding */}
+        <div
+        className="hidden lg:flex lg:w-[58%] flex-col justify-between p-12 overflow-hidden"
+        style={{ background: "linear-gradient(131deg, #312c85 0%, #59168b 50%, #372aac 100%)" }}
+      >
+        <Link href="/" className="flex items-center gap-3 w-fit group">
+          <div className="w-10 h-10 rounded-[14px] bg-white/20 group-hover:bg-white/30 flex items-center justify-center transition-colors">
+            <CheckCircle2 size={24} className="text-white" />
           </div>
+          <span className="text-white text-2xl font-bold">Doify</span>
+        </Link>
 
           {/* Hero */}
           <div className="space-y-8">
@@ -61,7 +62,7 @@ export default function ForgotPasswordPage() {
                 { icon: <Shield size={20} />, title: "Secure process", desc: "Reset links expire after 24 hours for security" },
                 { icon: <Clock size={20} />, title: "Quick recovery", desc: "Get back to your workspace in under a minute" },
               ].map((f) => (
-                  <div key={f.title} className="flex items-center gap-4 bg-white/10 border border-white/10 rounded-2xl px-5 py-4">
+                  <div key={f.title} className="flex items-center gap-4 bg-white/10 border border-white/10 rounded-2xl px-5 py-4 mt-3">
                     <div className="w-10 h-10 rounded-[14px] bg-[rgba(97,95,255,0.5)] flex items-center justify-center text-white shrink-0">
                       {f.icon}
                     </div>
@@ -106,7 +107,7 @@ export default function ForgotPasswordPage() {
                     <Check size={28} className="text-[#05df72]" />
                   </div>
                   <div>
-                    <h2 className="text-[30px] font-bold text-slate-950 dark:text-white mb-2">Check your email</h2>
+                    <h2 className="text-[30px] font-bold text-slate-950 dark:text-white mb-2  ">Check your email</h2>
                     <p className="text-slate-500 dark:text-slate-400 text-base">
                       We sent a password reset link to <span className="font-semibold text-slate-950 dark:text-white">{email}</span>.
                       Check your inbox and follow the instructions.
@@ -129,7 +130,7 @@ export default function ForgotPasswordPage() {
 
                   <form onSubmit={handleSubmit} className="space-y-4" noValidate>
                     <div>
-                      <label className="block text-sm font-medium text-slate-950 dark:text-white mb-1.5">Email address</label>
+                      <label className="block text-sm font-medium text-slate-950 dark:text-white ">Email address</label>
                       <input
                           type="email"
                           placeholder="you@company.com"
@@ -142,7 +143,7 @@ export default function ForgotPasswordPage() {
                     </div>
 
                     <button type="submit" disabled={isLoading}
-                            className="w-full h-12 rounded-[14px] bg-[#4f39f6] text-white text-base font-semibold hover:bg-[#4530e0] transition-colors disabled:opacity-60 flex items-center justify-center gap-2 shadow-[0px_10px_15px_0px_#c6d2ff,0px_4px_6px_0px_#c6d2ff] dark:shadow-[0px_10px_15px_0px_rgba(79,57,246,0.5),0px_4px_6px_0px_rgba(79,57,246,0.3)]">
+                            className=" mt-3 w-full h-12 rounded-[14px] bg-[#4f39f6] text-white text-base font-semibold hover:bg-[#4530e0] transition-colors disabled:opacity-60 flex items-center justify-center gap-2 shadow-[0px_10px_15px_0px_#c6d2ff,0px_4px_6px_0px_#c6d2ff] dark:shadow-[0px_10px_15px_0px_rgba(79,57,246,0.5),0px_4px_6px_0px_rgba(79,57,246,0.3)]">
                       {isLoading
                           ? <><svg className="animate-spin w-5 h-5" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"/><path className="opacity-75" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>Sending…</>
                           : <>Send reset link <ArrowRight size={16} /></>

@@ -97,7 +97,7 @@ export default function DashboardPage() {
         <div className="mx-auto max-w-7xl space-y-6">
 
           {/* Greeting */}
-          <div className="bg-white dark:bg-[#1a1c2e] rounded-xl border border-[#E8E8EF] dark:border-[#2a2d45] px-4 sm:px-6 py-4 sm:py-5 shadow-sm">
+          <div className="bg-white dark:bg-[#1a1c2e] rounded-xl border border-[#E8E8EF] dark:border-[#2a2d45] px-4 sm:px-6 py-4 sm:py-5 shadow-sm mb-3" >
             <h1 className="text-[22px] font-bold text-slate-950 dark:text-white leading-tight">
               Good morning, {mounted ? (user?.name?.split(" ")[0] ?? "there") : "there"} 👋
             </h1>
@@ -105,7 +105,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Stat cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-3">
             {dashLoading
               ? Array(4).fill(0).map((_, i) => <Skeleton key={i} className="h-[140px]" />)
               : dashError
@@ -117,7 +117,7 @@ export default function DashboardPage() {
           </div>
 
           {/* ── ROW 1: Donut + Gauge ── */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3 [&>*]:min-w-0 [&>*]:overflow-hidden">
             {dashLoading ? (
               <>
                 <Skeleton className="h-56" />
@@ -140,7 +140,7 @@ export default function DashboardPage() {
           </div>
 
           {/* ── ROW 2: Project donuts + stacked bars ── */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3 [&>*]:min-w-0 [&>*]:overflow-hidden">
             {dashLoading ? (
               <>
                 <Skeleton className="h-64" />
@@ -155,7 +155,7 @@ export default function DashboardPage() {
           </div>
 
           {/* ── ROW 3: Due date timeline + Priority bar ── */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3 min-w-0">
             {dashLoading ? (
               <>
                 <Skeleton className="h-72" />
@@ -163,8 +163,12 @@ export default function DashboardPage() {
               </>
             ) : dashboard ? (
               <>
-                <DueDateTimeline tasks={dashboard.upcomingDueDates} />
-                <UpcomingPriorityBar tasks={dashboard.upcomingDueDates} />
+                <div className="min-w-0 overflow-hidden">
+                  <DueDateTimeline tasks={dashboard.upcomingDueDates} />
+                </div>
+                <div className="min-w-0 overflow-hidden">
+                  <UpcomingPriorityBar tasks={dashboard.upcomingDueDates} />
+                </div>
               </>
             ) : null}
           </div>
@@ -177,7 +181,7 @@ export default function DashboardPage() {
           ) : null}
 
           {/* ── Original: Projects + My Tasks ── */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-3">
             <TextCard
               title="Projects"
               action={
@@ -187,11 +191,11 @@ export default function DashboardPage() {
               }
             >
               {dashLoading ? (
-                <div className="space-y-4">{Array(4).fill(0).map((_, i) => <Skeleton key={i} className="h-10" />)}</div>
+                <div className="space-y-4 mb-3">{Array(4).fill(0).map((_, i) => <Skeleton key={i} className="h-10" />)}</div>
               ) : projects.length === 0 ? (
                 <p className="text-sm text-slate-500 py-4 text-center">No projects yet.</p>
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-4 mb-3">
                   {projects.slice(0, 4).map(({ projectId, projectName, progressPercent }) => (
                     <div key={projectId} className="space-y-2 border border-[#E8E8EF] dark:border-[#2a2d45] rounded-xl p-4 bg-white dark:bg-[#1a1c2e]">
                       <div className="flex items-center justify-between gap-3">
@@ -220,7 +224,7 @@ export default function DashboardPage() {
               ) : myTasks.length === 0 ? (
                 <p className="text-sm text-slate-500 py-4 text-center">No tasks in progress.</p>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-3 mb-3">
                   {myTasks.slice(0, 2).map((task) => (
                     <div key={task.id} className="border border-[#E8E8EF] dark:border-[#2a2d45] rounded-xl p-4 space-y-3 hover:border-[#D1D5DB] transition-colors bg-slate-50 dark:bg-[#1a1c2e]">
                       <div className="flex items-center justify-between gap-3">

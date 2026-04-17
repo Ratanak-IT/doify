@@ -14,7 +14,7 @@ export const teamApi = baseApi.injectEndpoints({
     }),
     createTeam: builder.mutation<Team, { name: string; description?: string }>({
       query: (body) => ({ url: "/teams", method: "POST", body }),
-      invalidatesTags: ["Team", "Dashboard"],
+      invalidatesTags: ["Team", "Dashboard", "Notification"],
     }),
     updateTeam: builder.mutation<Team, { id: string; data: { name?: string; description?: string } }>({
       query: ({ id, data }) => ({ url: `/teams/${id}`, method: "PUT", body: data }),
@@ -38,7 +38,7 @@ export const teamApi = baseApi.injectEndpoints({
         method: "POST",
         body,
       }),
-      invalidatesTags: ["TeamMember", "Dashboard"],
+      invalidatesTags: ["TeamMember", "Dashboard", "Notification"],
     }),
     updateMemberRole: builder.mutation<void, { teamId: string; memberId: string; role: string }>({
       query: ({ teamId, memberId, role }) => ({
@@ -57,7 +57,7 @@ export const teamApi = baseApi.injectEndpoints({
     }),
     acceptInvitation: builder.mutation<void, string>({
       query: (id) => ({ url: `/teams/invitations/${id}/accept`, method: "POST" }),
-      invalidatesTags: ["Team", "TeamMember", "Dashboard"],
+      invalidatesTags: ["Team", "TeamMember", "Dashboard", "Notification"],
     }),
 
     getTeam: builder.query<TeamMember[], void>({

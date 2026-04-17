@@ -36,14 +36,14 @@ export function UpcomingPriorityBar({ tasks }: Props) {
 
   if (!tasks.length) {
     return (
-      <div className="bg-white dark:bg-slate-900 rounded-xl border border-[#E8E8EF] dark:border-slate-700 p-5 shadow-sm flex items-center justify-center h-40">
+      <div className="bg-white dark:bg-slate-900 rounded-xl border border-[#E8E8EF] dark:border-slate-700 p-5 shadow-sm flex items-center justify-center h-40 min-w-0 overflow-hidden">
         <p className="text-sm text-slate-400">No upcoming tasks</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-xl border border-[#E8E8EF] dark:border-slate-700 p-5 shadow-sm">
+    <div className="bg-white dark:bg-slate-900 rounded-xl border border-[#E8E8EF] dark:border-slate-700 p-4 sm:p-5 shadow-sm min-w-0 overflow-hidden">
       <p className="text-sm font-semibold text-slate-950 dark:text-white mb-4">
         Upcoming tasks by priority
         <span className="ml-2 text-xs text-slate-400 font-normal">{tasks.length} total</span>
@@ -56,25 +56,28 @@ export function UpcomingPriorityBar({ tasks }: Props) {
           const widthPct = (count / max) * 100;
 
           return (
-            <div key={priority} className="flex items-center gap-3">
-              <span className={`text-[11px] font-semibold w-14 shrink-0 text-right ${cfg.text}`}>
+            <div key={priority} className="flex items-center gap-2 sm:gap-3 min-w-0">
+              {/* Label — fixed width so all rows align */}
+              <span className={`text-[11px] font-semibold w-12 sm:w-14 shrink-0 text-right ${cfg.text}`}>
                 {cfg.label}
               </span>
 
-              <div className="flex-1 h-6 rounded-md bg-slate-100 dark:bg-slate-800 overflow-hidden">
+              {/* Bar track — min-w-0 prevents flex overflow */}
+              <div className="flex-1 min-w-0 h-6 rounded-md bg-slate-100 dark:bg-slate-800 overflow-hidden">
                 <div
-                  className="h-full rounded-md transition-all duration-500 flex items-center justify-end pr-2"
-                  style={{ width: `${widthPct}%`, minWidth: count > 0 ? "2rem" : "0", background: cfg.color }}
-                >
-                  {count > 0 && (
-                    <span className="text-[11px] font-bold text-white">{count}</span>
-                  )}
-                </div>
+                  className="h-full rounded-md transition-all duration-500"
+                  style={{
+                    width: `${widthPct}%`,
+                    minWidth: count > 0 ? "1.5rem" : "0",
+                    background: cfg.color,
+                  }}
+                />
               </div>
 
-              {count === 0 && (
-                <span className="text-[11px] text-slate-400">0</span>
-              )}
+              {/* Count — always outside bar, fixed width for consistent alignment */}
+              <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 w-4 shrink-0 text-right tabular-nums">
+                {count}
+              </span>
             </div>
           );
         })}
@@ -86,9 +89,9 @@ export function UpcomingPriorityBar({ tasks }: Props) {
         {tasks.slice(0, 4).map((t) => {
           const cfg = PRIORITY_CONFIG[t.priority];
           return (
-            <div key={t.id} className="flex items-center gap-2">
-              <span className={`w-1.5 h-1.5 rounded-full shrink-0`} style={{ background: cfg.color }} />
-              <span className="text-xs text-slate-700 dark:text-slate-300 truncate flex-1">{t.title}</span>
+            <div key={t.id} className="flex items-center gap-2 min-w-0">
+              <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: cfg.color }} />
+              <span className="text-xs text-slate-700 dark:text-slate-300 truncate flex-1 min-w-0">{t.title}</span>
               <span className="text-[11px] text-slate-400 tabular-nums shrink-0">{t.dueDate}</span>
             </div>
           );

@@ -1,7 +1,7 @@
 "use client";
 import CreateProjectTaskModal from "./CreateProjectTaskModal";
 import EditProjectTaskModal from "./EditProjectTaskModal";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import {
   MessageSquare, MoreHorizontal, Plus, Search, Trash2,
   Edit2, Check, X, Send, ChevronDown, ChevronRight, Settings, ArrowLeft,
@@ -149,7 +149,7 @@ function SubtaskRow({ subtask, col, projectId, onMove }:{ subtask:Task; col:ColD
 }
 
 /* ── Comments Drawer ── */
-function CommentsDrawer({ task, onClose }:{ task:Task; onClose:()=>void }) {
+function CommentsDrawer({ task, highlightCommentId, onClose }:{ task:Task; highlightCommentId?:string; onClose:()=>void }) {
   const { data: pageData, isLoading } = useGetCommentsQuery({ taskId: task.id });
   const comments = pageData?.content ?? [];
   const [addComment,{isLoading:posting}] = useAddCommentMutation();
@@ -158,7 +158,27 @@ function CommentsDrawer({ task, onClose }:{ task:Task; onClose:()=>void }) {
   const [text,setText] = useState("");
   const [editId,setEditId] = useState<string|null>(null);
   const [editText,setEditText] = useState("");
-  const submit = async()=>{ if(!text.trim())return; await addComment({taskId:task.id,content:text.trim()}); setText(""); };
+  const scrollRef    = useRef<HTMLDivElement>(null);
+  const highlightRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to highlighted comment once loaded
+  useEffect(() => {
+    if (isLoading || !comments.length) return;
+    setTimeout(() => {
+      if (highlightCommentId && highlightRef.current) {
+        highlightRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      } else if (scrollRef.current) {
+        scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      }
+    }, 200);
+  }, [isLoading, comments.length, highlightCommentId]);
+
+  const submit = async () => {
+    if (!text.trim()) return;
+    await addComment({ taskId: task.id, content: text.trim() });
+    setText("");
+    setTimeout(() => { if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight; }, 300);
+  };
   const saveEdit = async(cid:string)=>{ if(!editText.trim())return; await updateComment({taskId:task.id,commentId:cid,content:editText.trim()}); setEditId(null); };
   const timeAgo=(iso:string)=>{ const m=Math.round((Date.now()-new Date(iso).getTime())/60000); return m<60?`${m}m ago`:`${Math.round(m/60)}h ago`; };
   const getInitials=(n:string)=>n.split(" ").filter(Boolean).slice(0,2).map(s=>s[0].toUpperCase()).join("");
@@ -174,24 +194,27 @@ function CommentsDrawer({ task, onClose }:{ task:Task; onClose:()=>void }) {
           </div>
           <button onClick={onClose} className="w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">✕</button>
         </div>
-        <div className="flex-1 overflow-y-auto p-5 space-y-4">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto p-5 space-y-3">
           {isLoading && <p className="text-center text-xs text-slate-400 py-8">Loading…</p>}
           {!isLoading && comments.length===0 && <p className="text-center text-xs text-slate-400 py-8">No comments yet.</p>}
           {comments.map(c=>{
             const authorName = c.author?.fullName??c.author?.username??"Unknown";
             const authorId = c.author?.id??authorName;
+            const isHighlighted = !!highlightCommentId && c.id === highlightCommentId;
             return (
-              <div key={c.id} className="flex gap-3 group">
-                <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[10px] font-medium shrink-0" style={{backgroundColor:getAvatarColor(authorId)}}>
+              <div key={c.id} ref={isHighlighted ? highlightRef : undefined}
+                className={`flex gap-3 group rounded-xl transition-colors ${isHighlighted ? "bg-violet-50 dark:bg-violet-900/20 ring-2 ring-[#6C5CE7]/30 p-2 -mx-2" : ""}`}>
+                <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[10px] font-medium shrink-0 mt-0.5" style={{backgroundColor:getAvatarColor(authorId)}}>
                   {getInitials(authorName)}
                 </div>
-                <div className="flex-1">
-                  <div className="flex items-baseline gap-2">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-xs font-semibold text-slate-900 dark:text-white">{authorName}</span>
                     <span className="text-[10px] text-slate-400">{timeAgo(c.createdAt)}</span>
-                    <div className="ml-auto flex gap-1">
-                      <button onClick={()=>{setEditId(c.id);setEditText(c.content);}} className="text-slate-400 hover:text-blue-600 transition-colors"><Edit2 size={11}/></button>
-                      <button onClick={()=>{if(confirm("Delete?"))deleteComment({taskId:task.id,commentId:c.id});}} className="text-slate-400 hover:text-red-600 transition-colors"><Trash2 size={11}/></button>
+                    {isHighlighted && <span className="text-[10px] font-bold text-[#6C5CE7] bg-[#6C5CE7]/10 px-1.5 py-0.5 rounded-full">new</span>}
+                    <div className="ml-auto flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button onClick={()=>{setEditId(c.id);setEditText(c.content);}} className="text-slate-400 hover:text-blue-600"><Edit2 size={11}/></button>
+                      <button onClick={()=>{if(confirm("Delete?"))deleteComment({taskId:task.id,commentId:c.id});}} className="text-slate-400 hover:text-red-600"><Trash2 size={11}/></button>
                     </div>
                   </div>
                   {editId===c.id ? (
@@ -337,9 +360,10 @@ function DragGhost({ task, x, y }:{task:Task;x:number;y:number}) {
 }
 
 /* ── Panel ── */
-export default function ProjectTasksPanel({ project, onBack }:{ project:Project; onBack?:()=>void }) {
+export default function ProjectTasksPanel({ project, onBack, initialTaskId, initialCommentId, initialOpenComments }:{ project:Project; onBack?:()=>void; initialTaskId?:string; initialCommentId?:string; initialOpenComments?:boolean }) {
   const [search, setSearch] = useState("");
   const [commentTask, setCommentTask] = useState<Task|null>(null);
+  const [activeCommentId, setActiveCommentId] = useState<string|undefined>();
   const [showCreate, setShowCreate] = useState(false);
   const [showUpdateProject, setShowUpdateProject] = useState(false);
   const [defaultStatus, setDefaultStatus] = useState<TaskStatus|undefined>();
@@ -367,6 +391,22 @@ export default function ProjectTasksPanel({ project, onBack }:{ project:Project;
   const filteredTasks = useMemo(()=>{ if(!search.trim()) return tasks; return tasks.filter(t=>t.title.toLowerCase().includes(search.toLowerCase())); },[tasks,search]);
 
   const progress = project.progress ?? (tasks.length ? Math.round((tasks.filter(t=>t.status==="DONE").length/tasks.length)*100) : 0);
+
+  // Auto-open the correct panel when arriving from a notification deep-link.
+  // Open CommentsDrawer (with highlight) or task detail based on notification type.
+  const didAutoOpen = useRef(false);
+  useEffect(() => {
+    if (didAutoOpen.current || !initialTaskId || isLoading) return;
+    const target = allTasks.find(t => t.id === initialTaskId);
+    if (!target) return;
+    didAutoOpen.current = true;
+    if (initialOpenComments || initialCommentId) {
+      setActiveCommentId(initialCommentId);
+      setCommentTask(target);
+    } else {
+      setActiveParentTask(target);
+    }
+  }, [initialTaskId, allTasks, isLoading, initialOpenComments, initialCommentId]);
 
   const handleMove   = (taskId:string, status:TaskStatus) => updateProjectTask({ projectId:project.id, taskId, data:{status} });
   const handleDelete = (id:string) => deleteTask(id);
@@ -554,7 +594,7 @@ export default function ProjectTasksPanel({ project, onBack }:{ project:Project;
       {/* Touch ghost */}
       {ghostPos && draggedTask && <DragGhost task={draggedTask} x={ghostPos.x} y={ghostPos.y}/>}
 
-      {commentTask && <CommentsDrawer task={commentTask} onClose={()=>setCommentTask(null)}/>}
+      {commentTask && <CommentsDrawer task={commentTask} highlightCommentId={activeCommentId} onClose={()=>{ setCommentTask(null); setActiveCommentId(undefined); }}/>}
       {showCreate  && <CreateProjectTaskModal projectId={project.id} defaultStatus={defaultStatus} onClose={() => setShowCreate(false)} teamId={""}/>}
       {showUpdateProject && <UpdateProjectModal project={project} onClose={()=>setShowUpdateProject(false)}/>}
     </>
