@@ -23,15 +23,13 @@ import UpdateProjectModal from "./modals/UpdateProjectModal";
 
 type TaskStatus = "TODO"|"IN_PROGRESS"|"IN_REVIEW"|"DONE";
 
-// ── FIX: Added `bgClass` + `darkBgClass` Tailwind strings so column
-//         backgrounds respond to dark mode without inline style overrides.
 type ColDef = {
   id: TaskStatus;
   label: string;
   dot: string;
-  bgClass: string;       // light-mode column body bg
-  darkBgClass: string;   // dark-mode column body bg
-  dropBgClass: string;   // light-mode drop-active bg
+  bgClass: string;
+  darkBgClass: string;
+  dropBgClass: string;
   darkDropBgClass: string;
   accent: string;
 };

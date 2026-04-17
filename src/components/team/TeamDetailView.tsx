@@ -162,13 +162,7 @@ export default function TeamDetailView({ team, idx, onBack }: Props) {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="flex flex-1 overflow-hidden">
-        {/*
-          Projects Sidebar
-          · Mobile  → full-width, shown ONLY when no project is selected
-          · Desktop → fixed 224px sidebar, always visible
-        */}
         <div
           className={[
             "flex-col shrink-0 border-r border-slate-200 dark:border-slate-700",
@@ -247,11 +241,6 @@ export default function TeamDetailView({ team, idx, onBack }: Props) {
           )}
         </div>
 
-        {/*
-          Project Tasks Area
-          · Mobile  → full-width, shown ONLY when a project IS selected
-          · Desktop → flex-1, always visible
-        */}
         <div
           className={[
             "overflow-hidden bg-white dark:bg-[#1E1B2E]",
@@ -266,7 +255,6 @@ export default function TeamDetailView({ team, idx, onBack }: Props) {
               onBack={() => setSelectedProject(null)}
             />
           ) : (
-            /* Desktop empty-state (never visible on mobile since this panel is hidden) */
             <div className="flex flex-col items-center justify-center h-full gap-3 text-center p-8">
               <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${iconBgCls}`}>
                 <FolderKanban size={22} />
