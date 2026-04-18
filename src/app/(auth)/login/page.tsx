@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLoginMutation } from "@/lib/features/auth/authApi";
@@ -93,7 +93,8 @@ function getOAuthUrl(provider: "google" | "github"): string {
   return `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${encodeURIComponent("read:user user:email")}`;
 }
 
-export default function LoginPage() {
+// ─── Inner component that uses useSearchParams ───────────────────────────────
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
@@ -172,6 +173,155 @@ export default function LoginPage() {
 
   const isBusy = isLoading || !!socialLoading;
 
+  return (
+    <div className="w-full max-w-[400px]">
+      <div className="mb-7">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
+          Welcome back
+        </h2>
+        <p className="mt-2 text-slate-500 dark:text-slate-400">
+          Sign in to continue to your workspace
+        </p>
+      </div>
+
+      {errors.general && (
+        <div className="mb-5 p-3.5 rounded-xl border text-sm bg-red-50 dark:bg-red-950/50 border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400">
+          {errors.general}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+        <div className="space-y-1.5 mb-3">
+          <label className="mb-1.5 block text-sm font-semibold text-slate-700 dark:text-white">
+            Email address
+          </label>
+          <input
+            type="email"
+            placeholder="you@company.com"
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            className={fieldCls(!!errors.email)}
+          />
+          {errors.email && (
+            <p className="text-xs text-red-500">{errors.email}</p>
+          )}
+        </div>
+
+        <div className="space-y-1.5 mb-3">
+          <div className="flex items-center justify-between mt-3">
+            <label className="mb-1.5 block text-sm font-semibold text-slate-700 dark:text-white">
+              Password
+            </label>
+            <Link
+              href="/forgot-password"
+              className="mb-1.5 text-sm font-medium text-[#4f39f6] hover:underline"
+            >
+              Forgot password?
+            </Link>
+          </div>
+          <div className="relative">
+            <input
+              type={showPwd ? "text" : "password"}
+              placeholder="Enter your password"
+              value={form.password}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+              className={`${fieldCls(!!errors.password)} pr-12`}
+            />
+            <button
+              type="button"
+              onClick={() => setShow((s) => !s)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors text-slate-400 hover:text-slate-700 dark:hover:text-white"
+            >
+              {showPwd ? <EyeOff size={17} /> : <Eye size={17} />}
+            </button>
+          </div>
+          {errors.password && (
+            <p className="text-xs text-red-500">{errors.password}</p>
+          )}
+        </div>
+
+        <button
+          type="submit"
+          disabled={isBusy}
+          className="w-full h-12 rounded-xl bg-[#4f39f6] hover:bg-[#4530e0] text-white font-semibold text-base transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-[0_8px_24px_rgba(79,57,246,0.4)]"
+        >
+          {isLoading ? (
+            <>
+              <svg
+                className="animate-spin w-5 h-5"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="white"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="white"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                />
+              </svg>
+              Signing in…
+            </>
+          ) : (
+            <>
+              Sign in <ArrowRight size={16} />
+            </>
+          )}
+        </button>
+      </form>
+
+      {/* Divider */}
+      <div className="flex items-center gap-3 my-5">
+        <div className="flex-1 h-px bg-slate-200 dark:bg-slate-800" />
+        <span className="text-xs font-medium text-slate-400 dark:text-slate-500">
+          or continue with
+        </span>
+        <div className="flex-1 h-px bg-slate-200 dark:bg-slate-800" />
+      </div>
+
+      {/* Social buttons */}
+      <div className="flex gap-3">
+        {(["google", "github"] as const).map((provider) => (
+          <button
+            key={provider}
+            onClick={() => handleSocial(provider)}
+            disabled={isBusy}
+            className={socialBtnCls}
+            aria-label={`Sign in with ${provider}`}
+          >
+            {socialLoading === provider ? (
+              <Spinner />
+            ) : provider === "google" ? (
+              <GoogleIcon />
+            ) : (
+              <GithubIcon />
+            )}
+            <span className="capitalize">{provider}</span>
+          </button>
+        ))}
+      </div>
+
+      <p className="text-center text-sm mt-6 text-slate-500 dark:text-slate-400">
+        Don&apos;t have an account?{" "}
+        <Link
+          href="/register"
+          className="text-[#4f39f6] font-semibold hover:underline"
+        >
+          Create account
+        </Link>
+      </p>
+    </div>
+  );
+}
+
+// ─── Page shell — Suspense wraps LoginForm so useSearchParams is safe ─────────
+export default function LoginPage() {
   return (
     <div className="min-h-screen flex transition-colors bg-white dark:bg-slate-900">
       {/* Left branding panel */}
@@ -265,151 +415,14 @@ export default function LoginPage() {
           </span>
         </Link>
 
-        <div className="w-full max-w-[400px]">
-          <div className="mb-7">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
-              Welcome back
-            </h2>
-            <p className="mt-2 text-slate-500 dark:text-slate-400">
-              Sign in to continue to your workspace
-            </p>
-          </div>
-
-          {errors.general && (
-            <div className="mb-5 p-3.5 rounded-xl border text-sm bg-red-50 dark:bg-red-950/50 border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400">
-              {errors.general}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-            <div className="space-y-1.5 mb-3">
-              <label className="mb-1.5 block text-sm font-semibold text-slate-700 dark:text-white">
-                Email address
-              </label>
-              <input
-                type="email"
-                placeholder="you@company.com"
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className={fieldCls(!!errors.email)}
-              />
-              {errors.email && (
-                <p className="text-xs text-red-500">{errors.email}</p>
-              )}
-            </div>
-
-            <div className="space-y-1.5 mb-3">
-              <div className="flex items-center justify-between mt-3">
-                <label className="mb-1.5 block text-sm font-semibold text-slate-700 dark:text-white">
-                  Password
-                </label>
-                <Link
-                  href="/forgot-password"
-                  className="mb-1.5 text-sm font-medium text-[#4f39f6] hover:underline"
-                >
-                  Forgot password?
-                </Link>
-              </div>
-              <div className="relative">
-                <input
-                  type={showPwd ? "text" : "password"}
-                  placeholder="Enter your password"
-                  value={form.password}
-                  onChange={(e) =>
-                    setForm({ ...form, password: e.target.value })
-                  }
-                  className={`${fieldCls(!!errors.password)} pr-12`}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShow((s) => !s)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors text-slate-400 hover:text-slate-700 dark:hover:text-white"
-                >
-                  {showPwd ? <EyeOff size={17} /> : <Eye size={17} />}
-                </button>
-              </div>
-              {errors.password && (
-                <p className="text-xs text-red-500">{errors.password}</p>
-              )}
-            </div>
-
-            <button
-              type="submit"
-              disabled={isBusy}
-              className="w-full h-12 rounded-xl bg-[#4f39f6] hover:bg-[#4530e0] text-white font-semibold text-base transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-[0_8px_24px_rgba(79,57,246,0.4)]"
-            >
-              {isLoading ? (
-                <>
-                  <svg
-                    className="animate-spin w-5 h-5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="white"
-                      strokeWidth="4"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="white"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                    />
-                  </svg>
-                  Signing in…
-                </>
-              ) : (
-                <>
-                  Sign in <ArrowRight size={16} />
-                </>
-              )}
-            </button>
-          </form>
-
-          {/* Divider */}
-          <div className="flex items-center gap-3 my-5">
-            <div className="flex-1 h-px bg-slate-200 dark:bg-slate-800" />
-            <span className="text-xs font-medium text-slate-400 dark:text-slate-500">
-              or continue with
-            </span>
-            <div className="flex-1 h-px bg-slate-200 dark:bg-slate-800" />
-          </div>
-
-          {/* Social buttons */}
-          <div className="flex gap-3">
-            {(["google", "github"] as const).map((provider) => (
-              <button
-                key={provider}
-                onClick={() => handleSocial(provider)}
-                disabled={isBusy}
-                className={socialBtnCls}
-                aria-label={`Sign in with ${provider}`}
-              >
-                {socialLoading === provider ? (
-                  <Spinner />
-                ) : provider === "google" ? (
-                  <GoogleIcon />
-                ) : (
-                  <GithubIcon />
-                )}
-                <span className="capitalize">{provider}</span>
-              </button>
-            ))}
-          </div>
-
-          <p className="text-center text-sm mt-6 text-slate-500 dark:text-slate-400">
-            Don&apos;t have an account?{" "}
-            <Link
-              href="/register"
-              className="text-[#4f39f6] font-semibold hover:underline"
-            >
-              Create account
-            </Link>
-          </p>
-        </div>
+        {/* Suspense boundary required by Next.js for useSearchParams */}
+        <Suspense
+          fallback={
+            <div className="w-full max-w-[400px] animate-pulse h-96 rounded-2xl bg-slate-100 dark:bg-slate-800" />
+          }
+        >
+          <LoginForm />
+        </Suspense>
       </div>
     </div>
   );
