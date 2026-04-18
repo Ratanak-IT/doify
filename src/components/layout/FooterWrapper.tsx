@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function FooterWrapper() {
   return (
-    <footer className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 pt-10 sm:pt-14 pb-6 sm:pb-8 px-4 sm:px-8 transition-colors">
+    <footer className="bg-white dark:bg-[#1a1c2e] border-t border-slate-200 dark:border-[#2a2d45] text-slate-500 dark:text-slate-400 pt-10 sm:pt-14 pb-6 sm:pb-8 px-4 sm:px-8 transition-colors">
       <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr] gap-10 mb-10">
 
         {/* Brand */}
@@ -51,7 +51,7 @@ export default function FooterWrapper() {
         </div>
       </div>
 
-      <hr className="border-slate-200 dark:border-slate-800 max-w-5xl mx-auto mb-6" />
+      <hr className="border-slate-200 dark:border-[#2a2d45] max-w-5xl mx-auto mb-6" />
 
       <div className="max-w-5xl mx-auto flex items-center justify-between flex-wrap gap-2">
         <span className="text-xs text-slate-400 dark:text-slate-600">© 2026 Doify. All rights reserved.</span>

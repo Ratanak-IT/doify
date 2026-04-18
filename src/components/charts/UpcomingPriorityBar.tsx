@@ -36,14 +36,14 @@ export function UpcomingPriorityBar({ tasks }: Props) {
 
   if (!tasks.length) {
     return (
-      <div className="bg-white dark:bg-slate-900 rounded-xl border border-[#E8E8EF] dark:border-slate-700 p-5 shadow-sm flex items-center justify-center h-40 min-w-0 overflow-hidden">
+      <div className="bg-white dark:bg-[#1a1c2e] rounded-xl border border-[#E8E8EF] dark:border-[#2a2d45] p-5 shadow-sm flex items-center justify-center h-40 min-w-0 overflow-hidden">
         <p className="text-sm text-slate-400">No upcoming tasks</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-xl border border-[#E8E8EF] dark:border-slate-700 p-4 sm:p-5 shadow-sm min-w-0 overflow-hidden">
+    <div className="bg-white dark:bg-[#1a1c2e] rounded-xl border border-[#E8E8EF] dark:border-[#2a2d45] p-4 sm:p-5 shadow-sm min-w-0 overflow-hidden">
       <p className="text-sm font-semibold text-slate-950 dark:text-white mb-4">
         Upcoming tasks by priority
         <span className="ml-2 text-xs text-slate-400 font-normal">{tasks.length} total</span>
@@ -63,7 +63,7 @@ export function UpcomingPriorityBar({ tasks }: Props) {
               </span>
 
               {/* Bar track — min-w-0 prevents flex overflow */}
-              <div className="flex-1 min-w-0 h-6 rounded-md bg-slate-100 dark:bg-slate-800 overflow-hidden">
+              <div className="flex-1 min-w-0 h-6 rounded-md bg-slate-100 dark:bg-[#252840] overflow-hidden">
                 <div
                   className="h-full rounded-md transition-all duration-500"
                   style={{
@@ -84,7 +84,7 @@ export function UpcomingPriorityBar({ tasks }: Props) {
       </div>
 
       {/* mini task list */}
-      <div className="mt-4 pt-4 border-t border-[#E8E8EF] dark:border-slate-700 space-y-2">
+      <div className="mt-4 pt-4 border-t border-[#E8E8EF] dark:border-[#2a2d45] space-y-2">
         <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide mb-2">Upcoming</p>
         {tasks.slice(0, 4).map((t) => {
           const cfg = PRIORITY_CONFIG[t.priority];

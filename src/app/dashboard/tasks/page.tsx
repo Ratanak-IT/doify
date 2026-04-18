@@ -19,6 +19,7 @@ import {
   useDeleteCommentMutation,
   useGetTaskQuery,
 } from "@/lib/features/tasks/taskApi";
+import { useTheme } from "@/lib/contexts/ThemeContext";
 import type { Task, TaskStatus, Comment } from "@/lib/features/types/task-type";
 import { createPersonalTaskSchema } from "@/lib/schemas";
 import type { z } from "zod";
@@ -339,105 +340,15 @@ function EditTaskModal({ task, onClose }: { task: Task; onClose: () => void }) {
   );
 }
 
-
-function TaskCard({
-  task, col, onMove, onDelete, onEdit, onDragStart, onDragEnd,
-}: {
-  task: Task; col: ColDef;
-  onMove: (id: string, status: TaskStatus) => void;
-  onDelete: (id: string) => void;
-  onEdit: (task: Task) => void;
-  onDragStart: (task: Task) => void;
-  onDragEnd: () => void;
-}) {
-  const [isDragging, setIsDragging] = useState(false);
-
-  return (
-    <div
-      draggable
-      onDragStart={(e) => {
-        setIsDragging(true);
-        onDragStart(task);
-        e.dataTransfer.effectAllowed = "move";
-        e.dataTransfer.setData("taskId", task.id);
-      }}
-      onDragEnd={() => { setIsDragging(false); onDragEnd(); }}
-      className={`bg-white dark:bg-[#1a1c2e] rounded-xl border border-[#E8E8EF] dark:border-[#2a2d45] border-l-[3px] p-3.5 space-y-3
-                 hover:shadow-md dark:hover:shadow-black/30 transition-all cursor-grab active:cursor-grabbing select-none
-                 ${isDragging ? "opacity-40 scale-95 rotate-1 shadow-lg" : ""}`}
-      style={{ borderLeftColor: col.accent }}
-    >
-      {/* Title + actions */}
-      <div className="flex items-start justify-between gap-2">
-        <p className="text-sm font-semibold text-[#1E293B] dark:text-white leading-snug">{task.title}</p>
-        <div className="flex gap-0.5 shrink-0">
-          <button onClick={() => onEdit(task)} title="Edit task"
-            className="w-6 h-6 flex items-center justify-center text-[#94A3B8] dark:text-slate-600 hover:text-[#6C5CE7] transition-colors">
-            <Pencil size={13} />
-          </button>
-          <button onClick={() => { if (confirm("Delete this task?")) onDelete(task.id); }} title="Delete"
-            className="w-6 h-6 flex items-center justify-center text-[#94A3B8] dark:text-slate-600 hover:text-red-500 transition-colors">
-            <Trash2 size={13} />
-          </button>
-        </div>
-      </div>
-
-      {/* Priority + subtask badges */}
-      <div className="flex items-center gap-1.5 flex-wrap">
-        <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded border capitalize ${PRIORITY_STYLE[task.priority] ?? ""}`}>
-          {task.priority.toLowerCase()}
-        </span>
-        {task.subtaskCount != null && task.subtaskCount > 0 && (
-          <span className="text-[10px] text-[#94A3B8] dark:text-slate-500 bg-[#F1F5F9] dark:bg-[#252840] px-1.5 py-0.5 rounded border border-[#D1D5DB] dark:border-[#2a2d45]">
-            {task.subtaskCount} subtask{task.subtaskCount !== 1 ? "s" : ""}
-          </span>
-        )}
-      </div>
-
-      {/* Assignees + due date */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center">
-          {(task.assignees ?? []).slice(0, 3).map((a, i) => (
-            <div key={a.id}
-              className="w-5 h-5 rounded-full flex items-center justify-center text-white text-[8px] font-medium ring-[1.5px] ring-white dark:ring-[#1a1c2e]"
-              style={{ backgroundColor: a.color, marginLeft: i > 0 ? "-4px" : "0" }}>
-              {a.initials}
-            </div>
-          ))}
-        </div>
-        {task.dueDate && (
-          <span className="flex items-center gap-1 text-[10px] text-[#94A3B8] dark:text-slate-500">
-            <Calendar size={10} />
-            {new Date(task.dueDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-          </span>
-        )}
-      </div>
-
-      {/* ── Status move buttons — colored per target column ── */}
-      <div className="flex gap-1 flex-wrap">
-        {COLUMNS.filter((c) => c.id !== task.status).map((c) => (
-          <button
-            key={c.id}
-            onClick={() => onMove(task.id, c.id)}
-            className="text-[9px] px-2 py-0.5 rounded border font-bold uppercase tracking-wide transition-all hover:opacity-80 hover:scale-105"
-            style={{
-              color: c.accent,
-              borderColor: c.accent,
-              backgroundColor: `${c.accent}18`, // ~10% opacity tint
-            }}
-          >
-            → {c.label}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 /* ── Page ───────────────────────────────────────────────────────── */
 export default function TasksPage() {
   const searchParams = useSearchParams();
   const taskId = searchParams?.get("taskId");
+
+  const { theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const dark = mounted && theme === "dark";
 
   const [search, setSearch]           = useState("");
   const [showModal, setModal]         = useState(false);
@@ -452,14 +363,10 @@ export default function TasksPage() {
   const [updateTask] = useUpdateTaskMutation();
   const [deleteTask] = useDeleteTaskMutation();
 
-  // taskId arrives here only for personal tasks — no longer auto-opens comments drawer
-  const { data: fetchedTask, isSuccess: taskFetched } = useGetTaskQuery(taskId ?? "", {
-    skip: !taskId,
-  });
+  const { data: fetchedTask, isSuccess: taskFetched } = useGetTaskQuery(taskId ?? "", { skip: !taskId });
 
   useEffect(() => {
     if (!taskId || !taskFetched || !fetchedTask || editTask) return;
-    // Could open edit modal from URL param if desired; left as-is for now
   }, [taskId, taskFetched, fetchedTask, editTask]);
 
   const handleMove   = (id: string, status: TaskStatus) => updateTask({ id, data: { status } });
@@ -482,16 +389,31 @@ export default function TasksPage() {
 
   const handleDragEnd = () => { dragTaskRef.current = null; setDragOverCol(null); };
 
+  /* ── colors ── */
+  const pageBg      = dark ? "#1E1B2E" : "#F1F5F9";   // ← fixed: was #0f172a
+  const searchBarBg = dark ? "#1a1c2e" : "#ffffff";    // ← fixed: was #1e293b
+  const searchBorder= dark ? "#2a2d45" : "#E8E8EF";
+  const inputBg     = dark ? "#1e293b" : "#ffffff";
+  const inputBorder = dark ? "#334155" : "#D1D5DB";
+  const cardBg      = dark ? "#1e293b" : "#ffffff";
+  const cardBorder  = dark ? "#334155" : "#E8E8EF";
+  const textPrimary = dark ? "#f1f5f9" : "#1E293B";
+  const textMuted   = dark ? "#94a3b8" : "#94A3B8";
+  const countBg     = dark ? "#1e293b" : "#ffffff";
+  const countBorder = dark ? "#334155" : "#D1D5DB";
+
   return (
     <>
       <DashboardHeader onRefresh={refetch} onCreate={() => openModal()} createLabel="Create" />
 
       {/* Search bar */}
-      <div className="px-4 sm:px-6 py-3 bg-white dark:bg-[#1a1c2e] border-b border-[#E8E8EF] dark:border-[#2a2d45]">
+      <div style={{ backgroundColor: searchBarBg, borderBottom: `1px solid ${searchBorder}` }}
+        className="px-4 sm:px-6 py-3">
         <div className="relative w-full max-w-xs">
-          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8] dark:text-slate-600" />
+          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: textMuted }} />
           <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search tasks…"
-            className="w-full h-9 pl-9 pr-3 rounded-md border border-[#D1D5DB] dark:border-[#2a2d45] text-sm bg-white dark:bg-[#252840] dark:text-white outline-none focus:border-[#6C5CE7] dark:focus:border-[#6C5CE7] transition-colors placeholder:text-[#94A3B8] dark:placeholder:text-slate-600" />
+            style={{ backgroundColor: inputBg, border: `1px solid ${inputBorder}`, color: textPrimary }}
+            className="w-full h-9 pl-9 pr-3 rounded-md text-sm outline-none transition-colors placeholder:text-slate-400" />
         </div>
       </div>
 
@@ -503,11 +425,12 @@ export default function TasksPage() {
       )}
 
       {/* Kanban board */}
-      <main className="flex-1 overflow-auto p-3 sm:p-4 md:p-6 bg-[#F1F5F9] dark:bg-[#1E1B2E]">
+      <main className="flex-1 overflow-auto p-3 sm:p-4 md:p-6" style={{ backgroundColor: pageBg }}>
         <div className="flex gap-3 sm:gap-4 min-w-max h-full">
           {COLUMNS.map((col) => {
             const colTasks = tasks.filter((t) => t.status === col.id);
             const isOver   = dragOverCol === col.id;
+            const colBg    = isOver ? `${col.accent}22` : (dark ? col.darkBg : col.bg);
 
             return (
               <div key={col.id}
@@ -520,13 +443,15 @@ export default function TasksPage() {
                 <div className="flex items-center justify-between mb-3 px-1">
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: col.dot }} />
-                    <span className="text-xs font-bold text-[#1E293B] dark:text-white uppercase tracking-wide">{col.label}</span>
-                    <span className="text-xs text-[#94A3B8] dark:text-slate-500 bg-white dark:bg-[#1e2035] border border-[#D1D5DB] dark:border-[#2a2d45] px-1.5 py-0.5 rounded-full font-semibold">
+                    <span className="text-xs font-bold uppercase tracking-wide" style={{ color: textPrimary }}>{col.label}</span>
+                    <span className="text-xs px-1.5 py-0.5 rounded-full font-semibold"
+                      style={{ color: textMuted, backgroundColor: countBg, border: `1px solid ${countBorder}` }}>
                       {colTasks.length}
                     </span>
                   </div>
                   <button onClick={() => openModal(col.id)}
-                    className="w-6 h-6 flex items-center justify-center text-[#94A3B8] dark:text-slate-500 hover:text-[#64748B] hover:bg-white dark:hover:bg-[#1e2035] rounded transition-colors">
+                    className="w-6 h-6 flex items-center justify-center rounded transition-colors hover:opacity-70"
+                    style={{ color: textMuted }}>
                     <Plus size={14} />
                   </button>
                 </div>
@@ -535,28 +460,92 @@ export default function TasksPage() {
                 <div
                   className="flex-1 rounded-2xl p-2 flex flex-col gap-2 transition-all duration-150"
                   style={{
-                    backgroundColor: isOver
-                      ? `${col.accent}22`
-                      : (typeof window !== "undefined" && document.documentElement.classList.contains("dark"))
-                        ? col.darkBg
-                        : col.bg,
+                    backgroundColor: colBg,
                     outline: isOver ? `2px dashed ${col.accent}` : "2px dashed transparent",
                     outlineOffset: "-2px",
                   }}
                 >
                   {isLoading
                     ? Array(2).fill(0).map((_, i) => (
-                        <div key={i} className="animate-pulse bg-white dark:bg-[#1a1c2e] rounded-xl h-28 opacity-60" />
+                        <div key={i} className="animate-pulse rounded-xl h-28 opacity-60"
+                          style={{ backgroundColor: cardBg }} />
                       ))
                     : colTasks.map((task) => (
-                        <TaskCard
-                          key={task.id} task={task} col={col}
-                          onMove={handleMove}
-                          onDelete={handleDelete}
-                          onEdit={setEditTask}
-                          onDragStart={(t) => { dragTaskRef.current = t; }}
+                        <div key={task.id}
+                          draggable
+                          onDragStart={(e) => {
+                            dragTaskRef.current = task;
+                            e.dataTransfer.effectAllowed = "move";
+                            e.dataTransfer.setData("taskId", task.id);
+                          }}
                           onDragEnd={handleDragEnd}
-                        />
+                          className="rounded-xl border-l-[3px] p-3.5 space-y-3 cursor-grab active:cursor-grabbing select-none transition-all hover:shadow-md"
+                          style={{
+                            backgroundColor: cardBg,
+                            border: `1px solid ${cardBorder}`,
+                            borderLeftColor: col.accent,
+                          }}
+                        >
+                          {/* Title + actions */}
+                          <div className="flex items-start justify-between gap-2">
+                            <p className="text-sm font-semibold leading-snug" style={{ color: textPrimary }}>{task.title}</p>
+                            <div className="flex gap-0.5 shrink-0">
+                              <button onClick={() => setEditTask(task)} title="Edit task"
+                                className="w-6 h-6 flex items-center justify-center transition-colors hover:text-[#6C5CE7]"
+                                style={{ color: textMuted }}>
+                                <Pencil size={13} />
+                              </button>
+                              <button onClick={() => { if (confirm("Delete this task?")) handleDelete(task.id); }} title="Delete"
+                                className="w-6 h-6 flex items-center justify-center transition-colors hover:text-red-500"
+                                style={{ color: textMuted }}>
+                                <Trash2 size={13} />
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Priority + subtask badges */}
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded border capitalize ${PRIORITY_STYLE[task.priority] ?? ""}`}>
+                              {task.priority.toLowerCase()}
+                            </span>
+                            {task.subtaskCount != null && task.subtaskCount > 0 && (
+                              <span className="text-[10px] px-1.5 py-0.5 rounded border"
+                                style={{ color: textMuted, backgroundColor: dark ? "#1e293b" : "#F1F5F9", borderColor: dark ? "#334155" : "#D1D5DB" }}>
+                                {task.subtaskCount} subtask{task.subtaskCount !== 1 ? "s" : ""}
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Assignees + due date */}
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center">
+                              {(task.assignees ?? []).slice(0, 3).map((a, i) => (
+                                <div key={a.id}
+                                  className="w-5 h-5 rounded-full flex items-center justify-center text-white text-[8px] font-medium ring-[1.5px]"
+                                  style={{ backgroundColor: a.color, marginLeft: i > 0 ? "-4px" : "0" }}>
+                                  {a.initials}
+                                </div>
+                              ))}
+                            </div>
+                            {task.dueDate && (
+                              <span className="flex items-center gap-1 text-[10px]" style={{ color: textMuted }}>
+                                <Calendar size={10} />
+                                {new Date(task.dueDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Status move buttons */}
+                          <div className="flex gap-1 flex-wrap">
+                            {COLUMNS.filter((c) => c.id !== task.status).map((c) => (
+                              <button key={c.id} onClick={() => handleMove(task.id, c.id)}
+                                className="text-[9px] px-2 py-0.5 rounded border font-bold uppercase tracking-wide transition-all hover:opacity-80 hover:scale-105"
+                                style={{ color: c.accent, borderColor: c.accent, backgroundColor: `${c.accent}18` }}>
+                                → {c.label}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
                       ))
                   }
 
@@ -564,14 +553,13 @@ export default function TasksPage() {
                   {!isLoading && colTasks.length === 0 && (
                     <div className="border-2 border-dashed rounded-xl p-6 text-center text-xs font-semibold transition-colors"
                       style={{
-                        borderColor: isOver ? col.accent : "rgba(0,0,0,0.08)",
-                        color: isOver ? col.accent : "#94A3B8",
+                        borderColor: isOver ? col.accent : (dark ? "#2a2d45" : "rgba(0,0,0,0.10)"),
+                        color: isOver ? col.accent : textMuted,
                       }}>
                       {isOver ? "Drop here" : "No tasks"}
                     </div>
                   )}
 
-                  {/* Extra drop zone at bottom of non-empty columns */}
                   {!isLoading && colTasks.length > 0 && isOver && (
                     <div className="rounded-xl p-3 text-center text-xs font-semibold border-2 border-dashed"
                       style={{ borderColor: col.accent, color: col.accent }}>
@@ -581,7 +569,8 @@ export default function TasksPage() {
 
                   {/* Add card button */}
                   <button onClick={() => openModal(col.id)}
-                    className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-[#94A3B8] dark:text-slate-600 hover:bg-white dark:hover:bg-[#1a1c2e] hover:text-[#6C5CE7] transition-colors font-medium mt-auto">
+                    className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium mt-auto transition-colors hover:text-[#6C5CE7]"
+                    style={{ color: textMuted }}>
                     <Plus size={13} /> Add a card
                   </button>
                 </div>

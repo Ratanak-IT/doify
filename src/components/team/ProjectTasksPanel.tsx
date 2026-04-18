@@ -3,7 +3,7 @@ import CreateProjectTaskModal from "./CreateProjectTaskModal";
 import EditProjectTaskModal from "./EditProjectTaskModal";
 import { useMemo, useRef, useState, useEffect } from "react";
 import {
-  MessageSquare, MoreHorizontal, Plus, Search, Trash2,
+  MessageSquare, Plus, Search, Trash2,
   Edit2, Check, X, Send, ChevronDown, ChevronRight, Settings, ArrowLeft,
 } from "lucide-react";
 import type { Project, Task } from "@/lib/features/types/task-type";
@@ -40,26 +40,26 @@ const COLUMNS: ColDef[] = [
   {
     id: "TODO",        label: "TO DO",
     dot: "#97a0af",    accent: "#97a0af",
-    bgClass: "bg-slate-100",          darkBgClass: "dark:bg-slate-800/40",
-    dropBgClass: "bg-violet-50",      darkDropBgClass: "dark:bg-violet-900/20",
+    bgClass: "bg-slate-100",          darkBgClass: "dark:bg-slate-800/50",
+    dropBgClass: "bg-violet-50",      darkDropBgClass: "dark:bg-violet-900/30",
   },
   {
     id: "IN_PROGRESS", label: "IN PROGRESS",
     dot: "#6C5CE7",    accent: "#6C5CE7",
-    bgClass: "bg-purple-50",          darkBgClass: "dark:bg-purple-900/20",
+    bgClass: "bg-purple-50",          darkBgClass: "dark:bg-slate-800/50",
     dropBgClass: "bg-violet-100",     darkDropBgClass: "dark:bg-violet-900/30",
   },
   {
     id: "IN_REVIEW",   label: "IN REVIEW",
     dot: "#ff991f",    accent: "#ff991f",
-    bgClass: "bg-orange-50",          darkBgClass: "dark:bg-orange-900/20",
-    dropBgClass: "bg-orange-100",     darkDropBgClass: "dark:bg-orange-900/30",
+    bgClass: "bg-orange-50",          darkBgClass: "dark:bg-slate-800/50",
+    dropBgClass: "bg-orange-100",     darkDropBgClass: "dark:bg-orange-900/20",
   },
   {
     id: "DONE",        label: "DONE",
     dot: "#00875a",    accent: "#00875a",
-    bgClass: "bg-green-50",           darkBgClass: "dark:bg-green-900/20",
-    dropBgClass: "bg-green-100",      darkDropBgClass: "dark:bg-green-900/30",
+    bgClass: "bg-green-50",           darkBgClass: "dark:bg-slate-800/50",
+    dropBgClass: "bg-green-100",      darkDropBgClass: "dark:bg-green-900/20",
   },
 ];
 
@@ -283,7 +283,7 @@ function TeamTaskCard({
       draggable
       onDragStart={()=>onDragStart(task)}
       onDragEnd={onDragEnd}
-      className={`bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 border-l-[3px] p-3.5 space-y-3 transition-all select-none ${
+      className={`bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 border-l-[3px] p-3.5 space-y-3 transition-all select-none ${
         isDragging ? "opacity-40 scale-95 shadow-none cursor-grabbing" : "hover:shadow-md dark:hover:shadow-slate-950/50 cursor-grab active:cursor-grabbing"
       }`}
       style={{borderLeftColor:col.accent}}
@@ -304,7 +304,6 @@ function TeamTaskCard({
           <button onClick={()=>setShowEdit(true)} className="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-blue-600 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"><Edit2 size={13}/></button>
           <button onClick={()=>onComment(task)} className="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-blue-600 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"><MessageSquare size={13}/></button>
           <button onClick={()=>{if(confirm("Delete this task?"))onDelete(task.id);}} className="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"><Trash2 size={13}/></button>
-          <button className="w-7 h-7 flex items-center justify-center text-slate-400 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"><MoreHorizontal size={13}/></button>
         </div>
       </div>
 
@@ -467,9 +466,9 @@ export default function ProjectTasksPanel({ project, onBack, initialTaskId, init
   return (
     <>
       {/* ── FIX: was bg-[#F1F5F9] with no dark variant ── */}
-      <div className="flex flex-col h-full bg-slate-100 dark:bg-slate-950">
+      <div className="flex flex-col h-full bg-slate-100 dark:bg-slate-900">
         {/* Project header */}
-        <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-3 sm:py-4 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex-wrap">
+        <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-3 sm:py-4 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 flex-wrap">
           {onBack && (
             <button
               onClick={onBack}
@@ -502,16 +501,16 @@ export default function ProjectTasksPanel({ project, onBack, initialTaskId, init
         </div>
 
         {/* Progress bar */}
-        <div className="h-1 bg-slate-200 dark:bg-slate-800">
+        <div className="h-1 bg-slate-200 dark:bg-slate-700">
           <div className="h-full bg-violet-500 transition-all duration-500" style={{width:`${progress}%`}}/>
         </div>
 
         {/* Search */}
-        <div className="px-4 sm:px-5 py-3 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shrink-0">
+        <div className="px-4 sm:px-5 py-3 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 shrink-0">
           <div className="relative w-full max-w-sm">
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"/>
             <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search tasks..."
-              className="w-full h-10 pl-9 pr-3 rounded-xl border border-slate-200 dark:border-slate-700 text-sm bg-white dark:bg-slate-800 dark:text-white outline-none focus:border-blue-500 transition-colors placeholder:text-slate-400 dark:placeholder:text-slate-500"/>
+              className="w-full h-10 pl-9 pr-3 rounded-xl border border-slate-200 dark:border-slate-700 text-sm bg-slate-50 dark:bg-slate-700 text-slate-900 dark:text-slate-100 outline-none focus:border-violet-500 transition-colors placeholder:text-slate-400 dark:placeholder:text-slate-400"/>
           </div>
         </div>
 

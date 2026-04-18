@@ -65,7 +65,7 @@ export function ActivityVolumeChart({ activities }: Props) {
   }).length;
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-xl border border-[#E8E8EF] dark:border-slate-700 p-5 shadow-sm">
+    <div className="bg-white dark:bg-[#1a1c2e] rounded-xl border border-[#E8E8EF] dark:border-[#2a2d45] p-5 shadow-sm">
       <div className="flex items-center justify-between mb-4">
         <div>
           <p className="text-sm font-semibold text-slate-950 dark:text-white">Team activity</p>
@@ -119,7 +119,7 @@ export function ActivityVolumeChart({ activities }: Props) {
                     />
                   ))
                 ) : (
-                  <div className="w-full h-1 rounded bg-slate-100 dark:bg-slate-800 mt-auto" />
+                  <div className="w-full h-1 rounded bg-slate-100 dark:bg-[#252840] mt-auto" />
                 )}
               </div>
 
@@ -136,7 +136,7 @@ export function ActivityVolumeChart({ activities }: Props) {
       )}
 
       {/* recent feed */}
-      <div className="mt-4 pt-4 border-t border-[#E8E8EF] dark:border-slate-700 space-y-2">
+      <div className="mt-4 pt-4 border-t border-[#E8E8EF] dark:border-[#2a2d45] space-y-2">
         <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide mb-2">Recent</p>
         {activities.slice(0, 3).map((a, i) => (
           <div key={i} className="flex items-start gap-2">

@@ -47,14 +47,14 @@ export function ProjectTasksDonut({ projects }: Props) {
 
   if (!projects.length) {
     return (
-      <div className="bg-white dark:bg-slate-900 rounded-xl border border-[#E8E8EF] dark:border-slate-700 p-5 shadow-sm flex items-center justify-center h-40">
+      <div className="bg-white dark:bg-[#1a1c2e] rounded-xl border border-[#E8E8EF] dark:border-[#2a2d45] p-5 shadow-sm flex items-center justify-center h-40">
         <p className="text-sm text-slate-400">No projects yet</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-xl border border-[#E8E8EF] dark:border-slate-700 p-5 shadow-sm">
+    <div className="bg-white dark:bg-[#1a1c2e] rounded-xl border border-[#E8E8EF] dark:border-[#2a2d45] p-5 shadow-sm">
       <p className="text-sm font-semibold text-slate-950 dark:text-white mb-4">Tasks by project</p>
 
       <div className="flex items-center gap-5">

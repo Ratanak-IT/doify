@@ -48,7 +48,7 @@ export function TaskStatusDonut({ completedTasks, pendingTasks, overdueTasks, to
   let cursor = -90;
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-xl border border-[#E8E8EF] dark:border-slate-700 p-5 shadow-sm">
+    <div className="bg-white dark:bg-[#1a1c2e] rounded-xl border border-[#E8E8EF] dark:border-[#2a2d45] p-5 shadow-sm">
       <p className="text-sm font-semibold text-slate-950 dark:text-white mb-4">Task status</p>
 
       <div className="flex items-center gap-6">
@@ -99,7 +99,7 @@ export function TaskStatusDonut({ completedTasks, pendingTasks, overdueTasks, to
             </div>
           ))}
 
-          <div className="mt-1 pt-2 border-t border-[#E8E8EF] dark:border-slate-700 flex justify-between">
+          <div className="mt-1 pt-2 border-t border-[#E8E8EF] dark:border-[#2a2d45] flex justify-between">
             <span className="text-xs text-slate-400">Total</span>
             <span className="text-xs font-bold text-slate-700 dark:text-slate-200">{totalTasks}</span>
           </div>
