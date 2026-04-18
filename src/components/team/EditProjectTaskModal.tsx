@@ -29,7 +29,7 @@ export default function EditProjectTaskModal({
     description: task.description || "",
     priority: task.priority,
     dueDate: task.dueDate ? task.dueDate.split("T")[0] : "",
-    assigneeId: (task.assignee as any)?.id ?? "",
+    assigneeId: (task.assignees as any)?.[0]?.id ?? "",
   });
 
   const [apiError, setApiError] = useState("");
