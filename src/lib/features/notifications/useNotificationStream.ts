@@ -1,24 +1,12 @@
 "use client";
 
-/**
- * useNotificationStream
- *
- * Connects to the backend's SSE endpoint for real-time notifications.
- * When a new notification arrives it dispatches an RTK Query cache
- * invalidation so every component that subscribes to "Notification"
- * refetches automatically — no manual polling needed.
- *
- * Falls back gracefully to aggressive polling (8 s) if SSE is not
- * available or the browser doesn't support EventSource.
- */
-
 import { useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { baseApi } from "@/lib/features/api/api";
 
-const SSE_PATH = "/notifications/stream"; // relative to NEXT_PUBLIC_API/api/v1
-const POLL_INTERVAL_MS  = 8_000;          // fallback polling interval
-const RECONNECT_DELAY_MS = 5_000;         // SSE reconnect delay after error
+const SSE_PATH = "/notifications/stream"; 
+const POLL_INTERVAL_MS  = 8_000; 
+const RECONNECT_DELAY_MS = 5_000; 
 
 function getToken(): string | null {
   if (typeof document === "undefined") return null;
@@ -41,16 +29,14 @@ export function useNotificationStream() {
   useEffect(() => {
     if (!token) return;
 
-    const baseUrl = process.env.NEXT_PUBLIC_API;
-
     // ── Try SSE first ────────────────────────────────────────────────
     const trySSE = () => {
-      if (!baseUrl || typeof EventSource === "undefined") {
+      if (typeof EventSource === "undefined") {
         startPolling();
         return;
       }
 
-      const url = `${baseUrl}/api/v1${SSE_PATH}?token=${encodeURIComponent(token)}`;
+      const url = `/api${SSE_PATH}?token=${encodeURIComponent(token)}`;
 
       try {
         const es = new EventSource(url);

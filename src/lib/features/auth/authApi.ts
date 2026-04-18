@@ -43,26 +43,39 @@ export const authApi = baseApi.injectEndpoints({
       query: (body) => ({ url: "/auth/login", method: "POST", body }),
       transformResponse: (raw: RawAuthResponse) => normalize(raw),
     }),
+
     register: builder.mutation<
-  AuthResponse,
-  { fullName: string; username: string; email: string; password: string }
->({
-  query: (body) => ({ url: "/auth/register", method: "POST", body }),
-  transformResponse: (raw: RawAuthResponse) => normalize(raw),
-}),
+      AuthResponse,
+      { fullName: string; username: string; email: string; password: string }
+    >({
+      query: (body) => ({ url: "/auth/register", method: "POST", body }),
+      transformResponse: (raw: RawAuthResponse) => normalize(raw),
+    }),
+    socialLogin: builder.mutation<
+      AuthResponse,
+      { email: string; name: string; avatar?: string | null; provider: string }
+    >({
+      query: (body) => ({ url: "/auth/social-login", method: "POST", body }),
+      transformResponse: (raw: RawAuthResponse) => normalize(raw),
+    }),
+
     refresh: builder.mutation<AuthResponse, { refreshToken: string }>({
       query: (body) => ({ url: "/auth/refresh", method: "POST", body }),
       transformResponse: (raw: RawAuthResponse) => normalize(raw),
     }),
+
     logoutApi: builder.mutation<void, { refreshToken: string }>({
       query: (body) => ({ url: "/auth/logout", method: "POST", body }),
     }),
+
     forgotPassword: builder.mutation<void, { email: string }>({
       query: (body) => ({ url: "/auth/forgot-password", method: "POST", body }),
     }),
+
     resetPassword: builder.mutation<void, { token: string; newPassword: string }>({
       query: (body) => ({ url: "/auth/reset-password", method: "POST", body }),
     }),
+
     verifyEmail: builder.query<void, string>({
       query: (token) => `/auth/verify-email?token=${token}`,
     }),
@@ -73,6 +86,7 @@ export const authApi = baseApi.injectEndpoints({
 export const {
   useLoginMutation,
   useRegisterMutation,
+  useSocialLoginMutation,
   useRefreshMutation,
   useLogoutApiMutation,
   useForgotPasswordMutation,

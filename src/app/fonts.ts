@@ -11,4 +11,5 @@ export const poppins = Poppins({
 export const sovaphum = localFont({
   src: "../../public/Suwannaphum-Regular.ttf",
   variable: "--font-khmer",
+  preload: false,
 });

@@ -1,18 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useRegisterMutation } from "@/lib/features/auth/authApi";
 import { setCredentials } from "@/lib/features/auth/authSlice";
 import { useAppDispatch } from "@/lib/hooks";
 import { registerSchema } from "@/lib/schemas";
 import type { z } from "zod";
 import { Eye, EyeOff, CheckCircle2, ArrowRight, Check } from "lucide-react";
-import { authClient } from "@/lib/auth-client"; // your Better Auth client
 
 type Form = z.infer<typeof registerSchema>;
 type Errors = Partial<Record<keyof Form | "gender" | "general", string>>;
+
+const OAUTH_ERRORS: Record<string, string> = {
+  oauth_cancelled: "Sign-up was cancelled. Please try again.",
+  token_exchange_failed: "Could not connect to the provider. Please try again.",
+  no_email:
+    "Your account has no public email. Please use email/password registration.",
+  backend_rejected: "Account could not be authenticated. Please try again.",
+  server_error: "An unexpected error occurred. Please try again.",
+};
 
 /* ── Social button icons ── */
 function GoogleIcon() {
@@ -52,8 +60,30 @@ function Divider() {
   );
 }
 
+// Build the provider authorization URL — browser redirects directly to provider
+function getOAuthUrl(provider: "google" | "github" | "facebook"): string {
+  const appUrl =
+    process.env.NEXT_PUBLIC_BETTER_AUTH_URL ?? "http://localhost:3000";
+  const redirectUri = encodeURIComponent(
+    `${appUrl}/api/auth/callback/${provider}`,
+  );
+
+  if (provider === "google") {
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "";
+    return `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${encodeURIComponent("openid email profile")}&access_type=offline`;
+  }
+  if (provider === "github") {
+    const clientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID ?? "";
+    return `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${encodeURIComponent("read:user user:email")}`;
+  }
+  // facebook
+  const clientId = process.env.NEXT_PUBLIC_FACEBOOK_CLIENT_ID ?? "";
+  return `https://www.facebook.com/v18.0/dialog/oauth?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${encodeURIComponent("email,public_profile")}&response_type=code`;
+}
+
 export default function RegisterPage() {
   const router   = useRouter();
+  const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
   const [register, { isLoading }] = useRegisterMutation();
 
@@ -65,6 +95,15 @@ export default function RegisterPage() {
   const [showPwd, setShowPwd]     = useState(false);
   const [showConfirm, setConfirm] = useState(false);
   const [socialLoading, setSocialLoading] = useState<string | null>(null);
+
+  // Pick up ?error= set by the callback route on failure
+  useEffect(() => {
+    const err = searchParams.get("error");
+    if (err)
+      setErrors({
+        general: OAUTH_ERRORS[err] ?? "Sign-up failed. Please try again.",
+      });
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,13 +134,9 @@ export default function RegisterPage() {
     }
   };
 
-  const handleSocial = async (provider: "google" | "github" | "facebook") => {
+  const handleSocial = (provider: "google" | "github" | "facebook") => {
     setSocialLoading(provider);
-    try {
-      await authClient.signIn.social({ provider, callbackURL: "/dashboard" });
-    } catch {
-      setSocialLoading(null);
-    }
+    window.location.href = getOAuthUrl(provider);
   };
 
   const strength = (() => {

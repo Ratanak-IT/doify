@@ -1,7 +1,6 @@
 "use client";
 
 import DashboardHeader from "@/components/DashboardHeader";
-import TaskCard, { COLUMNS, type ColDef } from "@/components/tasks/TaskCard";
 
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams } from "next/navigation";
@@ -24,6 +23,21 @@ import type { Task, TaskStatus, Comment } from "@/lib/features/types/task-type";
 import { createPersonalTaskSchema } from "@/lib/schemas";
 import type { z } from "zod";
 
+const PRIORITY_STYLE: Record<string, string> = {
+  LOW:    "bg-slate-50  text-slate-600  border-slate-200  dark:bg-slate-700/40 dark:text-slate-400  dark:border-slate-600/50",
+  MEDIUM: "bg-orange-50 text-orange-600 border-orange-200 dark:bg-orange-900/20 dark:text-orange-400 dark:border-orange-700/40",
+  HIGH:   "bg-red-50    text-red-600    border-red-200    dark:bg-red-900/20    dark:text-red-400    dark:border-red-700/40",
+  URGENT: "bg-red-100   text-red-800    border-red-300    dark:bg-red-900/30    dark:text-red-300    dark:border-red-700/50",
+};
+
+type ColDef = { id: TaskStatus; label: string; dot: string; bg: string; darkBg: string; accent: string };
+const COLUMNS: ColDef[] = [
+  { id: "TODO",        label: "To Do",       dot: "#94A3B8", bg: "#F1F5F9", darkBg: "#1e2235", accent: "#94A3B8" },
+  { id: "IN_PROGRESS", label: "In Progress", dot: "#6C5CE7", bg: "#F0EDFF", darkBg: "#1e1a35", accent: "#6C5CE7" },
+  { id: "IN_REVIEW",   label: "In Review",   dot: "#ff991f", bg: "#fff7e6", darkBg: "#211c0e", accent: "#ff991f" },
+  { id: "DONE",        label: "Done",        dot: "#10B981", bg: "#e3fcef", darkBg: "#0e2119", accent: "#10B981" },
+];
+
 const AVATAR_PALETTE = [
   "#6C5CE7", "#10B981", "#ff5630", "#6554c0",
   "#ff991f", "#00b8d9", "#36b37e", "#EF4444",
@@ -39,6 +53,7 @@ function getAvatarColor(seed: string): string {
   return AVATAR_PALETTE[Math.abs(hash) % AVATAR_PALETTE.length];
 }
 
+/* ── New Task Modal ─────────────────────────────────────────────── */
 type TaskForm = z.infer<typeof createPersonalTaskSchema>;
 
 function NewTaskModal({ defaultStatus, onClose }: { defaultStatus?: TaskStatus; onClose: () => void }) {
@@ -106,7 +121,7 @@ function NewTaskModal({ defaultStatus, onClose }: { defaultStatus?: TaskStatus; 
           <div>
             <label className="block text-sm font-semibold text-[#64748B] dark:text-slate-400 mb-1.5">Description</label>
             <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })}
-              rows={3} placeholder="Add more details..."
+              rows={3} placeholder="Add more details…"
               className="w-full px-3 py-3 rounded-xl border border-[#D1D5DB] dark:border-[#2a2d45] text-sm outline-none focus:border-[#6C5CE7] dark:focus:border-[#6C5CE7] bg-white dark:bg-[#252840] dark:text-white resize-none transition-colors placeholder:text-slate-400 dark:placeholder:text-slate-600" />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -133,7 +148,7 @@ function NewTaskModal({ defaultStatus, onClose }: { defaultStatus?: TaskStatus; 
             </button>
             <button type="submit" disabled={isLoading}
               className="flex-1 h-12 rounded-xl bg-[#6C5CE7] hover:bg-[#5B4BD5] text-white text-sm font-semibold transition-colors disabled:opacity-60">
-              {isLoading ? "Creating..." : "Create Task"}
+              {isLoading ? "Creating…" : "Create Task"}
             </button>
           </div>
         </form>
@@ -142,6 +157,7 @@ function NewTaskModal({ defaultStatus, onClose }: { defaultStatus?: TaskStatus; 
   );
 }
 
+/* ── Comments Drawer ────────────────────────────────────────────── */
 function CommentsDrawer({ task, onClose }: { task: Task; onClose: () => void }) {
   const { data: pageData, isLoading } = useGetCommentsQuery({ taskId: task.id });
   const comments: Comment[] = pageData?.content ?? [];
@@ -183,11 +199,11 @@ function CommentsDrawer({ task, onClose }: { task: Task; onClose: () => void }) 
           </button>
         </div>
         <div className="flex-1 overflow-y-auto p-5 space-y-4">
-          {isLoading && <p className="text-center text-xs text-[#94A3B8] py-8">Loading...</p>}
+          {isLoading && <p className="text-center text-xs text-[#94A3B8] py-8">Loading…</p>}
           {!isLoading && comments.length === 0 && <p className="text-center text-xs text-[#94A3B8] dark:text-slate-600 py-8">No comments yet.</p>}
           {comments.map((c) => {
             const authorName = c.author?.fullName ?? c.author?.username ?? "Unknown";
-            const authorId = c.author?.id ?? authorName;
+            const authorId   = c.author?.id ?? authorName;
             return (
               <div key={c.id} className="flex gap-3 group">
                 <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[10px] font-medium shrink-0"
@@ -222,7 +238,7 @@ function CommentsDrawer({ task, onClose }: { task: Task; onClose: () => void }) 
           <div className="flex gap-2">
             <input value={text} onChange={(e) => setText(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submit(); } }}
-              placeholder="Write a comment..."
+              placeholder="Write a comment…"
               className="flex-1 h-9 px-3 rounded-md border border-[#D1D5DB] dark:border-[#2a2d45] text-sm outline-none focus:border-[#6C5CE7] bg-white dark:bg-[#252840] dark:text-white transition-colors placeholder:text-slate-400 dark:placeholder:text-slate-600" />
             <button onClick={submit} disabled={posting || !text.trim()}
               className="w-9 h-9 rounded-xl bg-[#6C5CE7] hover:bg-[#5B4BD5] text-white flex items-center justify-center disabled:opacity-40 transition-colors">
@@ -446,9 +462,9 @@ export default function TasksPage() {
     // Could open edit modal from URL param if desired; left as-is for now
   }, [taskId, taskFetched, fetchedTask, editTask]);
 
-  const handleMove = (id: string, status: TaskStatus) => updateTask({ id, data: { status } });
+  const handleMove   = (id: string, status: TaskStatus) => updateTask({ id, data: { status } });
   const handleDelete = (id: string) => deleteTask(id);
-  const openModal = (status?: TaskStatus) => { setDefault(status); setModal(true); };
+  const openModal    = (status?: TaskStatus) => { setDefault(status); setModal(true); };
 
   const handleDragOver = (e: React.DragEvent, colId: TaskStatus) => {
     e.preventDefault();
@@ -474,7 +490,7 @@ export default function TasksPage() {
       <div className="px-4 sm:px-6 py-3 bg-white dark:bg-[#1a1c2e] border-b border-[#E8E8EF] dark:border-[#2a2d45]">
         <div className="relative w-full max-w-xs">
           <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8] dark:text-slate-600" />
-          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search tasks..."
+          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search tasks…"
             className="w-full h-9 pl-9 pr-3 rounded-md border border-[#D1D5DB] dark:border-[#2a2d45] text-sm bg-white dark:bg-[#252840] dark:text-white outline-none focus:border-[#6C5CE7] dark:focus:border-[#6C5CE7] transition-colors placeholder:text-[#94A3B8] dark:placeholder:text-slate-600" />
         </div>
       </div>
@@ -489,9 +505,9 @@ export default function TasksPage() {
       {/* Kanban board */}
       <main className="flex-1 overflow-auto p-3 sm:p-4 md:p-6 bg-[#F1F5F9] dark:bg-[#1E1B2E]">
         <div className="flex gap-3 sm:gap-4 min-w-max h-full">
-          {COLUMNS.map((col: ColDef) => {
+          {COLUMNS.map((col) => {
             const colTasks = tasks.filter((t) => t.status === col.id);
-            const isOver = dragOverCol === col.id;
+            const isOver   = dragOverCol === col.id;
 
             return (
               <div key={col.id}
@@ -530,13 +546,11 @@ export default function TasksPage() {
                 >
                   {isLoading
                     ? Array(2).fill(0).map((_, i) => (
-                        <div key={i} className="animate-pulse bg-white dark:bg-[#1a1c2e] rounded-xl h-36 opacity-60" />
+                        <div key={i} className="animate-pulse bg-white dark:bg-[#1a1c2e] rounded-xl h-28 opacity-60" />
                       ))
                     : colTasks.map((task) => (
                         <TaskCard
-                          key={task.id}
-                          task={task}
-                          col={col}
+                          key={task.id} task={task} col={col}
                           onMove={handleMove}
                           onDelete={handleDelete}
                           onEdit={setEditTask}
@@ -557,7 +571,7 @@ export default function TasksPage() {
                     </div>
                   )}
 
-                  {/* Extra drop zone */}
+                  {/* Extra drop zone at bottom of non-empty columns */}
                   {!isLoading && colTasks.length > 0 && isOver && (
                     <div className="rounded-xl p-3 text-center text-xs font-semibold border-2 border-dashed"
                       style={{ borderColor: col.accent, color: col.accent }}>
