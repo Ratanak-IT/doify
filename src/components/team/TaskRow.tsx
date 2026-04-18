@@ -132,7 +132,7 @@ export default function TaskRow({ task }: Props) {
               No subtasks found
             </p>
           ) : (
-            (subtasks ?? []).map((st) => <SubtaskRow key={st.id} subtask={st} />)
+            (subtasks ?? []).map((st) => <SubtaskRow key={st.id} subtask={st} col={{ id: st.status as any, accent: "#6C5CE7" }} projectId={task.projectId ?? ""} onMove={() => {}} />)
           )}
         </div>
       )}
