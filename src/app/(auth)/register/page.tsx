@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRegisterMutation } from "@/lib/features/auth/authApi";
@@ -8,13 +8,13 @@ import { setCredentials } from "@/lib/features/auth/authSlice";
 import { useAppDispatch } from "@/lib/hooks";
 import { registerSchema } from "@/lib/schemas";
 import type { z } from "zod";
-import { Eye, EyeOff, CheckCircle2, ArrowRight, Check } from "lucide-react";
-import { authClient } from "@/lib/auth-client"; // your Better Auth client
+import { Eye, EyeOff, CheckCircle2, ArrowRight, Zap, Users, BarChart3 } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
+import { useTheme } from "@/lib/contexts/ThemeContext";
 
 type Form = z.infer<typeof registerSchema>;
 type Errors = Partial<Record<keyof Form | "gender" | "general", string>>;
 
-/* ── Social button icons ── */
 function GoogleIcon() {
   return (
     <svg viewBox="0 0 24 24" className="w-5 h-5" aria-hidden>
@@ -42,13 +42,12 @@ function FacebookIcon() {
   );
 }
 
-function Divider() {
+function Spinner() {
   return (
-    <div className="flex items-center gap-3 my-5">
-      <div className="flex-1 h-px bg-slate-200 dark:bg-[#1e2d45]" />
-      <span className="text-xs text-slate-400 dark:text-slate-500 font-medium">or sign up with email</span>
-      <div className="flex-1 h-px bg-slate-200 dark:bg-[#1e2d45]" />
-    </div>
+    <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+    </svg>
   );
 }
 
@@ -56,10 +55,13 @@ export default function RegisterPage() {
   const router   = useRouter();
   const dispatch = useAppDispatch();
   const [register, { isLoading }] = useRegisterMutation();
+  const { theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const dark = mounted && theme === "dark";
 
   const [form, setForm] = useState<Form & { gender: string }>({
-    fullName: "", username: "", email: "",
-    password: "", confirmPassword: "", gender: "",
+    fullName: "", username: "", email: "", password: "", confirmPassword: "", gender: "",
   });
   const [errors, setErrors]       = useState<Errors>({});
   const [showPwd, setShowPwd]     = useState(false);
@@ -81,10 +83,8 @@ export default function RegisterPage() {
     }
     try {
       const res = await register({
-        fullName: result.data.fullName,
-        username: result.data.username,
-        email: result.data.email,
-        password: result.data.password,
+        fullName: result.data.fullName, username: result.data.username,
+        email: result.data.email, password: result.data.password,
         ...(form.gender && { gender: form.gender }),
       }).unwrap();
       dispatch(setCredentials({ user: res.user, token: res.token, refreshToken: res.refreshToken }));
@@ -95,13 +95,13 @@ export default function RegisterPage() {
     }
   };
 
-  const handleSocial = async (provider: "google" | "github" | "facebook") => {
+  const handleSocial = (provider: "google" | "github" | "facebook") => {
     setSocialLoading(provider);
-    try {
-      await authClient.signIn.social({ provider, callbackURL: "/dashboard" });
-    } catch {
+    authClient.signIn.social({ provider, callbackURL: "/dashboard" }).catch((err: unknown) => {
+      const msg = (err as { message?: string })?.message ?? `Failed to sign in with ${provider}`;
+      setErrors({ general: msg });
       setSocialLoading(null);
-    }
+    });
   };
 
   const strength = (() => {
@@ -114,36 +114,29 @@ export default function RegisterPage() {
 
   const fieldCls = (hasErr: boolean) =>
     `w-full h-[46px] px-4 rounded-xl border text-sm outline-none transition-all
-     bg-slate-50 dark:bg-[#0f1a2e] text-slate-900 dark:text-white
-     placeholder:text-slate-400 dark:placeholder:text-slate-600
+     ${dark ? "bg-slate-800 text-white placeholder:text-slate-500" : "bg-slate-50 text-slate-900 placeholder:text-slate-400"}
      ${hasErr
-       ? "border-red-400 dark:border-red-700"
-       : "border-slate-200 dark:border-[#1e2d45] focus:border-[#4f39f6] dark:focus:border-[#4f39f6] focus:ring-2 focus:ring-[#4f39f6]/15"
+       ? "border-red-400"
+       : `${dark ? "border-slate-700" : "border-slate-200"} focus:border-[#4f39f6] focus:ring-2 focus:ring-[#4f39f6]/15`
      }`;
 
-  const socialBtnCls = "flex-1 h-11 flex items-center justify-center gap-2 rounded-xl border border-slate-200 dark:border-[#1e2d45] bg-white dark:bg-[#0f1a2e] text-slate-700 dark:text-slate-300 text-sm font-medium hover:bg-slate-50 dark:hover:bg-[#162035] transition-all disabled:opacity-50";
+  const socialBtnCls =
+    `flex-1 h-11 flex items-center justify-center gap-2 rounded-xl border text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed
+     ${dark ? "border-slate-700 bg-slate-800 text-white hover:bg-slate-700" : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"}`;
+
+  const isBusy = isLoading || !!socialLoading;
 
   const Label = ({ children }: { children: React.ReactNode }) => (
-    <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-      {children}
-    </label>
+    <label className={`block text-sm font-semibold mb-1.5 ${dark ? "text-white" : "text-slate-700"}`}>{children}</label>
   );
 
-  const features = [
-    "Unlimited projects & tasks",
-    "Up to 15 team members",
-    "Real-time collaboration",
-    "Advanced analytics",
-    "Priority support",
-  ];
-
   return (
-    <div className="min-h-screen flex">
+    <div className={`min-h-screen flex transition-colors ${dark ? "bg-slate-900" : "bg-white"}`}>
 
-      {/* ── Left branding panel ── */}
+      {/* Left branding panel */}
       <div
-        className="hidden lg:flex lg:w-[45%] flex-col justify-between p-12 overflow-hidden"
-        style={{ background: "linear-gradient(129deg, #59168b 0%, #312c85 50%, #6e11b0 100%)" }}
+        className="hidden lg:flex lg:w-[58%] flex-col justify-between p-12 overflow-hidden"
+        style={{ background: "linear-gradient(131deg, #312c85 0%, #59168b 50%, #372aac 100%)" }}
       >
         <Link href="/" className="flex items-center gap-3 w-fit group">
           <div className="w-10 h-10 rounded-[14px] bg-white/20 group-hover:bg-white/30 flex items-center justify-center transition-colors">
@@ -159,113 +152,68 @@ export default function RegisterPage() {
               <span className="text-[#c6d2ff] text-sm font-medium">Free 14-day trial · No credit card required</span>
             </div>
             <h1 className="text-5xl font-bold text-white leading-tight">Start your</h1>
-            <h1 className="text-5xl font-bold text-[#dab2ff] leading-tight">free trial today</h1>
+            <h1 className="text-5xl font-bold text-[#a3b3ff] leading-tight">free trial today</h1>
+            <p className="text-[#c6d2ff] text-lg mt-4 max-w-md">Everything your team needs to plan, collaborate, and ship great work.</p>
           </div>
-          <div className="bg-white/10 border border-white/10 rounded-2xl p-6 space-y-4">
-            <p className="text-white text-sm font-semibold tracking-wider uppercase">Everything included</p>
-            <div className="space-y-3">
-              {features.map((f) => (
-                <div key={f} className="flex items-center gap-3">
-                  <div className="w-5 h-5 rounded-full bg-[rgba(5,223,114,0.2)] border border-[rgba(5,223,114,0.5)] flex items-center justify-center shrink-0">
-                    <Check size={12} className="text-[#05df72]" />
-                  </div>
-                  <span className="text-[#f3e8ff] text-sm">{f}</span>
+          <div className="space-y-3">
+            {[
+              { icon: <Zap size={20} />, title: "Unlimited Projects & Tasks", desc: "No caps — scale as your team grows" },
+              { icon: <Users size={20} />, title: "Real-time Collaboration", desc: "Work seamlessly with up to 15 members" },
+              { icon: <BarChart3 size={20} />, title: "Advanced Analytics", desc: "Insights to keep every project on track" },
+            ].map((f) => (
+              <div key={f.title} className="mt-3 flex items-center gap-4 bg-white/10 border border-white/10 rounded-2xl px-5 py-4">
+                <div className="w-10 h-10 rounded-[14px] bg-[rgba(97,95,255,0.5)] flex items-center justify-center text-white shrink-0">{f.icon}</div>
+                <div>
+                  <p className="text-white text-sm font-semibold">{f.title}</p>
+                  <p className="text-[#c6d2ff] text-sm">{f.desc}</p>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </div>
 
         <div className="flex items-center gap-3">
           <div className="flex -space-x-2">
             {["bg-indigo-500", "bg-pink-500", "bg-amber-500", "bg-green-500"].map((c, i) => (
-              <div key={i} className={`w-8 h-8 rounded-full ${c} border-2 border-[#59168b]`} />
+              <div key={i} className={`w-8 h-8 rounded-full ${c} border-2 border-[#312c85]`} />
             ))}
           </div>
-          <p className="text-sm">
-            <span className="text-white font-semibold">2,400+</span>
-            <span className="text-[#e9d4ff]"> teams started this month</span>
-          </p>
+          <p className="text-sm"><span className="text-white font-semibold">2,400+</span><span className="text-[#c6d2ff]"> teams started this month</span></p>
         </div>
       </div>
 
-      {/* ── Right form panel ── */}
-      <div className="flex-1 flex flex-col items-center justify-center bg-white dark:bg-[#080f1a] px-6 py-10 transition-colors overflow-y-auto">
+      {/* Right form panel */}
+      <div className={`flex-1 flex flex-col items-center justify-center px-6 py-10 transition-colors overflow-y-auto ${dark ? "bg-slate-900" : "bg-white"}`}>
 
-        {/* Mobile logo */}
         <Link href="/" className="flex items-center gap-3 mb-8 lg:hidden group">
           <div className="w-10 h-10 rounded-[14px] bg-[#4f39f6] group-hover:bg-[#4530e0] flex items-center justify-center transition-colors">
             <CheckCircle2 size={20} className="text-white" />
           </div>
-          <span className="text-slate-900 dark:text-white text-xl font-bold">Doify</span>
+          <span className={`text-xl font-bold ${dark ? "text-white" : "text-slate-900"}`}>Doify</span>
         </Link>
 
-        <div className="w-full max-w-[420px]">
-
-          {/* Heading */}
+        <div className="w-full max-w-[400px]">
           <div className="mb-7">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Create account</h2>
-            <p className="text-slate-500 dark:text-slate-400 mt-2">Set up your team workspace in minutes</p>
+            <h2 className={`text-3xl font-bold ${dark ? "text-white" : "text-slate-900"}`}>Create account</h2>
+            <p className={`mt-2 ${dark ? "text-slate-400" : "text-slate-500"}`}>Set up your team workspace in minutes</p>
           </div>
-
-          {/* ── Social buttons ── */}
-          <div className="flex gap-3">
-            <button
-              onClick={() => handleSocial("google")}
-              disabled={!!socialLoading}
-              className={socialBtnCls}
-              aria-label="Sign up with Google"
-            >
-              {socialLoading === "google"
-                ? <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-                : <GoogleIcon />}
-              <span>Google</span>
-            </button>
-
-            <button
-              onClick={() => handleSocial("github")}
-              disabled={!!socialLoading}
-              className={socialBtnCls}
-              aria-label="Sign up with GitHub"
-            >
-              {socialLoading === "github"
-                ? <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-                : <GithubIcon />}
-              <span>GitHub</span>
-            </button>
-
-            <button
-              onClick={() => handleSocial("facebook")}
-              disabled={!!socialLoading}
-              className={socialBtnCls}
-              aria-label="Sign up with Facebook"
-            >
-              {socialLoading === "facebook"
-                ? <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-                : <FacebookIcon />}
-              <span>Facebook</span>
-            </button>
-          </div>
-
-          <Divider />
 
           {errors.general && (
-            <div className="mb-5 p-3.5 rounded-xl bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800/50 text-sm text-red-600 dark:text-red-400">
+            <div className={`mb-5 p-3.5 rounded-xl border text-sm ${dark ? "bg-red-950/50 border-red-800/50 text-red-400" : "bg-red-50 border-red-200 text-red-600"}`}>
               {errors.general}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-            {/* Full name & Username */}
             <div className="grid grid-cols-2 gap-3">
-              <div>
+              <div className="mb-3">
                 <Label>Full name</Label>
                 <input placeholder="John Smith" value={form.fullName}
                   onChange={(e) => setForm({ ...form, fullName: e.target.value })}
                   className={fieldCls(!!errors.fullName)} />
                 {errors.fullName && <p className="text-xs text-red-500 mt-1">{errors.fullName}</p>}
               </div>
-              <div>
+              <div className="mb-3">
                 <Label>Username</Label>
                 <input placeholder="johnsmith" value={form.username}
                   onChange={(e) => setForm({ ...form, username: e.target.value })}
@@ -274,8 +222,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* Email */}
-            <div>
+            <div className="mb-3">
               <Label>Work email</Label>
               <input type="email" placeholder="you@company.com" value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -283,15 +230,9 @@ export default function RegisterPage() {
               {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email}</p>}
             </div>
 
-            {/* Gender */}
-            <div>
-              <Label>
-                Gender{" "}
-                <span className="text-slate-400 dark:text-slate-500 font-normal text-xs">(optional)</span>
-              </Label>
-              <select value={form.gender}
-                onChange={(e) => setForm({ ...form, gender: e.target.value })}
-                className={fieldCls(false)}>
+            <div className="mb-3">
+              <Label>Gender <span className={`font-normal text-xs ${dark ? "text-slate-500" : "text-slate-400"}`}>(optional)</span></Label>
+              <select value={form.gender} onChange={(e) => setForm({ ...form, gender: e.target.value })} className={fieldCls(false)}>
                 <option value="">Select your gender</option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
@@ -301,16 +242,14 @@ export default function RegisterPage() {
               </select>
             </div>
 
-            {/* Password */}
-            <div>
+            <div className="mb-3">
               <Label>Password</Label>
               <div className="relative">
                 <input type={showPwd ? "text" : "password"} placeholder="Min. 8 characters"
-                  value={form.password}
-                  onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })}
                   className={`${fieldCls(!!errors.password)} pr-12`} />
                 <button type="button" onClick={() => setShowPwd((s) => !s)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-white transition-colors">
+                  className={`absolute right-4 top-1/2 -translate-y-1/2 transition-colors ${dark ? "text-slate-400 hover:text-white" : "text-slate-400 hover:text-slate-700"}`}>
                   {showPwd ? <EyeOff size={17} /> : <Eye size={17} />}
                 </button>
               </div>
@@ -318,38 +257,33 @@ export default function RegisterPage() {
                 <div className="mt-2 space-y-1">
                   <div className="flex gap-1">
                     {[0, 1, 2, 3].map((i) => (
-                      <div key={i} className={`h-1 flex-1 rounded-full transition-colors ${i < strength ? strengthColor : "bg-slate-200 dark:bg-white/10"}`} />
+                      <div key={i} className={`h-1 flex-1 rounded-full transition-colors ${i < strength ? strengthColor : dark ? "bg-white/10" : "bg-slate-200"}`} />
                     ))}
                   </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Strength: <span className="font-semibold">{strengthLabel}</span>
-                  </p>
+                  <p className={`text-xs ${dark ? "text-slate-400" : "text-slate-500"}`}>Strength: <span className="font-semibold">{strengthLabel}</span></p>
                 </div>
               )}
               {errors.password && <p className="text-xs text-red-500 mt-1">{errors.password}</p>}
             </div>
 
-            {/* Confirm Password */}
-            <div>
+            <div className="mb-3">
               <Label>Confirm password</Label>
               <div className="relative">
                 <input type={showConfirm ? "text" : "password"} placeholder="Re-enter your password"
-                  value={form.confirmPassword}
-                  onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
+                  value={form.confirmPassword} onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
                   className={`${fieldCls(!!errors.confirmPassword)} pr-12`} />
                 <button type="button" onClick={() => setConfirm((s) => !s)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-white transition-colors">
+                  className={`absolute right-4 top-1/2 -translate-y-1/2 transition-colors ${dark ? "text-slate-400 hover:text-white" : "text-slate-400 hover:text-slate-700"}`}>
                   {showConfirm ? <EyeOff size={17} /> : <Eye size={17} />}
                 </button>
               </div>
               {errors.confirmPassword && <p className="text-xs text-red-500 mt-1">{errors.confirmPassword}</p>}
             </div>
 
-            {/* Terms */}
-            <div className="flex items-start gap-2.5 pt-1">
+            <div className="mb-1.5 flex items-start gap-2.5 pt-1">
               <input type="checkbox" id="terms" required
-                className="w-4 h-4 mt-0.5 rounded border-slate-300 dark:border-slate-600 accent-[#4f39f6] cursor-pointer shrink-0" />
-              <label htmlFor="terms" className="text-sm text-slate-500 dark:text-slate-400 cursor-pointer leading-snug">
+                className="w-4 h-4 mt-0.5 rounded border-slate-300 accent-[#4f39f6] cursor-pointer shrink-0" />
+              <label htmlFor="terms" className={`text-sm cursor-pointer leading-snug ${dark ? "text-slate-400" : "text-slate-500"}`}>
                 I agree to the{" "}
                 <Link href="#" className="text-[#4f39f6] hover:underline font-medium">Terms of Service</Link>{" "}
                 and{" "}
@@ -357,23 +291,28 @@ export default function RegisterPage() {
               </label>
             </div>
 
-            <button type="submit" disabled={isLoading || !!socialLoading}
-              className="w-full h-12 rounded-xl bg-[#4f39f6] hover:bg-[#4530e0] text-white font-semibold text-base transition-colors disabled:opacity-60 flex items-center justify-center gap-2 shadow-[0_8px_24px_rgba(79,57,246,0.4)]">
-              {isLoading ? (
-                <>
-                  <svg className="animate-spin w-5 h-5" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="white" strokeWidth="4" />
-                    <path className="opacity-75" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
-                  Creating account…
-                </>
-              ) : (
-                <>Create free account <ArrowRight size={16} /></>
-              )}
+            <button type="submit" disabled={isBusy}
+              className="w-full h-12 rounded-xl bg-[#4f39f6] hover:bg-[#4530e0] text-white font-semibold text-base transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-[0_8px_24px_rgba(79,57,246,0.4)]">
+              {isLoading ? (<><svg className="animate-spin w-5 h-5" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"/><path className="opacity-75" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>Creating account…</>) : (<>Create free account <ArrowRight size={16} /></>)}
             </button>
           </form>
 
-          <p className="text-center text-sm text-slate-500 dark:text-slate-400 mt-4">
+          <div className="flex items-center gap-3 my-5">
+            <div className={`flex-1 h-px ${dark ? "bg-slate-800" : "bg-slate-200"}`} />
+            <span className={`text-xs font-medium ${dark ? "text-slate-400" : "text-slate-400"}`}>or sign up with email</span>
+            <div className={`flex-1 h-px ${dark ? "bg-slate-800" : "bg-slate-200"}`} />
+          </div>
+
+          <div className="flex gap-3">
+            {(["google", "github", "facebook"] as const).map((provider) => (
+              <button key={provider} onClick={() => handleSocial(provider)} disabled={isBusy} className={socialBtnCls} aria-label={`Sign up with ${provider}`}>
+                {socialLoading === provider ? <Spinner /> : provider === "google" ? <GoogleIcon /> : provider === "github" ? <GithubIcon /> : <FacebookIcon />}
+                <span className="capitalize">{provider}</span>
+              </button>
+            ))}
+          </div>
+
+          <p className={`text-center text-sm mt-6 ${dark ? "text-slate-400" : "text-slate-500"}`}>
             Already have an account?{" "}
             <Link href="/login" className="text-[#4f39f6] font-semibold hover:underline">Sign in</Link>
           </p>
