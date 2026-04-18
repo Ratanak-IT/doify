@@ -26,8 +26,8 @@ export function CompletionGauge({ completedTasks, totalTasks }: Props) {
   const label = pct >= 75 ? "On track" : pct >= 40 ? "In progress" : "Needs focus";
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-xl border border-[#E8E8EF] dark:border-slate-700 p-5 shadow-sm">
-      <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-4">Completion rate</p>
+    <div className="bg-white dark:bg-[#1a1c2e] rounded-xl border border-[#E8E8EF] dark:border-[#2a2d45] p-5 shadow-sm">
+      <p className="text-sm font-semibold text-slate-950 dark:text-white mb-4">Completion rate</p>
 
       <div className="flex flex-col items-center">
         <svg width={200} height={118} viewBox="0 0 200 118">
@@ -71,14 +71,15 @@ export function CompletionGauge({ completedTasks, totalTasks }: Props) {
           <span className="text-[11px] text-slate-400">100%</span>
         </div>
 
-        <div className="mt-4 grid grid-cols-2 gap-2 w-full">
-          <div className="text-center bg-slate-50 dark:bg-slate-800 rounded-lg py-2.5">
-            <p className="text-xl font-medium text-slate-950 dark:text-white">{completedTasks}</p>
-            <p className="text-[11px] text-slate-400 mt-0.5">Completed</p>
+        {/* detail row */}
+        <div className="mt-4 grid grid-cols-2 gap-3 w-full">
+          <div className="text-center bg-slate-50 dark:bg-[#252840] rounded-lg py-2">
+            <p className="text-lg font-bold text-slate-950 dark:text-white">{completedTasks}</p>
+            <p className="text-[11px] text-slate-400">Completed</p>
           </div>
-          <div className="text-center bg-slate-50 dark:bg-slate-800 rounded-lg py-2.5">
-            <p className="text-xl font-medium text-slate-950 dark:text-white">{totalTasks - completedTasks}</p>
-            <p className="text-[11px] text-slate-400 mt-0.5">Remaining</p>
+          <div className="text-center bg-slate-50 dark:bg-[#252840] rounded-lg py-2">
+            <p className="text-lg font-bold text-slate-950 dark:text-white">{totalTasks - completedTasks}</p>
+            <p className="text-[11px] text-slate-400">Remaining</p>
           </div>
         </div>
       </div>

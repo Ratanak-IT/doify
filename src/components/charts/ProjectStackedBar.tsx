@@ -17,14 +17,14 @@ export function ProjectStackedBar({ projects }: Props) {
 
   if (!projects.length) {
     return (
-      <div className="bg-white dark:bg-slate-900 rounded-xl border border-[#E8E8EF] dark:border-slate-700 p-5 shadow-sm flex items-center justify-center h-40">
+      <div className="bg-white dark:bg-[#1a1c2e] rounded-xl border border-[#E8E8EF] dark:border-[#2a2d45] p-5 shadow-sm flex items-center justify-center h-40">
         <p className="text-sm text-slate-400">No projects yet</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-xl border border-[#E8E8EF] dark:border-slate-700 p-5 shadow-sm">
+    <div className="bg-white dark:bg-[#1a1c2e] rounded-xl border border-[#E8E8EF] dark:border-[#2a2d45] p-5 shadow-sm">
       <div className="flex items-center justify-between mb-4">
         <p className="text-sm font-semibold text-slate-950 dark:text-white">Completed vs remaining</p>
         <div className="flex items-center gap-3">
@@ -33,7 +33,7 @@ export function ProjectStackedBar({ projects }: Props) {
             Completed
           </span>
           <span className="flex items-center gap-1.5 text-[11px] text-slate-500">
-            <span className="w-2.5 h-2.5 rounded-sm bg-[#E8E8EF] dark:bg-slate-700 inline-block" />
+            <span className="w-2.5 h-2.5 rounded-sm bg-[#E8E8EF] dark:bg-[#2a2d45] inline-block" />
             Remaining
           </span>
         </div>
@@ -66,7 +66,7 @@ export function ProjectStackedBar({ projects }: Props) {
                 )}
                 {remaining > 0 && (
                   <div
-                    className="h-full transition-all duration-500 bg-[#E8E8EF] dark:bg-slate-700"
+                    className="h-full transition-all duration-500 bg-[#E8E8EF] dark:bg-[#2a2d45]"
                     style={{ width: `${remainingW}%` }}
                   />
                 )}

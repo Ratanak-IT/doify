@@ -1,5 +1,7 @@
+// src/lib/auth.ts
 import { betterAuth } from "better-auth";
 import { nextCookies } from "better-auth/next-js";
+import Database from "better-sqlite3";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_API;
 
@@ -10,16 +12,16 @@ export const auth = betterAuth({
 
   socialProviders: {
     google: {
-      clientId:     process.env.GOOGLE_CLIENT_ID     as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     },
     github: {
-      clientId:     process.env.GITHUB_CLIENT_ID     as string,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
     },
     facebook: {
-      clientId:     process.env.FACEBOOK_CLIENT_ID     as string,
-      clientSecret: process.env.FACEBOOK_CLIENT_SECRET as string,
+      clientId: process.env.FACEBOOK_CLIENT_ID!,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
     },
   },
   databaseHooks: {

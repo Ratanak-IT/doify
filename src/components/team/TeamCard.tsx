@@ -37,7 +37,7 @@ export default function TeamCard({
 
   return (
     <div
-      className="group relative bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-lg hover:shadow-slate-200/60 dark:hover:shadow-slate-900/60 transition-all duration-200 cursor-pointer overflow-hidden"
+      className="group relative bg-white dark:bg-[#1a1c2e] rounded-2xl border border-slate-200 dark:border-[#2a2d45] hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-lg hover:shadow-slate-200/60 dark:hover:shadow-slate-900/60 transition-all duration-200 cursor-pointer overflow-hidden"
       onClick={onSelect}
     >
       <div className={`h-1 w-full bg-gradient-to-r ${gradientCls}`} />
@@ -53,7 +53,7 @@ export default function TeamCard({
           <div className="relative ml-auto" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={() => setMenuOpen((o) => !o)}
-              className="w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 opacity-0 group-hover:opacity-100 transition-all"
+              className="w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-[#252840] opacity-0 group-hover:opacity-100 transition-all"
             >
               <MoreHorizontal size={14} />
             </button>
@@ -64,13 +64,13 @@ export default function TeamCard({
                   className="fixed inset-0 z-10"
                   onClick={() => setMenuOpen(false)}
                 />
-                <div className="absolute right-0 top-8 z-20 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 py-1 min-w-[140px]">
+                <div className="absolute right-0 top-8 z-20 bg-white dark:bg-[#1a1c2e] rounded-xl shadow-xl border border-slate-200 dark:border-[#2a2d45] py-1 min-w-[140px]">
                   <button
                     onClick={() => {
                       onEdit();
                       setMenuOpen(false);
                     }}
-                    className="flex items-center gap-2 w-full px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
+                    className="flex items-center gap-2 w-full px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#252840]"
                   >
                     <Edit2 size={13} />
                     Edit
@@ -104,14 +104,14 @@ export default function TeamCard({
           )}
         </p>
 
-        <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-100 dark:border-slate-700">
+        <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-100 dark:border-[#2a2d45]">
           <div className="flex -space-x-2">
             {members.map((m) => {
               const name = m.user.fullName || m.user.username;
               return (
                 <div
                   key={m.id}
-                  className="w-7 h-7 rounded-full border-2 border-white dark:border-slate-800 flex items-center justify-center text-white text-[10px] font-bold"
+                  className="w-7 h-7 rounded-full border-2 border-white dark:border-[#2a2d45] flex items-center justify-center text-white text-[10px] font-bold"
                   style={{ backgroundColor: getAvatarColor(m.user.id) }}
                   title={name}
                 >
@@ -129,7 +129,7 @@ export default function TeamCard({
             member{team.memberCount !== 1 ? "s" : ""}
           </div>
 
-          <div className="w-7 h-7 rounded-xl bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-400 group-hover:bg-violet-100 dark:group-hover:bg-violet-900/40 group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors">
+          <div className="w-7 h-7 rounded-xl bg-slate-100 dark:bg-[#252840] flex items-center justify-center text-slate-400 group-hover:bg-violet-100 dark:group-hover:bg-violet-900/30 group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors">
             <ChevronRight size={14} />
           </div>
         </div>

@@ -52,7 +52,7 @@ export function DueDateTimeline({ tasks }: Props) {
   const BAR_MAX_H = 80;
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-xl border border-[#E8E8EF] dark:border-slate-700 p-5 shadow-sm">
+    <div className="bg-white dark:bg-[#1a1c2e] rounded-xl border border-[#E8E8EF] dark:border-[#2a2d45] p-5 shadow-sm">
       <div className="flex items-center justify-between mb-4">
         <p className="text-sm font-semibold text-slate-950 dark:text-white">
           Due this week
@@ -90,7 +90,7 @@ export function DueDateTimeline({ tasks }: Props) {
                     )}
                   </>
                 ) : (
-                  <div className="w-full h-1 rounded bg-slate-100 dark:bg-slate-800" />
+                  <div className="w-full h-1 rounded bg-slate-100 dark:bg-[#252840]" />
                 )}
               </div>
 

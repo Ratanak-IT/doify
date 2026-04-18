@@ -17,6 +17,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import type { z } from "zod";
+import { useTheme } from "@/lib/contexts/ThemeContext";
 
 type Form = z.infer<typeof loginSchema>;
 
@@ -129,6 +130,10 @@ export default function LoginPage() {
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
   const [login, { isLoading }] = useLoginMutation();
+  const { theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const dark = mounted && theme === "dark";
 
   const [form, setForm] = useState<Form>({ email: "", password: "" });
   const [errors, setErrors] = useState<
@@ -187,22 +192,25 @@ export default function LoginPage() {
 
   const fieldCls = (hasErr: boolean) =>
     `w-full h-[46px] px-4 rounded-xl border text-sm outline-none transition-all
-     bg-slate-50 dark:bg-[#0f1a2e] text-slate-900 dark:text-white
-     placeholder:text-slate-400 dark:placeholder:text-slate-600
-     ${
-       hasErr
-         ? "border-red-400 dark:border-red-700"
-         : "border-slate-200 dark:border-[#1e2d45] focus:border-[#4f39f6] dark:focus:border-[#4f39f6] focus:ring-2 focus:ring-[#4f39f6]/15"
+     ${dark ? "bg-slate-800 text-white placeholder:text-slate-500" : "bg-slate-50 text-slate-900 placeholder:text-slate-400"}
+     ${hasErr
+       ? "border-red-400"
+       : `${dark ? "border-slate-700" : "border-slate-200"} focus:border-[#4f39f6] focus:ring-2 focus:ring-[#4f39f6]/15`
      }`;
 
   const socialBtnCls =
-    "flex-1 h-11 flex items-center justify-center gap-2 rounded-xl border border-slate-200 dark:border-[#1e2d45] bg-white dark:bg-[#0f1a2e] text-slate-700 dark:text-slate-300 text-sm font-medium hover:bg-slate-50 dark:hover:bg-[#162035] transition-all disabled:opacity-50 disabled:cursor-not-allowed";
+    `flex-1 h-11 flex items-center justify-center gap-2 rounded-xl border text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed
+     ${dark
+       ? "border-slate-700 bg-slate-800 text-white hover:bg-slate-700"
+       : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+     }`;
 
   const isBusy = isLoading || !!socialLoading;
 
   return (
-    <div className="min-h-screen flex">
-      {/* ── Left branding panel ── */}
+    <div className={`min-h-screen flex transition-colors ${dark ? "bg-slate-900" : "bg-white"}`}>
+
+      {/* Left branding panel */}
       <div
         className="hidden lg:flex lg:w-[58%] flex-col justify-between p-12 overflow-hidden"
         style={{
@@ -248,10 +256,7 @@ export default function LoginPage() {
                 desc: "Insights to keep projects on track",
               },
             ].map((f) => (
-              <div
-                key={f.title}
-                className="flex items-center gap-4 bg-white/10 border border-white/10 rounded-2xl px-5 py-4"
-              >
+              <div key={f.title} className="mt-3 flex items-center gap-4 bg-white/10 border border-white/10 rounded-2xl px-5 py-4">
                 <div className="w-10 h-10 rounded-[14px] bg-[rgba(97,95,255,0.5)] flex items-center justify-center text-white shrink-0">
                   {f.icon}
                 </div>
@@ -278,105 +283,50 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* ── Right form panel ── */}
-      <div className="flex-1 flex flex-col items-center justify-center bg-white dark:bg-[#080f1a] px-6 py-10 transition-colors">
-        <Link
-          href="/"
-          className="flex items-center gap-3 mb-10 lg:hidden group"
-        >
+      {/* Right form panel */}
+      <div className={`flex-1 flex flex-col items-center justify-center px-6 py-10 transition-colors ${dark ? "bg-slate-900" : "bg-white"}`}>
+
+        {/* Mobile logo */}
+        <Link href="/" className="flex items-center gap-3 mb-10 lg:hidden group">
           <div className="w-10 h-10 rounded-[14px] bg-[#4f39f6] group-hover:bg-[#4530e0] flex items-center justify-center transition-colors">
             <CheckCircle2 size={20} className="text-white" />
           </div>
-          <span className="text-slate-900 dark:text-white text-xl font-bold">
-            Doify
-          </span>
+          <span className={`text-xl font-bold ${dark ? "text-white" : "text-slate-900"}`}>Doify</span>
         </Link>
 
         <div className="w-full max-w-[400px]">
           <div className="mb-7">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
-              Welcome back
-            </h2>
-            <p className="text-slate-500 dark:text-slate-400 mt-2">
-              Sign in to continue to your workspace
-            </p>
+            <h2 className={`text-3xl font-bold ${dark ? "text-white" : "text-slate-900"}`}>Welcome back</h2>
+            <p className={`mt-2 ${dark ? "text-slate-400" : "text-slate-500"}`}>Sign in to continue to your workspace</p>
           </div>
-
-          <div className="flex gap-3">
-            {(["google", "github", "facebook"] as const).map((provider) => (
-              <button
-                key={provider}
-                onClick={() => handleSocial(provider)}
-                disabled={isBusy}
-                className={socialBtnCls}
-                aria-label={`Sign in with ${provider}`}
-              >
-                {socialLoading === provider ? (
-                  <Spinner />
-                ) : provider === "google" ? (
-                  <GoogleIcon />
-                ) : provider === "github" ? (
-                  <GithubIcon />
-                ) : (
-                  <FacebookIcon />
-                )}
-                <span className="capitalize">{provider}</span>
-              </button>
-            ))}
-          </div>
-
-          <Divider />
 
           {errors.general && (
-            <div className="mb-5 p-3.5 rounded-xl bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800/50 text-sm text-red-600 dark:text-red-400">
+            <div className={`mb-5 p-3.5 rounded-xl border text-sm ${dark ? "bg-red-950/50 border-red-800/50 text-red-400" : "bg-red-50 border-red-200 text-red-600"}`}>
               {errors.general}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-            <div className="space-y-1.5">
-              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
-                Email address
-              </label>
-              <input
-                type="email"
-                placeholder="you@company.com"
-                value={form.email}
+            <div className="space-y-1.5 mb-3">
+              <label className={`mb-1.5 block text-sm font-semibold ${dark ? "text-white" : "text-slate-700"}`}>Email address</label>
+              <input type="email" placeholder="you@company.com" value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className={fieldCls(!!errors.email)}
-              />
-              {errors.email && (
-                <p className="text-xs text-red-500">{errors.email}</p>
-              )}
+                className={fieldCls(!!errors.email)} />
+              {errors.email && <p className="text-xs text-red-500">{errors.email}</p>}
             </div>
 
-            <div className="space-y-1.5">
-              <div className="flex items-center justify-between">
-                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
-                  Password
-                </label>
-                <Link
-                  href="/forgot-password"
-                  className="text-sm font-medium text-[#4f39f6] hover:underline"
-                >
-                  Forgot password?
-                </Link>
+            <div className="space-y-1.5 mb-3">
+              <div className="flex items-center justify-between mt-3">
+                <label className={`mb-1.5 block text-sm font-semibold ${dark ? "text-white" : "text-slate-700"}`}>Password</label>
+                <Link href="/forgot-password" className="mb-1.5 text-sm font-medium text-[#4f39f6] hover:underline ">Forgot password?</Link>
               </div>
               <div className="relative">
-                <input
-                  type={showPwd ? "text" : "password"}
-                  placeholder="Enter your password"
+                <input type={showPwd ? "text" : "password"} placeholder="Enter your password"
                   value={form.password}
-                  onChange={(e) =>
-                    setForm({ ...form, password: e.target.value })
-                  }
-                  className={`${fieldCls(!!errors.password)} pr-12`}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShow((s) => !s)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-white transition-colors"
-                >
+                  onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  className={`${fieldCls(!!errors.password)} pr-12`} />
+                <button type="button" onClick={() => setShow((s) => !s)}
+                  className={`absolute right-4 top-1/2 -translate-y-1/2 transition-colors ${dark ? "text-slate-400 hover:text-white" : "text-slate-400 hover:text-slate-700"}`}>
                   {showPwd ? <EyeOff size={17} /> : <Eye size={17} />}
                 </button>
               </div>
@@ -385,50 +335,32 @@ export default function LoginPage() {
               )}
             </div>
 
-            <button
-              type="submit"
-              disabled={isBusy}
-              className="w-full h-12 rounded-xl bg-[#4f39f6] hover:bg-[#4530e0] text-white font-semibold text-base transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-[0_8px_24px_rgba(79,57,246,0.4)]"
-            >
-              {isLoading ? (
-                <>
-                  <svg
-                    className="animate-spin w-5 h-5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="white"
-                      strokeWidth="4"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="white"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                    />
-                  </svg>
-                  Signing in…
-                </>
-              ) : (
-                <>
-                  Sign in <ArrowRight size={16} />
-                </>
-              )}
+            <button type="submit" disabled={isBusy}
+              className="w-full h-12 rounded-xl bg-[#4f39f6] hover:bg-[#4530e0] text-white font-semibold text-base transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-[0_8px_24px_rgba(79,57,246,0.4)]">
+              {isLoading ? (<><svg className="animate-spin w-5 h-5" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"/><path className="opacity-75" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>Signing in…</>) : (<>Sign in <ArrowRight size={16} /></>)}
             </button>
           </form>
 
-          <p className="text-center text-sm text-slate-500 dark:text-slate-400 mt-6">
+          {/* Divider */}
+          <div className="flex items-center gap-3 my-5">
+            <div className={`flex-1 h-px ${dark ? "bg-slate-800" : "bg-slate-200"}`} />
+            <span className={`text-xs font-medium ${dark ? "text-slate-400" : "text-slate-400"}`}>or continue with email</span>
+            <div className={`flex-1 h-px ${dark ? "bg-slate-800" : "bg-slate-200"}`} />
+          </div>
+
+          {/* Social buttons */}
+          <div className="flex gap-3">
+            {(["google", "github", "facebook"] as const).map((provider) => (
+              <button key={provider} onClick={() => handleSocial(provider)} disabled={isBusy} className={socialBtnCls} aria-label={`Sign in with ${provider}`}>
+                {socialLoading === provider ? <Spinner /> : provider === "google" ? <GoogleIcon /> : provider === "github" ? <GithubIcon /> : <FacebookIcon />}
+                <span className="capitalize">{provider}</span>
+              </button>
+            ))}
+          </div>
+
+          <p className={`text-center text-sm mt-6 ${dark ? "text-slate-400" : "text-slate-500"}`}>
             Don&apos;t have an account?{" "}
-            <Link
-              href="/register"
-              className="text-[#4f39f6] font-semibold hover:underline"
-            >
-              Create account
-            </Link>
+            <Link href="/register" className="text-[#4f39f6] font-semibold hover:underline">Create account</Link>
           </p>
         </div>
       </div>
