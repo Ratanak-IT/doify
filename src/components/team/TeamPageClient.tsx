@@ -149,13 +149,14 @@ export default function TeamPageClient() {
   }, [notifType, teamIdParam, projectIdParam, taskIdParam, commentIdParam, openComments]);
 
   useEffect(() => {
-    if (!teamIdParam || activeTeam || teams.length === 0 || notifRef) return;
-    if (projectIdParam) setStoredProjectId(projectIdParam);
-    if (taskIdParam)    setStoredTaskId(taskIdParam);
-    if (commentIdParam) setStoredCommentId(commentIdParam);
-    if (openComments)   setStoredOpenComments(true);
-    doNavigateToTeam(teamIdParam);
-  }, [teams, teamIdParam, activeTeam]);
+  if (!teamIdParam || activeTeam || teams.length === 0 || notifRef) return;
+  if (prevKeyRef.current === "BACK") return; // ← add this line
+  if (projectIdParam) setStoredProjectId(projectIdParam);
+  if (taskIdParam)    setStoredTaskId(taskIdParam);
+  if (commentIdParam) setStoredCommentId(commentIdParam);
+  if (openComments)   setStoredOpenComments(true);
+  doNavigateToTeam(teamIdParam);
+}, [teams, teamIdParam, activeTeam]);
 
   function doNavigateToTeam(teamId: string) {
     const team = teams.find(t => t.id === teamId);
@@ -181,7 +182,7 @@ export default function TeamPageClient() {
     setStoredTaskId(undefined);
     setStoredCommentId(undefined);
     setStoredOpenComments(false);
-    prevKeyRef.current = "";
+    prevKeyRef.current = "BACK";
     router.replace("/dashboard/team");
   }
 

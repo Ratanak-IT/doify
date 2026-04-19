@@ -55,9 +55,6 @@ export default function TeamDetailView({ team, idx, onBack, initialProjectId, in
 
   const projects = projectsPage?.content ?? [];
 
-  // Auto-select project when arriving from a notification deep-link.
-  // useRef guard ensures this fires ONCE — so user can freely go back
-  // without the effect immediately re-selecting the same project.
   const didAutoSelect = useRef(false);
   useEffect(() => {
     if (didAutoSelect.current || !initialProjectId || projects.length === 0) return;
@@ -74,10 +71,8 @@ export default function TeamDetailView({ team, idx, onBack, initialProjectId, in
 
   return (
     <div className="flex flex-col h-full">
-      {/* ── Header with gradient ── */}
       <div className={`bg-gradient-to-r ${gradientCls} px-3 sm:px-6 pt-3 sm:pt-5 pb-3 sm:pb-4`}>
 
-        {/* Row 1: back button + team name/description — full width, no truncation */}
         <div className="flex items-start gap-2 sm:gap-4">
           <button
             onClick={onBack}
