@@ -51,29 +51,34 @@ async function proxy(req: NextRequest, path: string) {
 
 type Context = { params: Promise<{ path?: string[] | undefined }> };
 
+function resolvePath(segments: string[] | undefined): string {
+  const parts = segments ?? [];
+  return parts[0] === "v1" ? parts.slice(1).join("/") : parts.join("/");
+}
+
 export async function GET(req: NextRequest, context: Context) {
   const { path } = await context.params;
-  const fullPath = (path ?? []).join("/");
+  const fullPath = resolvePath(path);
   const qs = new URL(req.url).searchParams.toString();
   return proxy(req, qs ? `${fullPath}?${qs}` : fullPath);
 }
 
 export async function POST(req: NextRequest, context: Context) {
   const { path } = await context.params;
-  return proxy(req, (path ?? []).join("/"));
+  return proxy(req, resolvePath(path));
 }
 
 export async function PUT(req: NextRequest, context: Context) {
   const { path } = await context.params;
-  return proxy(req, (path ?? []).join("/"));
+  return proxy(req, resolvePath(path));
 }
 
 export async function PATCH(req: NextRequest, context: Context) {
   const { path } = await context.params;
-  return proxy(req, (path ?? []).join("/"));
+  return proxy(req, resolvePath(path));
 }
 
 export async function DELETE(req: NextRequest, context: Context) {
   const { path } = await context.params;
-  return proxy(req, (path ?? []).join("/"));
+  return proxy(req, resolvePath(path));
 }
