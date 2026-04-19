@@ -9,7 +9,6 @@ import {
 } from "lucide-react";
 
 export default function AboutPage() {
-  // ── DATA ────────────────────────────────────────────────────────
   const advisors = [
     {
       name: "CHAN CHHAYA",
@@ -31,7 +30,7 @@ export default function AboutPage() {
       name: "MOM REKSMEY",
       subject: "Frontend",
       institution: "ISTAD Advisor",
-      img: "https://randomuser.me/api/portraits/men/52.jpg",
+      img: "blob:https://web.telegram.org/e0c0c551-acc7-4668-9669-2d665fc90555",
       bio: "Guided and reviewed the project.",
       skills: ["Scrum", "Leadership", "Strategy"],
     },
@@ -170,7 +169,7 @@ export default function AboutPage() {
         
 
         {/* Hero image */}
-        <div className="mt-8 sm:mt-12 mx-auto max-w-3xl rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-[0_20px_60px_rgba(108,71,255,0.15)] dark:shadow-[0_20px_60px_rgba(108,71,255,0.25)]">
+        <div className="mt-8 sm:mt-12 mx-auto max-w-3xl rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700">
           <img
             src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1200&q=80"
             alt="Doify team at work"
@@ -221,7 +220,7 @@ export default function AboutPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.08, duration: 0.4 }}
-                className="group relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 hover:border-[#6c47ff]/40 hover:shadow-[0_12px_32px_rgba(108,71,255,0.12)] hover:-translate-y-1 transition-all duration-300"
+                className="group relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 hover:border-[#6c47ff]/40 hover:-translate-y-1 transition-all duration-300"
               >
                 <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-4 ${colorMap[v.color]}`}>
                   {v.icon}
@@ -255,7 +254,7 @@ export default function AboutPage() {
                   className="relative flex items-start gap-5"
                 >
                   {/* Timeline dot — inline, never overlaps text */}
-                  <div className="relative shrink-0 w-11 h-11 rounded-full bg-[#6c47ff] text-white flex items-center justify-center shadow-lg shadow-violet-500/30 ring-4 ring-white dark:ring-slate-900 z-10">
+                  <div className="relative shrink-0 w-11 h-11 rounded-full bg-[#6c47ff] text-white flex items-center justify-center ring-4 ring-white dark:ring-slate-900 z-10">
                     {t.icon}
                   </div>
 
@@ -318,7 +317,7 @@ export default function AboutPage() {
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ delay: i * 0.15, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
                 whileHover={{ y: -6, transition: { duration: 0.25 } }}
-                className={`group relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 sm:p-7 hover:border-[#6c47ff]/40 hover:shadow-[0_20px_50px_rgba(108,71,255,0.18)] transition-shadow duration-300 overflow-hidden ${centerClass}`}
+                className={`group relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 sm:p-7 hover:border-[#6c47ff]/40 transition-shadow duration-300 overflow-hidden ${centerClass}`}
               >
                 {/* Animated gradient blob on hover */}
                 <div aria-hidden className="absolute -top-20 -right-20 w-44 h-44 rounded-full bg-gradient-to-br from-[#6c47ff]/15 to-pink-500/15 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -331,7 +330,7 @@ export default function AboutPage() {
                     <img
                       src={a.img}
                       alt={a.name}
-                      className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-2xl object-cover border-[3px] border-white dark:border-slate-800 shadow-lg transition-transform duration-500 group-hover:scale-[1.04]"
+                      className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-2xl object-cover border-[3px] border-white dark:border-slate-800   transition-transform duration-500 group-hover:scale-[1.04]"
                     />
                   </div>
                   <div className="min-w-0 flex-1">
@@ -401,7 +400,7 @@ export default function AboutPage() {
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ delay: i * 0.15, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                 whileHover={{ y: -8, transition: { duration: 0.25 } }}
-                className="group relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 sm:p-8 hover:border-[#6c47ff]/40 hover:shadow-[0_24px_60px_rgba(108,71,255,0.22)] transition-shadow duration-300 text-center overflow-hidden"
+                className="group relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 sm:p-8 hover:border-[#6c47ff]/40 transition-shadow duration-300 text-center overflow-hidden"
               >
                 {/* Soft gradient glow on hover */}
                 <div aria-hidden className="absolute inset-0 bg-gradient-to-br from-[#6c47ff]/0 via-[#6c47ff]/0 to-pink-500/0 group-hover:from-[#6c47ff]/5 group-hover:to-pink-500/5 transition-all duration-500" />
@@ -415,7 +414,7 @@ export default function AboutPage() {
                   <img
                     src={m.img}
                     alt={m.name}
-                    className="relative w-36 h-36 sm:w-40 sm:h-40 rounded-full object-cover border-4 border-white dark:border-slate-800 shadow-xl transition-transform duration-500 group-hover:scale-[1.04]"
+                    className="relative w-36 h-36 sm:w-40 sm:h-40 rounded-full object-cover border-4 border-white dark:border-slate-800   transition-transform duration-500 group-hover:scale-[1.04]"
                   />
                 </div>
 
@@ -483,7 +482,7 @@ export default function AboutPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
               <Link
                 href="/register"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-white text-[#4f39f6] font-semibold text-sm sm:text-base transition-all hover:bg-slate-100 hover:-translate-y-px shadow-xl shadow-black/20"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-white text-[#4f39f6] font-semibold text-sm sm:text-base transition-all hover:bg-slate-100 hover:-translate-y-px"
               >
                 <Sparkles size={16} />
                 Try Doify free
