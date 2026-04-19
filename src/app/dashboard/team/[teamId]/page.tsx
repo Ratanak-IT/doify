@@ -34,5 +34,5 @@ export default function TeamDetailPage({ params }: { params: { teamId: string } 
     );
   }
 
-  return <TeamDetailView team={team} idx={0} onBack={() => router.push("/dashboard/team")} />;
+  return <TeamDetailView team={team} idx={0} onBack={() => router.back()} />;
 }
