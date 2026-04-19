@@ -105,7 +105,7 @@ export default function Navbar() {
                 href={item.path}
                 className={`text-lg font-medium transition-colors duration-200 ${
                   isActive(item.path)
-                    ? "text-blue-700 font-bold dark:text-blue-400"
+                    ? "text-blue-700 dark:text-blue-400"
                     : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >

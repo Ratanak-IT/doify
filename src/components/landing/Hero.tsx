@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import KanbanDemo from "./KanbanDemo";
 
-
 export default function Hero() {
   const { t } = useTranslation();
 
@@ -30,20 +29,27 @@ export default function Hero() {
         </p>
 
         {/* CTA Buttons */}
-        <div className="flex flex-col w-full sm:w-auto sm:flex-row gap-3 sm:gap-4 mb-6 sm:mb-8 px-4 sm:px-0">
+        <div className="flex flex-col sm:flex-row w-fit gap-3 sm:gap-4 mb-6 sm:mb-8 p-3">
           <Link
             href="/register"
-            className="inline-flex items-center justify-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 shadow-purple-500/25 text-sm sm:text-base"
+            className="inline-flex items-center justify-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-200 hover:-translate-y-0.5 text-sm sm:text-base"
           >
             {t("landing.hero.cta")}
           </Link>
+
           <Link
             href="/login"
-            className="inline-flex items-center justify-center gap-1.5 bg-transparent hover:bg-slate-100 dark:hover:bg-[#111827] text-gray-800 dark:text-gray-200 border border-slate-300 dark:border-gray-600 font-semibold px-6 py-3 rounded-lg transition-all duration-200 hover:shadow-sm hover:-translate-y-0.5 text-sm sm:text-base"
+            className="inline-flex items-center justify-center gap-1.5 bg-transparent hover:bg-slate-100 dark:hover:bg-[#111827] text-gray-800 dark:text-gray-200 border border-slate-300 dark:border-gray-600 font-semibold px-6 py-3 rounded-lg transition-all duration-200 hover:-translate-y-0.5 text-sm sm:text-base"
           >
             Sign in to Dashboard
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              <path
+                d="M3 7h8M8 4l3 3-3 3"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </Link>
         </div>

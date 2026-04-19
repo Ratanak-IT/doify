@@ -16,7 +16,7 @@ export default function HomePage() {
       <Features />
       <HowItWorks />
       <Testimonials />
-      <Pricing />
+      {/* <Pricing /> */}
       <FinalCTA />
     </div>
   );

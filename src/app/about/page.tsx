@@ -11,6 +11,14 @@ import {
 export default function AboutPage() {
   const advisors = [
     {
+      name: "MOM REKSMEY",
+      subject: "Frontend",
+      institution: "ISTAD Advisor",
+      img: "/momreaksmey.jpg",
+      bio: "Guided and reviewed the project.",
+      skills: ["Scrum", "Leadership", "Strategy"],
+    },
+    {
       name: "CHAN CHHAYA",
       subject: "Backend",
       institution: "ISTAD Advisor",
@@ -26,21 +34,13 @@ export default function AboutPage() {
       bio: "Guided and reviewed the project.",
       skills: ["Ai Agent"],
     },
-    {
-      name: "MOM REKSMEY",
-      subject: "Frontend",
-      institution: "ISTAD Advisor",
-      img: "../../../public/momreaksmey.jpg",
-      bio: "Guided and reviewed the project.",
-      skills: ["Scrum", "Leadership", "Strategy"],
-    },
   ];
 
   const team = [
     {
       name: "Thai Ratanak",
       role: "backend and Database",
-      img: "https://randomuser.me/api/portraits/men/32.jpg",
+      img: "/ratanak.jpg",
       bio: "Loves clean code and bad coffee ☕",
       askMe: "product strategy",
       skills: ["React", "TypeScript", "Product"],
@@ -49,7 +49,7 @@ export default function AboutPage() {
     {
       name: "Chhom Titsela",
       role: "Frontend",
-      img: "https://randomuser.me/api/portraits/men/45.jpg",
+      img: "/sela.jpg",
       bio: "Turns coffee into scalable backends.",
       askMe: "Spring Boot & APIs",
       skills: ["Java", "Spring", "PostgreSQL"],
@@ -58,7 +58,7 @@ export default function AboutPage() {
     {
       name: "Chanthol Vireakratanak",
       role: "Frontend and Reporter",
-      img: "https://randomuser.me/api/portraits/men/65.jpg",
+      img: "/ratanakchanthol.png",
       bio: "Obsessed with making customers successful.",
       askMe: "anything, really",
       skills: ["Sales", "CS", "Strategy"],
@@ -319,8 +319,7 @@ export default function AboutPage() {
                 whileHover={{ y: -6, transition: { duration: 0.25 } }}
                 className={`group relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 sm:p-7 hover:border-[#6c47ff]/40 transition-shadow duration-300 overflow-hidden ${centerClass}`}
               >
-                {/* Animated gradient blob on hover */}
-                <div aria-hidden className="absolute -top-20 -right-20 w-44 h-44 rounded-full bg-gradient-to-br from-[#6c47ff]/15 to-pink-500/15 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div aria-hidden className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#6c47ff] to-pink-500 opacity-0 group-hover:opacity-50 blur-md transition-opacity duration-500 scale-110" />
 
                 {/* Header row: photo left + info right */}
                 <div className="relative flex items-center gap-5 mb-5">
@@ -403,7 +402,7 @@ export default function AboutPage() {
                 className="group relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 sm:p-8 hover:border-[#6c47ff]/40 transition-shadow duration-300 text-center overflow-hidden"
               >
                 {/* Soft gradient glow on hover */}
-                <div aria-hidden className="absolute inset-0 bg-gradient-to-br from-[#6c47ff]/0 via-[#6c47ff]/0 to-pink-500/0 group-hover:from-[#6c47ff]/5 group-hover:to-pink-500/5 transition-all duration-500" />
+                <div aria-hidden className="absolute inset-0 transition-all duration-500" />
 
                 {/* BIG circular photo */}
                 <div className="relative inline-block mb-5">
