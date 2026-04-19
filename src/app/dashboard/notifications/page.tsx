@@ -119,11 +119,7 @@ function NotifCard({ notif, onClick, onAcceptInvite }: {
 
           <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400 dark:text-slate-500">
             <span>{timeAgo(notif.createdAt)}</span>
-            {notif.referenceId && (
-              <span className="px-2 py-1 rounded-full bg-slate-100 dark:bg-[#252840] text-slate-500 dark:text-slate-400 text-[11px]">
-                ID: {notif.referenceId}
-              </span>
-            )}
+            
           </div>
 
           {isInvite && notif.referenceId && !notif.isRead && (
