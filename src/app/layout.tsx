@@ -67,6 +67,9 @@ export const metadata: Metadata = {
     shortcut: "/favicon-16x16.png",
     apple: "/apple-touch-icon.png",
   },
+  verification: {
+    google: "9e1f13451108292f",
+  },
 };
 
 const jsonLd = {
