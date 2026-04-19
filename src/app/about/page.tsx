@@ -409,56 +409,52 @@ export default function AboutPage() {
       </section>
 
       {/* ── CTA FOOTER ── */}
-      <section id="join" className="py-16 sm:py-20 md:py-24 px-4 sm:px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="relative max-w-5xl mx-auto rounded-3xl overflow-hidden"
-          style={{ background: "linear-gradient(131deg, #312c85 0%, #59168b 50%, #372aac 100%)" }}
+<section id="join" className="py-16 sm:py-20 md:py-24 px-4 sm:px-6">
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    transition={{ duration: 0.5 }}
+    className="relative max-w-5xl mx-auto rounded-3xl overflow-hidden bg-[#6c47ff]"
+  >
+    <div className="relative px-6 sm:px-10 md:px-16 py-12 sm:py-16 md:py-20 text-center">
+      <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 text-xs font-medium text-white/90 mb-6">
+        <span className="w-1.5 h-1.5 rounded-full bg-[#05df72] animate-pulse" />
+        Open to new teammates
+      </div>
+
+      <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight mb-4">
+        Ready to build<br className="sm:hidden" /> something <span className="text-white/70">meaningful?</span>
+      </h2>
+      <p className="text-base sm:text-lg text-white/70 max-w-xl mx-auto mb-8 leading-relaxed">
+        Whether you want to try Doify, join our team, or just say hi — we&apos;d love to hear from you.
+      </p>
+
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+        <Link
+          href="/register"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-white text-[#6c47ff] font-semibold text-sm sm:text-base transition-all hover:bg-slate-100 hover:-translate-y-px"
         >
-          <div aria-hidden className="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-white/10 blur-3xl" />
-          <div aria-hidden className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full bg-pink-300/20 blur-3xl" />
+          <Sparkles size={16} />
+          Try Doify free
+          <ArrowRight size={16} />
+        </Link>
 
-          <div className="relative px-6 sm:px-10 md:px-16 py-12 sm:py-16 md:py-20 text-center">
-            <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 text-xs font-medium text-white/90 mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#05df72] animate-pulse" />
-              Open to new teammates
-            </div>
+        <Link
+          href="/contact"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-white/10 border border-white/30 text-white font-semibold text-sm sm:text-base transition-all hover:bg-white/20 hover:-translate-y-px backdrop-blur-sm"
+        >
+          <Send size={16} />
+          Get in touch
+        </Link>
+      </div>
 
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight mb-4">
-              Ready to build<br className="sm:hidden" /> something <span className="text-[#a3b3ff]">meaningful?</span>
-            </h2>
-            <p className="text-base sm:text-lg text-[#c6d2ff] max-w-xl mx-auto mb-8 leading-relaxed">
-              Whether you want to try Doify, join our team, or just say hi — we&apos;d love to hear from you.
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
-              <Link
-                href="/register"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-white text-[#4f39f6] font-semibold text-sm sm:text-base transition-all hover:bg-slate-100 hover:-translate-y-px"
-              >
-                <Sparkles size={16} />
-                Try Doify free
-                <ArrowRight size={16} />
-              </Link>
-
-              <Link
-                href="/contact"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-white/10 border border-white/30 text-white font-semibold text-sm sm:text-base transition-all hover:bg-white/20 hover:-translate-y-px backdrop-blur-sm"
-              >
-                <Send size={16} />
-                Get in touch
-              </Link>
-            </div>
-
-            <p className="text-xs text-[#c6d2ff]/70 mt-6">
-              No credit card required · 14-day free trial · Cancel anytime
-            </p>
-          </div>
-        </motion.div>
-      </section>
+      <p className="text-xs text-white/50 mt-6">
+        No credit card required · 14-day free trial · Cancel anytime
+      </p>
+    </div>
+  </motion.div>
+</section>
     </div>
   );
 }
