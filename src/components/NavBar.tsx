@@ -66,9 +66,7 @@ export default function NavBar() {
         {/* Logo */}
         <Link href="/" className="group flex items-center gap-2.5 shrink-0">
           <div className="w-8 h-8 rounded-lg bg-violet-600 flex items-center justify-center shadow-lg shadow-violet-500/40 group-hover:shadow-violet-500/60 transition-shadow">
-            <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
-              <path d="M3 5h14M3 10h10M3 15h7" stroke="white" strokeWidth="2.2" strokeLinecap="round" />
-            </svg>
+            <img src="/logo-doify.png" alt="Doify Logo" className="h-6 w-6 object-contain" />
           </div>
           <span className="text-[17px] font-bold tracking-tight text-white">Doify</span>
         </Link>

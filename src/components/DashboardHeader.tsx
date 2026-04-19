@@ -284,10 +284,8 @@ export default function DashboardHeader({
   return (
     <header className="h-14 sm:h-16 bg-white dark:bg-[#1a1c2e] border-b border-[#E8E8EF] dark:border-[#2a2d45] flex items-center justify-between px-3 sm:px-5 gap-2 shrink-0 sticky top-0 z-30">
 
-      
-
       {/* Actions */}
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1 ml-auto">
 
         {/* Refresh */}
         {onRefresh && (

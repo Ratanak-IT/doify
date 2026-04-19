@@ -8,7 +8,7 @@ export default function FooterWrapper() {
         {/* Brand */}
         <div>
           <div className="flex items-center gap-2.5 mb-3.5">
-            <img src="../../../public/logo-doify.png" alt="Doify Logo" className="h-8 w-8 object-contain" />
+            <img src="/logo-doify.png" alt="Doify Logo" className="h-8 w-8 object-contain" />
             <span className="font-bold text-base text-slate-900 dark:text-white">Doify</span>
           </div>
           <p className="text-xs leading-relaxed text-slate-500 dark:text-slate-400 max-w-[220px]">
