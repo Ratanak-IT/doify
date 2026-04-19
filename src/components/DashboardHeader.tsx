@@ -284,15 +284,7 @@ export default function DashboardHeader({
   return (
     <header className="h-14 sm:h-16 bg-white dark:bg-[#1a1c2e] border-b border-[#E8E8EF] dark:border-[#2a2d45] flex items-center justify-between px-3 sm:px-5 gap-2 shrink-0 sticky top-0 z-30">
 
-      {/* Logo */}
-      <Link href="/" className="flex items-center gap-2 shrink-0 group">
-        <div className="w-8 h-8 rounded-lg bg-[#6C5CE7] flex items-center justify-center shadow-md shadow-[#6C5CE7]/30 group-hover:shadow-[#6C5CE7]/50 transition-shadow">
-          <img src="/logo-doify.png" alt="Doify Logo" className="h-6 w-6 object-contain" />
-        </div>
-        <span className="font-bold text-[15px] text-[#1E293B] dark:text-white tracking-tight hidden sm:block">
-          Doify
-        </span>
-      </Link>
+      
 
       {/* Actions */}
       <div className="flex items-center gap-1">

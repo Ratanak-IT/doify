@@ -8,11 +8,7 @@ export default function FooterWrapper() {
         {/* Brand */}
         <div>
           <div className="flex items-center gap-2.5 mb-3.5">
-            <div className="w-8 h-8 rounded-lg bg-violet-600 flex items-center justify-center shadow-md shadow-violet-500/30">
-              <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
-                <path d="M3 5h14M3 10h10M3 15h7" stroke="white" strokeWidth="2.2" strokeLinecap="round" />
-              </svg>
-            </div>
+            <img src="../../../public/logo-doify.png" alt="Doify Logo" className="h-8 w-8 object-contain" />
             <span className="font-bold text-base text-slate-900 dark:text-white">Doify</span>
           </div>
           <p className="text-xs leading-relaxed text-slate-500 dark:text-slate-400 max-w-[220px]">
@@ -20,42 +16,33 @@ export default function FooterWrapper() {
           </p>
         </div>
 
-        {/* Company */}
+        {/* Page */}
         <div>
-          <h4 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-widest mb-4">Company</h4>
+          <h4 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-widest mb-4">Page</h4>
           <ul className="flex flex-col gap-2.5">
-            <li><Link href="/about"   className="text-xs text-slate-500 dark:text-slate-400 hover:text-violet-600 transition-colors">About Us</Link></li>
-            <li><Link href="/contact" className="text-xs text-slate-500 dark:text-slate-400 hover:text-violet-600 transition-colors">Contact</Link></li>
-            <li><Link href="#"        className="text-xs text-slate-500 dark:text-slate-400 hover:text-violet-600 transition-colors">Careers</Link></li>
+            <li><Link href="/about"   className="text-lg text-slate-500 dark:text-slate-400 hover:text-violet-600 transition-colors">About Us</Link></li>
+            <li><Link href="/contact" className="text-lg text-slate-500 dark:text-slate-400 hover:text-violet-600 transition-colors">Contact</Link></li>
+            <li><Link href="../../app/dashboard/page.tsx" className="text-lg text-slate-500 dark:text-slate-400 hover:text-violet-600 transition-colors">Dashboard</Link></li>
           </ul>
         </div>
 
-        {/* Resources */}
+        {/* Setting */}
         <div>
-          <h4 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-widest mb-4">Resources</h4>
+          <h4 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-widest mb-4">Setting</h4>
           <ul className="flex flex-col gap-2.5">
-            <li><Link href="#" className="text-xs text-slate-500 dark:text-slate-400 hover:text-violet-600 transition-colors">Blog</Link></li>
-            <li><Link href="#" className="text-xs text-slate-500 dark:text-slate-400 hover:text-violet-600 transition-colors">Help Center</Link></li>
-            <li><Link href="#" className="text-xs text-slate-500 dark:text-slate-400 hover:text-violet-600 transition-colors">Privacy Policy</Link></li>
+            <li><Link href="../../app/dashboard/settings/page.tsx" className="text-lg text-slate-500 dark:text-slate-400 hover:text-violet-600 transition-colors">Profile</Link></li>
+            <li><Link href="../../app/dashboard/notifications/page.tsx" className="text-lg text-slate-500 dark:text-slate-400 hover:text-violet-600 transition-colors">Notification</Link></li>
           </ul>
         </div>
 
-        {/* Product */}
-        <div>
-          <h4 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-widest mb-4">Product</h4>
-          <ul className="flex flex-col gap-2.5">
-            <li><Link href="#" className="text-xs text-slate-500 dark:text-slate-400 hover:text-violet-600 transition-colors">Features</Link></li>
-            <li><Link href="#" className="text-xs text-slate-500 dark:text-slate-400 hover:text-violet-600 transition-colors">Pricing</Link></li>
-            <li><Link href="#" className="text-xs text-slate-500 dark:text-slate-400 hover:text-violet-600 transition-colors">Changelog</Link></li>
-          </ul>
-        </div>
+  
       </div>
 
       <hr className="border-slate-200 dark:border-[#2a2d45] max-w-5xl mx-auto mb-6" />
 
       <div className="max-w-5xl mx-auto flex items-center justify-between flex-wrap gap-2">
-        <span className="text-xs text-slate-400 dark:text-slate-600">© 2026 Doify. All rights reserved.</span>
-        <span className="text-xs text-slate-400 dark:text-slate-600">Made by student from ISTAD</span>
+        <span className="text-md text-slate-400 dark:text-slate-600">© 2026 Doify. All rights reserved.</span>
+        <span className="text-md text-slate-400 dark:text-slate-600">Made by student from ISTAD</span>
       </div>
     </footer>
   );

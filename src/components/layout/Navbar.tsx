@@ -70,7 +70,7 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-5">
           <Link href="/" className="flex items-center gap-2.5 flex-shrink-0">
            
-              <img src="/logo-doify.png" alt="Doify Logo" className="h-8 w-auto" />
+              <img src="/logo-doify.png" alt="Doify Logo" className="h-8 w-8 w-auto" />
           
             <span className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">Doify</span>
           </Link>
