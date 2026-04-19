@@ -1,19 +1,21 @@
-
+import Link from "next/link";
 
 export default function Footer() {
   return (
     <footer className="lp-footer">
       <div className="lp-footer-inner">
         <div className="lp-footer-brand">
-          <div className="lp-logo-mark lp-logo-mark--sm">
-            <img src="/logo-doify.png" alt="Doify Logo" className="h-full w-full object-contain" />
-          </div>
-          <div>
-            <span className="lp-footer-name">Doify</span>
-            <p className="lp-footer-brand-copy">
-              Professional task management for teams, projects, and workflows.
-            </p>
-          </div>
+          <Link href="/" className="flex items-center gap-3">
+            <div className="lp-logo-mark lp-logo-mark--sm">
+              <img src="/logo-doify.png" alt="Doify Logo" className="h-full w-full object-contain" />
+            </div>
+            <div>
+              <span className="lp-footer-name">Doify</span>
+              <p className="lp-footer-brand-copy">
+                Professional task management for teams, projects, and workflows.
+              </p>
+            </div>
+          </Link>
         </div>
 
         <div className="lp-footer-nav">
