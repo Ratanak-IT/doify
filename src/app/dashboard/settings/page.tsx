@@ -2,6 +2,7 @@
 
 import DashboardHeader from "@/components/DashboardHeader";
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 import { useAppSelector, useAppDispatch } from "@/lib/hooks";
 import { setCredentials, updateUser } from "@/lib/features/auth/authSlice";
 import {
@@ -113,6 +114,7 @@ export default function SettingsPage() {
         }));
       }
       dispatch(updateUser({ name: updated.fullName, email: updated.email }));
+      toast.success("Profile updated successfully.");
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (err: any) {
@@ -128,8 +130,10 @@ export default function SettingsPage() {
       await changePassword({ currentPassword: result.data.currentPassword, newPassword: result.data.newPassword }).unwrap();
       setShowPassword(false);
       setPwdForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
-      alert("Password changed successfully!");
-    } catch (err: any) { alert(err?.data?.message ?? "Failed to change password."); }
+      toast.success("Password changed successfully.");
+    } catch (err: any) {
+      toast.error(err?.data?.message ?? "Failed to change password.");
+    }
   };
 
   const infoFields = [

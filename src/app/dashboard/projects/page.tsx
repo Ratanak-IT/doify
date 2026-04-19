@@ -13,6 +13,7 @@ import {
   Edit2,
   ArrowLeft,
 } from "lucide-react";
+import { toast } from "sonner";
 import {
   useGetProjectsQuery,
   useGetProjectTasksQuery,
@@ -117,10 +118,13 @@ function NewProjectModal({ onClose }: { onClose: () => void }) {
       if (result.data.dueDate) payload.dueDate = result.data.dueDate;
       if (result.data.teamId) payload.teamId = result.data.teamId;
       await createProject(payload).unwrap();
+      toast.success("Project created.");
       onClose();
     } catch (err: unknown) {
       const e = err as { data?: { message?: string } };
-      setApiError(e?.data?.message ?? "Failed to create project.");
+      const message = e?.data?.message ?? "Failed to create project.";
+      setApiError(message);
+      toast.error(message);
     }
   };
 
@@ -308,10 +312,13 @@ function EditProjectModal({
 
     try {
       await updateProject({ id: project.id, data: result.data }).unwrap();
+      toast.success("Project updated.");
       onClose();
     } catch (err: unknown) {
       const e = err as { data?: { message?: string } };
-      setApiError(e?.data?.message ?? "Failed to update project.");
+      const message = e?.data?.message ?? "Failed to update project.";
+      setApiError(message);
+      toast.error(message);
     }
   };
 
@@ -597,6 +604,16 @@ export default function ProjectsPage() {
   const projects: Project[] = pageData?.content ?? [];
   const [deleteProject] = useDeleteProjectMutation();
 
+  const handleDeleteProject = async (id: string) => {
+    try {
+      await deleteProject(id).unwrap();
+      toast.success("Project deleted.");
+    } catch (err: unknown) {
+      const e = err as { data?: { message?: string } };
+      toast.error(e?.data?.message ?? "Failed to delete project.");
+    }
+  };
+
   const filtered = projects.filter((p) =>
     p.name.toLowerCase().includes(search.toLowerCase()),
   );
@@ -694,7 +711,7 @@ export default function ProjectsPage() {
                 key={p.id}
                 project={p}
                 onEdit={setEdit}
-                onDelete={(id) => deleteProject(id)}
+                onDelete={handleDeleteProject}
                 onSelect={setActiveProject}
               />
             ))}

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { X, Plus } from "lucide-react";
+import { toast } from "sonner";
 import { useCreateProjectMutation } from "@/lib/features/tasks/taskApi";
 
 type Props = {
@@ -47,10 +48,12 @@ const CreateProjectModal = ({ defaultTeamId, onClose }: Props) => {
         color: form.color,
       }).unwrap();
 
+      toast.success("Project created.");
       onClose();
     } catch (err: any) {
       const message = err?.data?.message || err?.message || "Failed to create project";
       setError(message);
+      toast.error(message);
     }
   };
 

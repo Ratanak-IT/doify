@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 import type { Team } from "@/lib/features/types/task-type";
 import { useUpdateTeamMutation } from "@/lib/features/team/teamApi";
 import Modal from "./Modal";
@@ -24,10 +25,13 @@ export default function EditTeamModal({ team, onClose }: Props) {
 
     try {
       await updateTeam({ id: team.id, data: form }).unwrap();
+      toast.success("Team updated.");
       onClose();
     } catch (err: unknown) {
       const error = err as { data?: { message?: string } };
-      setApiError(error?.data?.message ?? "Failed to update team.");
+      const message = error?.data?.message ?? "Failed to update team.";
+      setApiError(message);
+      toast.error(message);
     }
   };
 

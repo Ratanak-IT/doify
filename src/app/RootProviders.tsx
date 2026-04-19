@@ -8,6 +8,7 @@ import FooterWrapper from "@/components/layout/FooterWrapper";
 import { usePathname } from "next/navigation";
 import StoreProvider from "./StoreProvider";
 import { poppins, sovaphum } from "./fonts";
+import { Toaster } from "sonner";
 
 export default function RootProviders({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -25,6 +26,7 @@ export default function RootProviders({ children }: { children: React.ReactNode 
           {showNavbar && <NavbarWrapper />}
           {children}
           {showFooter && <FooterWrapper />}
+            <Toaster position="top-right" richColors closeButton />
         </StoreProvider>
       </ThemeProvider>
     </div>

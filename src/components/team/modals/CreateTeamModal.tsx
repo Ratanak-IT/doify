@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 import { useCreateTeamMutation } from "@/lib/features/team/teamApi";
 import Modal from "./Modal";
 
@@ -29,10 +30,13 @@ export default function CreateTeamModal({ onClose }: Props) {
         name: form.name.trim(),
         description: form.description,
       }).unwrap();
+      toast.success("Team created.");
       onClose();
     } catch (err: unknown) {
       const error = err as { data?: { message?: string } };
-      setApiError(error?.data?.message ?? "Failed to create team.");
+      const message = error?.data?.message ?? "Failed to create team.";
+      setApiError(message);
+      toast.error(message);
     }
   };
 

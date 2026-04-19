@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 import { X, Calendar, Palette } from "lucide-react";
 import type { Project } from "@/lib/features/types/task-type";
 
@@ -35,7 +36,7 @@ export default function EditProjectModal({ project, onClose, onSave }: Props) {
     e.preventDefault();
     
     if (!name.trim()) {
-      alert("Project name is required");
+      toast.error("Project name is required");
       return;
     }
 
@@ -49,9 +50,11 @@ export default function EditProjectModal({ project, onClose, onSave }: Props) {
         dueDate: dueDate || undefined,
         color,
       });
+      toast.success("Project updated.");
       onClose();
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Failed to update project:", error);
+      toast.error("Failed to update project.");
     } finally {
       setIsSubmitting(false);
     }
@@ -79,9 +82,7 @@ export default function EditProjectModal({ project, onClose, onSave }: Props) {
           </button>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="p-5 space-y-5">
-          {/* Project Name */}
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
               Project Name <span className="text-red-500">*</span>
@@ -96,7 +97,6 @@ export default function EditProjectModal({ project, onClose, onSave }: Props) {
             />
           </div>
 
-          {/* Description */}
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
               Description
@@ -110,7 +110,6 @@ export default function EditProjectModal({ project, onClose, onSave }: Props) {
             />
           </div>
 
-          {/* Dates */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-2">
@@ -139,7 +138,6 @@ export default function EditProjectModal({ project, onClose, onSave }: Props) {
             </div>
           </div>
 
-          {/* Color Picker */}
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
               Project Color
@@ -164,7 +162,6 @@ export default function EditProjectModal({ project, onClose, onSave }: Props) {
             </div>
           </div>
 
-          {/* Action Buttons */}
           <div className="flex gap-3 pt-4 border-t dark:border-slate-700">
             <button
               type="button"

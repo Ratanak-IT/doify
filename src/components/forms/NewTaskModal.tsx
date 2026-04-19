@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { X } from "lucide-react";
+import { toast } from "sonner";
 import { useGetProjectsQuery, useCreatePersonalTaskMutation, useCreateProjectTaskMutation } from "@/lib/features/tasks/taskApi";
 import { createPersonalTaskSchema } from "@/lib/schemas";
 import type { z } from "zod";
@@ -57,10 +58,13 @@ export function NewTaskModal({ onClose }: Props) {
           dueDate: result.data.dueDate,
         }).unwrap();
       }
+      toast.success("Task created.");
       onClose();
     } catch (err: unknown) {
       const e = err as { data?: { message?: string } };
-      setApiError(e?.data?.message ?? "Failed to create task.");
+      const message = e?.data?.message ?? "Failed to create task.";
+      setApiError(message);
+      toast.error(message);
     }
   };
 
