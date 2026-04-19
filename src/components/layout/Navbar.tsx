@@ -69,12 +69,9 @@ export default function Navbar() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-5">
           <Link href="/" className="flex items-center gap-2.5 flex-shrink-0">
-            <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
-              <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
-                <rect x="2" y="2" width="5" height="12" rx="1.5" fill="white" />
-                <rect x="9" y="2" width="5" height="8" rx="1.5" fill="white" opacity=".8" />
-              </svg>
-            </div>
+           
+              <img src="/logo-doify.png" alt="Doify Logo" className="h-8 w-auto" />
+          
             <span className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">Doify</span>
           </Link>
 

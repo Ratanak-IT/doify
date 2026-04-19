@@ -287,10 +287,7 @@ export default function DashboardHeader({
       {/* Logo */}
       <Link href="/" className="flex items-center gap-2 shrink-0 group">
         <div className="w-8 h-8 rounded-lg bg-[#6C5CE7] flex items-center justify-center shadow-md shadow-[#6C5CE7]/30 group-hover:shadow-[#6C5CE7]/50 transition-shadow">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <rect x="1" y="1" width="4" height="12" rx="1" fill="white"/>
-            <rect x="7" y="1" width="6" height="8" rx="1" fill="white" opacity=".8"/>
-          </svg>
+          <img src="/logo-doify.png" alt="Doify Logo" className="h-6 w-6 object-contain" />
         </div>
         <span className="font-bold text-[15px] text-[#1E293B] dark:text-white tracking-tight hidden sm:block">
           Doify

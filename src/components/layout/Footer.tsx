@@ -6,10 +6,7 @@ export default function Footer() {
       <div className="lp-footer-inner">
         <div className="lp-footer-brand">
           <div className="lp-logo-mark lp-logo-mark--sm">
-            <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
-              <rect x="2" y="2" width="5" height="12" rx="1.5" fill="white" />
-              <rect x="9" y="2" width="5" height="8" rx="1.5" fill="white" opacity=".8" />
-            </svg>
+            <img src="/logo-doify.png" alt="Doify Logo" className="h-full w-full object-contain" />
           </div>
           <div>
             <span className="lp-footer-name">Doify</span>
