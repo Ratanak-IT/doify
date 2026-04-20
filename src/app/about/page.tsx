@@ -1,145 +1,154 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Link from "next/link";
 import {
   Target, Zap, Heart, Leaf,
-  ArrowRight, Sparkles, Users, Calendar,
-  Rocket, Lightbulb, Code2, Send,
+  Sparkles, Users, Calendar,
+  Rocket, Lightbulb, Code2,
 } from "lucide-react";
 
+const GitHubIcon = () => (
+  <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+    <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+  </svg>
+);
+const FacebookIcon = () => (
+  <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+  </svg>
+);
+const TelegramIcon = () => (
+  <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+    <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
+  </svg>
+);
+
+interface Socials {
+  github: string;
+  facebook: string;
+  telegram: string;
+}
+
+const SocialLinks = ({ socials, size = "sm" }: { socials: Socials; size?: "sm" | "md" }) => {
+  const base = size === "md" ? "w-9 h-9" : "w-8 h-8";
+  const btnClass = `${base} rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 flex items-center justify-center transition-colors duration-200`;
+  return (
+    <div className="flex gap-2">
+      <a href={socials.github}   target="_blank" rel="noopener noreferrer" aria-label="GitHub"   className={`${btnClass} hover:bg-slate-900 hover:text-white`}><GitHubIcon /></a>
+      <a href={socials.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className={`${btnClass} hover:bg-blue-600 hover:text-white`}><FacebookIcon /></a>
+      <a href={socials.telegram} target="_blank" rel="noopener noreferrer" aria-label="Telegram" className={`${btnClass} hover:bg-sky-500 hover:text-white`}><TelegramIcon /></a>
+    </div>
+  );
+};
+
+const advisors = [
+  {
+    name: "MOM REKSMEY",
+    subject: "Frontend",
+    img: "/momreaksmey.jpg",
+    bio: "Guided and reviewed the project.",
+    skills: ["Scrum", "Leadership", "Strategy"],
+    socials: {
+      github:   "https://github.com/Reksmeys",
+      facebook: "https://www.facebook.com/mom.reksmey.12",
+      telegram: "https://reksmey_mom",
+    },
+  },
+  {
+    name: "CHAN CHHAYA",
+    subject: "Backend",
+    img: "https://careerpatch.vercel.app/assets/mentor1-CK3orkdg.png",
+    bio: "Guided and reviewed the project.",
+    skills: ["Spring Microservices"],
+    socials: {
+      github:   "https://github.com/it-chhaya",
+      facebook: "https://www.facebook.com/chhayadevkh",
+      telegram: "https://t.me/chhayadevkh",
+    },
+  },
+  {
+    name: "KIT TARA",
+    subject: "Database",
+    img: "https://careerpatch.vercel.app/assets/mentor2-BrhnLDLN.jpg",
+    bio: "Guided and reviewed the project.",
+    skills: ["Ai Agent"],
+    socials: {
+      github:   "https://github.com/tarakit",
+      facebook: "https://www.facebook.com/drksearcherz",
+      telegram: "https://t.me/tarakit",
+    },
+  },
+];
+
+const team = [
+  {
+    name: "Thai Ratanak",
+    role: "Backend and Database",
+    img: "/ratanak.jpg",
+    bio: "Loves clean code and bad coffee ☕",
+    teamRole: "Leader",
+    socials: {
+      github:   "https://github.com/thairatanak",
+      facebook: "https://facebook.com/thairatanak",
+      telegram: "https://t.me/thairatanak",
+    },
+  },
+  {
+    name: "Chhom Titsela",
+    role: "Frontend",
+    img: "/sela.png",
+    bio: "Turns coffee into scalable backends.",
+    teamRole: "Member",
+    socials: {
+      github:   "https://github.com/chhomtitsela",
+      facebook: "https://facebook.com/chhomtitsela",
+      telegram: "https://t.me/chhomtitsela",
+    },
+  },
+  {
+    name: "Chanthol Vireakratanak",
+    role: "Frontend and Reporter",
+    img: "/ratanakchanthol.png",
+    bio: "Obsessed with making customers successful.",
+    teamRole: "Member",
+    socials: {
+      github:   "https://github.com/chantholvireak",
+      facebook: "https://facebook.com/chantholvireak",
+      telegram: "https://t.me/chantholvireak",
+    },
+  },
+];
+
+const values = [
+  { icon: <Target size={22} />, title: "Clarity over features",  desc: "We say no a lot. Every feature has to earn its place.",                      color: "violet"  },
+  { icon: <Zap    size={22} />, title: "Fast by default",        desc: "Every interaction under 100ms. Loading states are a last resort.",            color: "amber"   },
+  { icon: <Heart  size={22} />, title: "Built in the open",      desc: "No dark patterns, no hidden fees. Just honest software.",                    color: "rose"    },
+  { icon: <Leaf   size={22} />, title: "Sustainable pace",       desc: "We ship what we can maintain. Quality over quantity, always.",                color: "emerald" },
+];
+
+const timeline = [
+  { date: "Jan 2026", icon: <Lightbulb size={16} />, title: "The idea",         desc: "Frustrated with tools that got in the way, we sketched a simpler alternative on napkins at ISTAD." },
+  { date: "Feb 2026", icon: <Code2     size={16} />, title: "First prototype",  desc: "Late nights, bad coffee, and our first working kanban board. It was ugly but it worked." },
+  { date: "Mar 2026", icon: <Rocket    size={16} />, title: "MVP launch",       desc: "Pushed to production with real-time collaboration, projects, and dark mode. Shipped > Perfect." },
+  { date: "Apr 2026", icon: <Sparkles  size={16} />, title: "You're here 👋",   desc: "Every new user shapes where we go next. Welcome aboard — the story's just beginning." },
+];
+
+const credibilityBadges = [
+  { icon: <Calendar size={14} />, label: "Founded 2026"      },
+  { icon: <Users    size={14} />, label: "Built at ISTAD"    },
+  { icon: <Heart    size={14} />, label: "Made in Cambodia"  },
+  { icon: <Code2    size={14} />, label: "Open Source"       },
+];
+
+const colorMap: Record<string, string> = {
+  violet:  "bg-violet-100  text-violet-600  dark:bg-violet-900/30  dark:text-violet-400",
+  amber:   "bg-amber-100   text-amber-600   dark:bg-amber-900/30   dark:text-amber-400",
+  rose:    "bg-rose-100    text-rose-600    dark:bg-rose-900/30    dark:text-rose-400",
+  emerald: "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400",
+};
+
+// ── Page ─────────────────────────────────────────────────────────────────────
 export default function AboutPage() {
-  const advisors = [
-    {
-      name: "MOM REKSMEY",
-      subject: "Frontend",
-      institution: "ISTAD Advisor",
-      img: "/momreaksmey.jpg",
-      bio: "Guided and reviewed the project.",
-      skills: ["Scrum", "Leadership", "Strategy"],
-    },
-    {
-      name: "CHAN CHHAYA",
-      subject: "Backend",
-      institution: "ISTAD Advisor",
-      img: "https://careerpatch.vercel.app/assets/mentor1-CK3orkdg.png",
-      bio: "Guided and reviewed the project.",
-      skills: ["Spring Microservices"],
-    },
-    {
-      name: "KIT TARA",
-      subject: "Data Base",
-      institution: "ISTAD Advisor",
-      img: "https://careerpatch.vercel.app/assets/mentor2-BrhnLDLN.jpg",
-      bio: "Guided and reviewed the project.",
-      skills: ["Ai Agent"],
-    },
-  ];
-
-  const team = [
-    {
-      name: "Thai Ratanak",
-      role: "backend and Database",
-      img: "/ratanak.jpg",
-      bio: "Loves clean code and bad coffee ☕",
-      askMe: "product strategy",
-      skills: ["React", "TypeScript", "Product"],
-      teamRole: "Leader",
-    },
-    {
-      name: "Chhom Titsela",
-      role: "Frontend",
-      img: "/sela.png",
-      bio: "Turns coffee into scalable backends.",
-      askMe: "Spring Boot & APIs",
-      skills: ["Java", "Spring", "PostgreSQL"],
-      teamRole: "Member",
-    },
-    {
-      name: "Chanthol Vireakratanak",
-      role: "Frontend and Reporter",
-      img: "/ratanakchanthol.png",
-      bio: "Obsessed with making customers successful.",
-      askMe: "anything, really",
-      skills: ["Sales", "CS", "Strategy"],
-      teamRole: "Member",
-    },
-  ];
-
-  const values = [
-    {
-      icon: <Target size={22} />,
-      title: "Clarity over features",
-      desc: "We say no a lot. Every feature has to earn its place.",
-      color: "violet",
-    },
-    {
-      icon: <Zap size={22} />,
-      title: "Fast by default",
-      desc: "Every interaction under 100ms. Loading states are a last resort.",
-      color: "amber",
-    },
-    {
-      icon: <Heart size={22} />,
-      title: "Built in the open",
-      desc: "No dark patterns, no hidden fees. Just honest software.",
-      color: "rose",
-    },
-    {
-      icon: <Leaf size={22} />,
-      title: "Sustainable pace",
-      desc: "We ship what we can maintain. Quality over quantity, always.",
-      color: "emerald",
-    },
-  ];
-
-  const timeline = [
-    {
-      date: "Jan 2026",
-      icon: <Lightbulb size={16} />,
-      title: "The idea",
-      desc: "Frustrated with tools that got in the way, we sketched a simpler alternative on napkins at ISTAD.",
-    },
-    {
-      date: "Feb 2026",
-      icon: <Code2 size={16} />,
-      title: "First prototype",
-      desc: "Late nights, bad coffee, and our first working kanban board. It was ugly but it worked.",
-    },
-    {
-      date: "Mar 2026",
-      icon: <Rocket size={16} />,
-      title: "MVP launch",
-      desc: "Pushed to production with real-time collaboration, projects, and dark mode. Shipped > Perfect.",
-    },
-    {
-      date: "Apr 2026",
-      icon: <Sparkles size={16} />,
-      title: "You're here 👋",
-      desc: "Every new user shapes where we go next. Welcome aboard — the story's just beginning.",
-    },
-  ];
-
-  const credibilityBadges = [
-    { icon: <Calendar size={14} />, label: "Founded 2026" },
-    { icon: <Users size={14} />,    label: "Built at ISTAD" },
-    { icon: <Heart size={14} />,    label: "Made in Cambodia" },
-    { icon: <Code2 size={14} />,    label: "Open Source" },
-  ];
-
-  const colorMap: Record<string, string> = {
-    violet:  "bg-violet-100  text-violet-600  dark:bg-violet-900/30  dark:text-violet-400",
-    amber:   "bg-amber-100   text-amber-600   dark:bg-amber-900/30   dark:text-amber-400",
-    rose:    "bg-rose-100    text-rose-600    dark:bg-rose-900/30    dark:text-rose-400",
-    emerald: "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400",
-  };
-
-  const socialLinks = [
-    { label: "GitHub",   bg: "hover:bg-slate-900",  color: "hover:text-white", svg: <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg> },
-    { label: "Facebook", bg: "hover:bg-blue-600",   color: "hover:text-white", svg: <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg> },
-    { label: "Telegram", bg: "hover:bg-sky-500",    color: "hover:text-white", svg: <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg> },
-  ];
-
   return (
     <div className="font-sans bg-slate-50 dark:bg-slate-950 text-slate-950 dark:text-white">
 
@@ -159,15 +168,18 @@ export default function AboutPage() {
         </div>
 
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight text-slate-950 dark:text-white mb-2">
-          Built to keep your <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6c47ff] to-pink-500">team on track</span>
+          Built to keep your{" "}
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6c47ff] to-pink-500">
+            team on track
+          </span>
         </h1>
         <p className="text-lg sm:text-xl md:text-2xl font-semibold text-slate-500 dark:text-slate-400 mb-4">
           Every task. Every deadline. Every sprint.
         </p>
         <p className="text-lg sm:text-base text-slate-500 dark:text-slate-400 max-w-md sm:max-w-lg mx-auto mb-7 leading-7">
-          Doify is a modern task management platform designed to help teams
-          plan smarter, collaborate in real time, and ship work without the chaos.
-          From daily to-dos to full project pipelines — we&apos;ve got it covered.
+          Doify is a modern task management platform designed to help teams plan smarter,
+          collaborate in real time, and ship work without the chaos. From daily to-dos to
+          full project pipelines — we&apos;ve got it covered.
         </p>
 
         <div className="mt-8 sm:mt-12 mx-auto max-w-3xl rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700">
@@ -287,12 +299,12 @@ export default function AboutPage() {
                 i === 0
                   ? { initial: { opacity: 0, x: -120 }, whileInView: { opacity: 1, x: 0 } }
                   : i === 1
-                  ? { initial: { opacity: 0, x: 120 },  whileInView: { opacity: 1, x: 0 } }
-                  : { initial: { opacity: 0, y: 120 },  whileInView: { opacity: 1, y: 0 } };
+                  ? { initial: { opacity: 0, x: 120  }, whileInView: { opacity: 1, x: 0 } }
+                  : { initial: { opacity: 0, y: 60   }, whileInView: { opacity: 1, y: 0 } };
 
               const centerClass =
                 i === 2
-                  ? "lg:col-span-2 lg:w-full lg:max-w-[calc(50%_-_10px)] lg:justify-self-center"
+                  ? "lg:col-span-2 lg:max-w-[calc(50%-10px)] lg:justify-self-center w-full"
                   : "";
 
               return (
@@ -304,7 +316,6 @@ export default function AboutPage() {
                   transition={{ delay: i * 0.15, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
                   className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 sm:p-7 overflow-hidden ${centerClass}`}
                 >
-                  {/* Header row */}
                   <div className="flex items-center gap-5 mb-5">
                     <div className="shrink-0">
                       <img
@@ -322,16 +333,7 @@ export default function AboutPage() {
                         <span>Specializations</span>
                         <span className="text-slate-950 dark:text-white font-semibold">{a.skills[0]}</span>
                       </div>
-                      <div className="flex gap-2">
-                        {socialLinks.map((s, idx) => (
-                          <a
-                            key={s.label} href="#" aria-label={s.label}
-                            className={`w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 flex items-center justify-center transition-colors duration-200 ${s.bg} ${s.color}`}
-                          >
-                            {s.svg}
-                          </a>
-                        ))}
-                      </div>
+                      <SocialLinks socials={a.socials} size="sm" />
                     </div>
                   </div>
 
@@ -373,7 +375,6 @@ export default function AboutPage() {
                 transition={{ delay: i * 0.15, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                 className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 sm:p-8 text-center overflow-hidden"
               >
-                {/* Photo */}
                 <div className="inline-block mb-5">
                   <img
                     src={m.img}
@@ -386,14 +387,7 @@ export default function AboutPage() {
                 <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">{m.role}</p>
 
                 <div className="flex justify-center gap-2 mb-5">
-                  {socialLinks.map((s) => (
-                    <a
-                      key={s.label} href="#" aria-label={s.label}
-                      className={`w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 flex items-center justify-center transition-colors duration-200 ${s.bg} ${s.color}`}
-                    >
-                      {s.svg}
-                    </a>
-                  ))}
+                  <SocialLinks socials={m.socials} size="md" />
                 </div>
 
                 <div className="border-t border-slate-100 dark:border-slate-800 pt-4" />
@@ -407,6 +401,7 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+
     </div>
   );
 }
