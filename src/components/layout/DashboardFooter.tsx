@@ -27,7 +27,7 @@ export default function DashboardFooter() {
           <div className="grid grid-cols-2 gap-10 sm:gap-16">
             {/* Page */}
             <div>
-              <h4 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-widest mb-4">
+              <h4 className="text-lg font-semibold text-slate-900 dark:text-white uppercase tracking-widest mb-4">
                 Page
               </h4>
               <ul className="flex flex-col gap-2.5">
@@ -60,7 +60,7 @@ export default function DashboardFooter() {
 
             {/* Setting */}
             <div>
-              <h4 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-widest mb-4">
+              <h4 className="text-lg font-semibold text-slate-900 dark:text-white uppercase tracking-widest mb-4">
                 Setting
               </h4>
               <ul className="flex flex-col gap-2.5">

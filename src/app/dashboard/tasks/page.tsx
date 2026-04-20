@@ -424,7 +424,7 @@ function TasksBoard() {
       )}
 
       {/* Kanban board */}
-      <main className="flex-1 overflow-auto p-3 sm:p-4 md:p-6" style={{ backgroundColor: pageBg }}>
+      <main className="overflow-auto p-3 sm:p-4 md:p-6" style={{ backgroundColor: pageBg }}>
         <div className="flex gap-3 sm:gap-4 min-w-max h-full">
           {COLUMNS.map((col) => {
             const colTasks = tasks.filter((t) => t.status === col.id);

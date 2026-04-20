@@ -99,7 +99,7 @@ export default function Features() {
                 {f.icon}
               </div>
               <h3 className="lp-feature-title dark:text-gray-100">{f.title}</h3>
-              <p className="lp-feature-desc dark:text-gray-100">{f.desc}</p>
+              <p className="lp-feature-desc dark:text-gray-100 text-md">{f.desc}</p>
             </div>
           ))}
         </div>

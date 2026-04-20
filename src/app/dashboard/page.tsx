@@ -31,7 +31,6 @@ import {
   DueDateTimeline,
   ActivityVolumeChart,
 } from "@/components/charts";
-import DashboardFooter from "@/components/layout/DashboardFooter";
 
 function Skeleton({ className = "" }: { className?: string }) {
   return (
@@ -134,7 +133,7 @@ export default function DashboardPage() {
 
       {showModal && <NewTaskModal onClose={() => setShowModal(false)} />}
 
-      <main className="flex-1 overflow-auto px-4 py-6 sm:px-6 lg:px-8 bg-slate-50 dark:bg-[#1E1B2E]">
+      <main className="overflow-auto px-4 py-6 sm:px-6 lg:px-8 bg-slate-50 dark:bg-[#1E1B2E]">
         <div className="mx-auto max-w-7xl space-y-6">
           {(() => {
             const completedTasks = dashboard?.completedTasks ?? 0;
@@ -448,7 +447,6 @@ export default function DashboardPage() {
           </div>
         </div>
       </main>
-      <DashboardFooter/>
     </>
   );
 }
