@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function FooterWrapper() {
+export default function DashboardFooter() {
   return (
     <footer className="bg-white dark:bg-[#1a1c2e] border-t border-slate-200 dark:border-[#2a2d45] text-slate-500 dark:text-slate-400 pt-10 sm:pt-14 pb-6 sm:pb-8 px-4 sm:px-8 transition-colors">
       <div className="max-w-5xl mx-auto mb-10">
