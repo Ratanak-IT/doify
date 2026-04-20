@@ -31,6 +31,7 @@ import {
   DueDateTimeline,
   ActivityVolumeChart,
 } from "@/components/charts";
+import DashboardFooter from "@/components/layout/DashboardFooter";
 
 function Skeleton({ className = "" }: { className?: string }) {
   return (
@@ -447,6 +448,7 @@ export default function DashboardPage() {
           </div>
         </div>
       </main>
+      <DashboardFooter/>
     </>
   );
 }
