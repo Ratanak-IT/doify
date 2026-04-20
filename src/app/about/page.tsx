@@ -185,12 +185,11 @@ export default function AboutPage() {
           <img
             src="/team.jpg"
             alt="Doify team at work"
-            className="w-full h-48 sm:h-64 md:h-80 lg:h-[380px] object-cover block"
+            className="w-full h-48 sm:h-64 md:h-80 lg:h-[400px] object-cover block"
           />
         </div>
       </motion.section>
 
-      {/* ── CREDIBILITY STRIP ── */}
       <div className="bg-white dark:bg-slate-900 border-t border-b border-slate-200 dark:border-slate-700 py-6 px-4">
         <div className="max-w-4xl mx-auto flex flex-wrap items-center justify-center gap-3 sm:gap-6">
           {credibilityBadges.map((b, i) => (
