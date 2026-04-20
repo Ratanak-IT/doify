@@ -152,7 +152,6 @@ export default function AboutPage() {
   return (
     <div className="font-sans bg-slate-50 dark:bg-slate-950 text-slate-950 dark:text-white">
 
-      {/* ── HERO ── */}
       <motion.section
         className="relative text-center pt-24 sm:pt-28 pb-10 sm:pb-16 px-4 sm:px-6 overflow-hidden"
         initial={{ opacity: 0, y: 20 }}
@@ -184,7 +183,7 @@ export default function AboutPage() {
 
         <div className="mt-8 sm:mt-12 mx-auto max-w-3xl rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700">
           <img
-            src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1200&q=80"
+            src="/team.jpg"
             alt="Doify team at work"
             className="w-full h-48 sm:h-64 md:h-80 lg:h-[380px] object-cover block"
           />
