@@ -15,7 +15,8 @@ export default function RootProviders({ children }: { children: React.ReactNode 
   const hideNavbarRoutes = ["/login", "/register"];
   const hideFooterRoutes = ["/login", "/register"];
   const showNavbar = !hideNavbarRoutes.includes(pathname);
-  const showFooter = !hideFooterRoutes.includes(pathname);
+  const showFooter =
+    !hideFooterRoutes.includes(pathname) && !pathname.startsWith("/dashboard");
 
   return (
     <div
