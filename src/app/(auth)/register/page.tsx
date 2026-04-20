@@ -42,14 +42,6 @@ function GithubIcon() {
   );
 }
 
-function FacebookIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current text-[#1877F2]" aria-hidden>
-      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-    </svg>
-  );
-}
-
 function Spinner() {
   return (
     <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
@@ -59,7 +51,7 @@ function Spinner() {
   );
 }
 
-function getOAuthUrl(provider: "google" | "github" | "facebook"): string {
+function getOAuthUrl(provider: "google" | "github"): string {
   const appUrl = process.env.NEXT_PUBLIC_BETTER_AUTH_URL ?? "http://localhost:3000";
   const redirectUri = encodeURIComponent(`${appUrl}/api/auth/callback/${provider}`);
 
@@ -67,15 +59,10 @@ function getOAuthUrl(provider: "google" | "github" | "facebook"): string {
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "";
     return `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${encodeURIComponent("openid email profile")}&access_type=offline`;
   }
-  if (provider === "github") {
-    const clientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID ?? "";
-    return `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${encodeURIComponent("read:user user:email")}`;
-  }
-  const clientId = process.env.NEXT_PUBLIC_FACEBOOK_CLIENT_ID ?? "";
-  return `https://www.facebook.com/v18.0/dialog/oauth?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${encodeURIComponent("email,public_profile")}&response_type=code`;
+  const clientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID ?? "";
+  return `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${encodeURIComponent("read:user user:email")}`;
 }
 
-// ─── Inner component that uses useSearchParams ────────────────────────────────
 function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -127,7 +114,7 @@ function RegisterForm() {
     }
   };
 
-  const handleSocial = (provider: "google" | "github" | "facebook") => {
+  const handleSocial = (provider: "google" | "github") => {
     setSocialLoading(provider);
     window.location.href = getOAuthUrl(provider);
   };
@@ -274,9 +261,9 @@ function RegisterForm() {
       </div>
 
       <div className="flex gap-3">
-        {(["google", "github", "facebook"] as const).map((provider) => (
+        {(["google", "github"] as const).map((provider) => (
           <button key={provider} onClick={() => handleSocial(provider)} disabled={isBusy} className={socialBtnCls} aria-label={`Sign up with ${provider}`}>
-            {socialLoading === provider ? <Spinner /> : provider === "google" ? <GoogleIcon /> : provider === "github" ? <GithubIcon /> : <FacebookIcon />}
+            {socialLoading === provider ? <Spinner /> : provider === "google" ? <GoogleIcon /> : <GithubIcon />}
             <span className="capitalize">{provider}</span>
           </button>
         ))}
