@@ -4,7 +4,6 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { NotificationStreamProvider } from "@/components/NotificationStreamProvider";
 import DashboardFooter from "@/components/layout/DashboardFooter";
 
-
 export default function DashboardLayout({
   children,
 }: {
@@ -13,10 +12,10 @@ export default function DashboardLayout({
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset className="flex flex-col min-h-screen">
+      <SidebarInset className="flex flex-col flex-1 overflow-hidden">
         <AuthRehydrator />
         <NotificationStreamProvider />
-        <div className="flex-1">{children}</div>
+        <div className="flex-1 overflow-auto">{children}</div>
         <DashboardFooter />
       </SidebarInset>
     </SidebarProvider>

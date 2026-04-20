@@ -585,7 +585,6 @@ function TasksBoard() {
   );
 }
 
-/* ── Page — Suspense wraps TasksBoard so useSearchParams is safe ── */
 export default function TasksPage() {
   return (
     <Suspense fallback={
