@@ -147,8 +147,6 @@ function NewTaskModal({
       }
     }
 
-    if (!form.dueDate) fe.dueDate = "Due date is required";
-
     if (Object.keys(fe).length > 0) {
       setErrors(fe);
       return;
@@ -476,7 +474,15 @@ function EditTaskModal({ task, onClose }: { task: Task; onClose: () => void }) {
     setApiError("");
     const fe: typeof errors = {};
     if (!form.title.trim()) fe.title = "Title is required";
-    if (!form.dueDate) fe.dueDate = "Due date is required";
+    if (!form.dueDate) {
+      fe.dueDate = "Due date is required";
+    } else {
+      const d = new Date(form.dueDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (isNaN(d.getTime())) fe.dueDate = "Invalid date";
+      else if (d < today) fe.dueDate = "Date cannot be in the past";
+    }
     if (Object.keys(fe).length > 0) {
       setErrors(fe);
       return;
