@@ -3,7 +3,7 @@ import { betterAuth } from "better-auth";
 import { nextCookies } from "better-auth/next-js";
 
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_API;
+const BACKEND_URL = process.env.API_BASE_URL;
 
 export const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET,

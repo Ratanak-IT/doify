@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   const token = req.nextUrl.searchParams.get("token");
-  const backendUrl = process.env.NEXT_PUBLIC_API;
+  const backendUrl = process.env.API_BASE_URL;
 
   if (!token) {
     return NextResponse.json({ error: "Token required" }, { status: 401 });

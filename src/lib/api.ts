@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API;
+const BASE_URL = process.env.API_BASE_URL;
 
 class ApiError extends Error {
   status: number;
@@ -16,7 +16,7 @@ export async function apiFetch(
 ) {
   const { authHeader, headers: extraHeaders, ...rest } = options ?? {};
 
-  const res = await fetch(`${BASE_URL}/api/v1${endpoint}`, {
+  const res = await fetch(`/api${endpoint}`, {
     headers: {
       "Content-Type": "application/json",
       ...(authHeader ? { Authorization: authHeader } : {}),

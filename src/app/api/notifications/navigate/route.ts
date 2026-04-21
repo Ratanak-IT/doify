@@ -1,13 +1,7 @@
-/**
- * GET /api/notifications/navigate
- *
- * Resolves a notification referenceId into a full navigation target.
- * Auth token is read from the Authorization header OR the "token" cookie
- * (browser fetches from client don't automatically send the header).
- */
+
 import { NextRequest, NextResponse } from "next/server";
 
-const BASE = process.env.NEXT_PUBLIC_API;
+const BASE = process.env.API_BASE_URL;
 
 async function backendFetch(path: string, token: string) {
   const res = await fetch(`${BASE}/api/v1${path}`, {
