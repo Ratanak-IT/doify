@@ -106,7 +106,7 @@ export default function ForgotPasswordPage() {
                   Check your inbox and follow the instructions.
                 </p>
               </div>
-              <Link href="/login" className="inline-flex items-center gap-2 text-sm text-[#4f39f6] hover:underline font-semibold mt-2">
+              <Link href="/login" className="inline-flex dark:text-gray-200 items-center gap-2 text-sm text-[#4f39f6] hover:underline font-semibold mt-2">
                 <ArrowLeft size={14} /> Back to sign in
               </Link>
             </div>

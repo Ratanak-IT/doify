@@ -214,7 +214,7 @@ function LoginForm() {
             </label>
             <Link
               href="/forgot-password"
-              className="mb-1.5 text-sm font-medium text-[#4f39f6] hover:underline"
+              className="mb-1.5 text-sm font-medium dark:text-white text-[#4f39f6] hover:underline"
             >
               Forgot password?
             </Link>
@@ -311,7 +311,7 @@ function LoginForm() {
         Don&apos;t have an account?{" "}
         <Link
           href="/register"
-          className="text-[#4f39f6] font-semibold hover:underline"
+          className="text-[#4f39f6] font-semibold hover:underline dark:text-gray-300"
         >
           Create account
         </Link>
@@ -320,7 +320,6 @@ function LoginForm() {
   );
 }
 
-// ─── Page shell — Suspense wraps LoginForm so useSearchParams is safe ─────────
 export default function LoginPage() {
   return (
     <div className="min-h-screen flex transition-colors bg-white dark:bg-slate-900">

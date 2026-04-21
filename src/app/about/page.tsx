@@ -141,7 +141,7 @@ const credibilityBadges = [
 ];
 
 const colorMap: Record<string, string> = {
-  violet:  "bg-violet-100  text-violet-600  dark:bg-violet-900/30  dark:text-violet-400",
+  violet:  "bg-blue-600  text-violet-600  dark:bg-slate-800  dark:text-violet-400",
   amber:   "bg-amber-100   text-amber-600   dark:bg-amber-900/30   dark:text-amber-400",
   rose:    "bg-rose-100    text-rose-600    dark:bg-rose-900/30    dark:text-rose-400",
   emerald: "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400",
@@ -168,14 +168,14 @@ export default function AboutPage() {
 
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight text-slate-950 dark:text-white mb-2">
           Built to keep your{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6c47ff] to-pink-500">
+          <span className=" text-blue-600 dark:text-gray-100">
             team on track
           </span>
         </h1>
-        <p className="text-lg sm:text-xl md:text-2xl font-semibold text-slate-500 dark:text-slate-400 mb-4">
+        <p className="text-lg sm:text-xl md:text-2xl font-semibold text-slate-600 dark:text-gray-200 mb-4">
           Every task. Every deadline. Every sprint.
         </p>
-        <p className="text-lg sm:text-base text-slate-500 dark:text-slate-400 max-w-md sm:max-w-lg mx-auto mb-7 leading-7">
+        <p className="text-xl sm:text-base text-slate-500 dark:text-gray-200 max-w-md sm:max-w-lg mx-auto mb-7 leading-7">
           Doify is a modern task management platform designed to help teams plan smarter,
           collaborate in real time, and ship work without the chaos. From daily to-dos to
           full project pipelines — we&apos;ve got it covered.
@@ -212,13 +212,13 @@ export default function AboutPage() {
       <section className="py-16 sm:py-20 md:py-24 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-10 sm:mb-14">
-            <span className="inline-block text-[0.72rem] font-semibold tracking-[0.08em] uppercase text-[#6c47ff] bg-violet-100 dark:bg-violet-900/30 px-3 py-1 rounded-full mb-3.5">
+            <span className="inline-block text-[0.72rem] font-semibold tracking-[0.08em] uppercase text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full mb-3.5">
               What we believe
             </span>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-slate-950 dark:text-white mb-3 leading-tight">
-              Principles that <span className="text-[#6c47ff]">guide every pixel</span>
+              Principles that <span className="text-blue-600 dark:text-gray-100">guide every pixel</span>
             </h2>
-            <p className="text-sm sm:text-[0.95rem] text-slate-500 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
+            <p className="text-xl sm:text-[0.95rem] text-slate-500 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
               We say these out loud so you can hold us to them.
             </p>
           </div>
@@ -265,9 +265,9 @@ export default function AboutPage() {
                   {t.icon}
                 </div>
                 <div className="flex-1 min-w-0 pt-1">
-                  <p className="text-xs font-semibold tracking-wider uppercase text-[#6c47ff] mb-1">{t.date}</p>
+                  <p className="text-xs font-semibold tracking-wider uppercase text-blue-600 dark:text-gray-100 mb-1">{t.date}</p>
                   <h3 className="text-lg sm:text-xl font-bold text-slate-950 dark:text-white mb-1.5">{t.title}</h3>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">{t.desc}</p>
+                  <p className="text-lg text-slate-500 dark:text-slate-400 leading-relaxed">{t.desc}</p>
                 </div>
               </motion.div>
             ))}
@@ -283,9 +283,9 @@ export default function AboutPage() {
               Our advisors
             </span>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-slate-950 dark:text-white mb-3 leading-tight">
-              Guided by <span className="text-[#6c47ff]">industry experts</span>
+              Guided by <span className="text-blue-600 dark:text-gray-100">industry experts</span>
             </h2>
-            <p className="text-sm sm:text-[0.95rem] text-slate-500 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
+            <p className="text-xl sm:text-[0.95rem] text-slate-500 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
               Advisors with deep expertise in productivity, engineering, and agile —
               shaping Doify into a world-class platform.
             </p>
@@ -356,9 +356,9 @@ export default function AboutPage() {
               Our team
             </span>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-slate-950 dark:text-white mb-3 leading-tight">
-              The people <span className="text-[#6c47ff]">behind Doify</span>
+              The people <span className="text-blue-600 dark:text-gray-100">behind Doify</span>
             </h2>
-            <p className="text-sm sm:text-[0.95rem] text-slate-500 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
+            <p className="text-xl sm:text-[0.95rem] text-slate-500 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
               A small, passionate team obsessed with making task management feel effortless.
             </p>
           </div>
@@ -382,7 +382,7 @@ export default function AboutPage() {
                 </div>
 
                 <h4 className="font-bold text-lg text-slate-950 dark:text-white mb-1">{m.name}</h4>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">{m.role}</p>
+                <p className="text-md text-slate-500 dark:text-slate-400 mb-4">{m.role}</p>
 
                 <div className="flex justify-center gap-2 mb-5">
                   <SocialLinks socials={m.socials} size="md" />
@@ -392,7 +392,7 @@ export default function AboutPage() {
 
                 <div className="flex items-center justify-center gap-1.5 text-sm mt-4">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#6c47ff]" />
-                  <span className="font-medium text-slate-600 dark:text-slate-300">{m.teamRole ?? "Member"}</span>
+                  <span className="font-medium text-md text-slate-600 dark:text-slate-300">{m.teamRole ?? "Member"}</span>
                 </div>
               </motion.div>
             ))}

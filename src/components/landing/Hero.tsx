@@ -20,7 +20,7 @@ export default function Hero() {
 
         {/* Title */}
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-center text-slate-900 dark:text-white leading-tight mb-4 sm:mb-6 max-w-xs sm:max-w-2xl md:max-w-3xl lg:max-w-4xl">
-          {t("landing.hero.title")}
+         <span className="text-blue-600 dark:text-gray-100">Doify</span> {t("landing.hero.title")}
         </h1>
 
         {/* Subtitle */}

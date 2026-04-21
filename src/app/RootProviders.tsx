@@ -1,6 +1,5 @@
 "use client";
 
-
 import { ThemeProvider } from "@/lib/contexts/ThemeContext";
 
 import NavbarWrapper from "@/components/layout/NavbarWrapper";
@@ -10,10 +9,24 @@ import StoreProvider from "./StoreProvider";
 import { poppins, sovaphum } from "./fonts";
 import { Toaster } from "sonner";
 
-export default function RootProviders({ children }: { children: React.ReactNode }) {
+export default function RootProviders({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const pathname = usePathname();
-  const hideNavbarRoutes = ["/login", "/register"];
-  const hideFooterRoutes = ["/login", "/register"];
+  const hideNavbarRoutes = [
+    "/login",
+    "/register",
+    "/forgot-password",
+    "/reset-password",
+  ];
+  const hideFooterRoutes = [
+    "/login",
+    "/register",
+    "/forgot-password",
+    "/reset-password",
+  ];
   const showNavbar = !hideNavbarRoutes.includes(pathname);
   const showFooter =
     !hideFooterRoutes.includes(pathname) && !pathname.startsWith("/dashboard");
@@ -27,7 +40,7 @@ export default function RootProviders({ children }: { children: React.ReactNode 
           {showNavbar && <NavbarWrapper />}
           {children}
           {showFooter && <FooterWrapper />}
-            <Toaster position="top-right" richColors closeButton />
+          <Toaster position="top-right" richColors closeButton />
         </StoreProvider>
       </ThemeProvider>
     </div>
