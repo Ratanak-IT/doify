@@ -5,13 +5,27 @@ import { X, User } from "lucide-react";
 import { useCreateProjectTaskMutation } from "@/lib/features/tasks/taskApi";
 import { useGetTeamMembersQuery } from "@/lib/features/team/teamApi";
 import { getAvatarColor, getInitials } from "@/lib/features/team/team.utils";
-import type { TaskStatus } from "@/lib/features/types/task-type";
+import type { TaskStatus, TaskPriority } from "@/lib/features/types/task-type";
+import { validateDueDate, todayString } from "@/lib/utils/dateValidation";
 
 type Props = {
   projectId: string;
   teamId: string;
   defaultStatus?: TaskStatus;
   onClose: () => void;
+};
+
+type FormState = {
+  title: string;
+  description: string;
+  priority: TaskPriority;
+  dueDate: string;
+  assigneeId: string;
+};
+
+type FormErrors = {
+  title?: string;
+  dueDate?: string;
 };
 
 export default function CreateProjectTaskModal({
@@ -24,7 +38,7 @@ export default function CreateProjectTaskModal({
   const { data: membersPage } = useGetTeamMembersQuery({ teamId });
   const members = membersPage?.content ?? [];
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<FormState>({
     title: "",
     description: "",
     priority: "MEDIUM",
@@ -33,20 +47,18 @@ export default function CreateProjectTaskModal({
   });
 
   const [apiError, setApiError] = useState("");
-  const [errors, setErrors] = useState<{ title?: string; dueDate?: string }>({});
-
-  const handleDueDateChange = (value: string) => {
-    setForm((prev) => ({ ...prev, dueDate: value }));
-    setErrors((prev) => ({ ...prev, dueDate: undefined }));
-  };
+  const [errors, setErrors] = useState<FormErrors>({});
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setApiError("");
 
-    const fe: typeof errors = {};
+    const fe: FormErrors = {};
     if (!form.title.trim()) fe.title = "Task title is required";
-    if (!form.dueDate) fe.dueDate = "Due date is required";
+
+    // Due date is required when creating a new task
+    const dateError = validateDueDate(form.dueDate, true);
+    if (dateError) fe.dueDate = dateError;
 
     if (Object.keys(fe).length > 0) {
       setErrors(fe);
@@ -75,6 +87,8 @@ export default function CreateProjectTaskModal({
   return (
     <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
       <div className="bg-white dark:bg-slate-900 rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-md max-h-[92dvh] overflow-y-auto">
+
+        {/* Header */}
         <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-slate-200 dark:border-slate-800">
           <h2 className="text-base font-bold text-slate-900 dark:text-white">
             New Project Task
@@ -101,11 +115,20 @@ export default function CreateProjectTaskModal({
             </label>
             <input
               value={form.title}
-              onChange={(e) => { setForm({ ...form, title: e.target.value }); setErrors((p) => ({ ...p, title: undefined })); }}
+              onChange={(e) => {
+                setForm({ ...form, title: e.target.value });
+                setErrors((p) => ({ ...p, title: undefined }));
+              }}
               placeholder="Task title"
-              className={`w-full h-11 px-3 rounded-md border text-sm outline-none bg-white dark:bg-slate-800 dark:text-white focus:border-blue-500 ${errors.title ? "border-red-400" : "border-slate-200 dark:border-slate-700"}`}
+              className={`w-full h-11 px-3 rounded-md border text-sm outline-none bg-white dark:bg-slate-800 dark:text-white focus:border-blue-500 ${
+                errors.title
+                  ? "border-red-400"
+                  : "border-slate-200 dark:border-slate-700"
+              }`}
             />
-            {errors.title && <p className="text-xs text-red-500 mt-1">{errors.title}</p>}
+            {errors.title && (
+              <p className="text-xs text-red-500 mt-1">{errors.title}</p>
+            )}
           </div>
 
           {/* Description */}
@@ -130,7 +153,9 @@ export default function CreateProjectTaskModal({
               </label>
               <select
                 value={form.priority}
-                onChange={(e) => setForm({ ...form, priority: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, priority: e.target.value as TaskPriority })
+                }
                 className="w-full h-11 px-3 rounded-md border border-slate-200 dark:border-slate-700 text-sm outline-none focus:border-blue-500 bg-white dark:bg-slate-800 dark:text-white"
               >
                 <option value="LOW">Low</option>
@@ -139,6 +164,7 @@ export default function CreateProjectTaskModal({
                 <option value="URGENT">Urgent</option>
               </select>
             </div>
+
             <div>
               <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                 Due date <span className="text-red-500">*</span>
@@ -146,14 +172,29 @@ export default function CreateProjectTaskModal({
               <input
                 type="date"
                 value={form.dueDate}
-                onChange={(e) => handleDueDateChange(e.target.value)}
-                className={`w-full h-11 px-3 rounded-md border text-sm outline-none bg-white dark:bg-slate-800 dark:text-white focus:border-blue-500 ${errors.dueDate ? "border-red-400" : "border-slate-200 dark:border-slate-700"}`}
+                min={todayString()}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setForm({ ...form, dueDate: val });
+                  // Real-time validation on change
+                  setErrors((p) => ({
+                    ...p,
+                    dueDate: validateDueDate(val, true),
+                  }));
+                }}
+                className={`w-full h-11 px-3 rounded-md border text-sm outline-none bg-white dark:bg-slate-800 dark:text-white focus:border-blue-500 ${
+                  errors.dueDate
+                    ? "border-red-400"
+                    : "border-slate-200 dark:border-slate-700"
+                }`}
               />
-              {errors.dueDate && <p className="text-xs text-red-500 mt-1">{errors.dueDate}</p>}
+              {errors.dueDate && (
+                <p className="text-xs text-red-500 mt-1">{errors.dueDate}</p>
+              )}
             </div>
           </div>
 
-          {/* ✅ Assignee */}
+          {/* Assignee */}
           <div>
             <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
               Assign to
@@ -172,7 +213,7 @@ export default function CreateProjectTaskModal({
                 ))}
               </select>
 
-              {/* Avatar preview */}
+              {/* Avatar preview inside select */}
               <div className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
                 {selectedMember ? (
                   selectedMember.user.profilePhoto ? (
@@ -195,7 +236,7 @@ export default function CreateProjectTaskModal({
               </div>
             </div>
 
-            {/* Member list preview */}
+            {/* Avatar quick-pick */}
             {members.length > 0 && (
               <div className="flex items-center gap-1.5 mt-2 flex-wrap">
                 {members.slice(0, 6).map((m) => (
