@@ -262,7 +262,7 @@ export default function DashboardHeader({
     setMenuOpen(false);
     
     dispatch(logout());
-    router.replace("/login");
+    router.push("/login");
   };
 
   useEffect(() => {
