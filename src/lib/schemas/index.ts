@@ -60,7 +60,6 @@ export const resetPasswordSchema = z
     path: ["confirmPassword"],
   });
 
-// ── Profile ────────────────────────────────────────────────────────────────
 export const updateProfileSchema = z.object({
   fullName: z.string().min(3, "Full name is required").min(2).max(100),
   username: z
@@ -72,8 +71,9 @@ export const updateProfileSchema = z.object({
       "Username can only contain letters, numbers, and underscores",
     ),
   email: z.string().email("Invalid email address"),
-  gender: z.string()
+  gender: z.string(),
 });
+
 export const changePasswordSchema = z
   .object({
     currentPassword: z.string().min(1, "Current password is required"),
@@ -89,7 +89,6 @@ export const changePasswordSchema = z
     path: ["confirmPassword"],
   });
 
-// ── Task ───────────────────────────────────────────────────────────────────
 export const createPersonalTaskSchema = z.object({
   title: z
     .string()
@@ -122,7 +121,6 @@ export const updateTaskSchema = z.object({
   assigneeId: z.string().optional(),
 });
 
-// ── Comment ────────────────────────────────────────────────────────────────
 export const createCommentSchema = z.object({
   content: z
     .string()
@@ -137,33 +135,76 @@ export const updateCommentSchema = z.object({
     .max(1000, "Comment is too long"),
 });
 
-// ── Project ────────────────────────────────────────────────────────────────
-export const createProjectSchema = z.object({
-  name: z
-    .string()
-    .min(1, "Project name is required")
-    .max(100, "Name is too long"),
-  description: z.string().max(500).optional(),
-  startDate: z.string().optional(),
-  dueDate: z.string().optional(),
-  color: z
-    .string()
-    .regex(/^#[0-9A-Fa-f]{6}$/, "Invalid color")
-    .default("#4F46E5"),
-  teamId: z.string().optional(),
-});
+function pastDateMessage(val: string | undefined): string | undefined {
+  if (!val) return undefined; // empty = optional, skip
+  const selected = new Date(val);
+  if (isNaN(selected.getTime())) return "Invalid date";
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  if (selected < today) return "Date cannot be in the past";
+  return undefined;
+}
 
-export const updateProjectSchema = z.object({
-  name: z.string().min(1).max(100).optional(),
-  description: z.string().max(500).optional(),
-  dueDate: z.string().optional(),
-  color: z
-    .string()
-    .regex(/^#[0-9A-Fa-f]{6}$/)
-    .optional(),
-});
+export const createProjectSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1, "Project name is required")
+      .max(100, "Name is too long"),
+    description: z.string().max(500).optional(),
+    startDate: z.string().optional(),
+    dueDate: z.string().optional(),
+    color: z
+      .string()
+      .regex(/^#[0-9A-Fa-f]{6}$/, "Invalid color")
+      .default("#4F46E5"),
+    teamId: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    // start date: not in the past
+    const startErr = pastDateMessage(data.startDate);
+    if (startErr) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: startErr, path: ["startDate"] });
+    }
 
-// ── Team ───────────────────────────────────────────────────────────────────
+    // due date: not in the past
+    const dueErr = pastDateMessage(data.dueDate);
+    if (dueErr) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: dueErr, path: ["dueDate"] });
+    }
+
+    // due date must be after start date (if both provided)
+    if (data.startDate && data.dueDate) {
+      const start = new Date(data.startDate);
+      const due = new Date(data.dueDate);
+      if (!isNaN(start.getTime()) && !isNaN(due.getTime()) && due < start) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Due date must be after start date",
+          path: ["dueDate"],
+        });
+      }
+    }
+  });
+
+export const updateProjectSchema = z
+  .object({
+    name: z.string().min(1, "Project name is required").max(100).optional(),
+    description: z.string().max(500).optional(),
+    dueDate: z.string().optional(),
+    color: z
+      .string()
+      .regex(/^#[0-9A-Fa-f]{6}$/)
+      .optional(),
+  })
+  .superRefine((data, ctx) => {
+    // due date: if provided, must not be in the past
+    const dueErr = pastDateMessage(data.dueDate);
+    if (dueErr) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: dueErr, path: ["dueDate"] });
+    }
+  });
+
 export const createTeamSchema = z.object({
   name: z.string().min(1, "Team name is required").min(2).max(100),
   description: z.string().max(500).optional(),
@@ -184,7 +225,6 @@ export const updateMemberRoleSchema = z.object({
   role: z.enum(["ADMIN", "MEMBER"]),
 });
 
-// ── Inferred types ─────────────────────────────────────────────────────────
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;

@@ -57,6 +57,11 @@ const PROJECT_COLORS = [
   "#9810fa",
 ];
 
+/** Returns today as yyyy-MM-dd — used as `min` on date inputs */
+function todayString() {
+  return new Date().toISOString().split("T")[0];
+}
+
 function Skeleton() {
   return (
     <div className="animate-pulse bg-[#F1F5F9] dark:bg-[#1e2235] rounded-xl h-52" />
@@ -64,7 +69,9 @@ function Skeleton() {
 }
 
 type CreateForm = z.infer<typeof createProjectSchema>;
+type CreateErrors = Partial<Record<keyof CreateForm, string>>;
 
+/* ── New Project Modal ──────────────────────────────────────────── */
 function NewProjectModal({ onClose }: { onClose: () => void }) {
   const [createProject, { isLoading }] = useCreateProjectMutation();
   const { data: teamsPage } = useGetTeamsQuery({});
@@ -79,10 +86,19 @@ function NewProjectModal({ onClose }: { onClose: () => void }) {
     teamId: "",
   });
 
-  const [errors, setErrors] = useState<
-    Partial<Record<keyof CreateForm, string>>
-  >({});
+  const [errors, setErrors] = useState<CreateErrors>({});
   const [apiError, setApiError] = useState("");
+
+  /** Run zod on a partial field change and surface just that field's error */
+  const validateField = (field: keyof CreateForm, next: CreateForm) => {
+    const result = createProjectSchema.safeParse(next);
+    if (!result.success) {
+      const issue = result.error.issues.find((i) => i.path[0] === field);
+      setErrors((p) => ({ ...p, [field]: issue?.message }));
+    } else {
+      setErrors((p) => ({ ...p, [field]: undefined }));
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,7 +107,7 @@ function NewProjectModal({ onClose }: { onClose: () => void }) {
 
     const result = createProjectSchema.safeParse(form);
     if (!result.success) {
-      const fe: Partial<Record<keyof CreateForm, string>> = {};
+      const fe: CreateErrors = {};
       for (const issue of result.error.issues) {
         const k = issue.path[0] as keyof CreateForm;
         if (!fe[k]) fe[k] = issue.message;
@@ -108,15 +124,14 @@ function NewProjectModal({ onClose }: { onClose: () => void }) {
         startDate?: string;
         dueDate?: string;
         teamId?: string;
-      } = {
-        name: result.data.name,
-        color: result.data.color,
-      };
+      } = { name: result.data.name, color: result.data.color };
 
-      if (result.data.description) payload.description = result.data.description;
+      if (result.data.description)
+        payload.description = result.data.description;
       if (result.data.startDate) payload.startDate = result.data.startDate;
       if (result.data.dueDate) payload.dueDate = result.data.dueDate;
       if (result.data.teamId) payload.teamId = result.data.teamId;
+
       await createProject(payload).unwrap();
       toast.success("Project created.");
       onClose();
@@ -150,13 +165,18 @@ function NewProjectModal({ onClose }: { onClose: () => void }) {
             </p>
           )}
 
+          {/* Name */}
           <div>
             <label className="block text-sm font-semibold text-[#64748B] dark:text-slate-400 mb-1.5">
               Project name *
             </label>
             <input
               value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              onChange={(e) => {
+                const next = { ...form, name: e.target.value };
+                setForm(next);
+                setErrors((p) => ({ ...p, name: undefined }));
+              }}
               placeholder="e.g. Website Redesign"
               className={`w-full h-10 px-3 rounded-md border text-sm outline-none bg-white dark:bg-[#252840] dark:text-white transition-colors placeholder:text-slate-400 dark:placeholder:text-slate-600 ${
                 errors.name
@@ -169,19 +189,23 @@ function NewProjectModal({ onClose }: { onClose: () => void }) {
             )}
           </div>
 
+          {/* Description */}
           <div>
             <label className="block text-sm font-semibold text-[#64748B] dark:text-slate-400 mb-1.5">
               Description
             </label>
             <textarea
               value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              onChange={(e) =>
+                setForm({ ...form, description: e.target.value })
+              }
               rows={2}
               placeholder="What is this project about?"
               className="w-full px-3 py-2.5 rounded-md border border-[#D1D5DB] dark:border-[#2a2d45] text-sm outline-none focus:border-[#6C5CE7] dark:focus:border-[#6C5CE7] bg-white dark:bg-[#252840] dark:text-white resize-none transition-colors placeholder:text-slate-400 dark:placeholder:text-slate-600"
             />
           </div>
 
+          {/* Start date + Due date */}
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-semibold text-[#64748B] dark:text-slate-400 mb-1.5">
@@ -190,10 +214,27 @@ function NewProjectModal({ onClose }: { onClose: () => void }) {
               <input
                 type="date"
                 value={form.startDate}
-                onChange={(e) => setForm({ ...form, startDate: e.target.value })}
-                className="w-full h-10 px-3 rounded-md border border-[#D1D5DB] dark:border-[#2a2d45] text-sm outline-none focus:border-[#6C5CE7] dark:focus:border-[#6C5CE7] bg-white dark:bg-[#252840] dark:text-white transition-colors"
+                min={todayString()}
+                onChange={(e) => {
+                  const next = { ...form, startDate: e.target.value };
+                  setForm(next);
+                  validateField("startDate", next);
+                  // also re-validate dueDate in case it's now before startDate
+                  if (form.dueDate) validateField("dueDate", next);
+                }}
+                className={`w-full h-10 px-3 rounded-md border text-sm outline-none bg-white dark:bg-[#252840] dark:text-white transition-colors ${
+                  errors.startDate
+                    ? "border-[#EF4444] dark:border-red-700"
+                    : "border-[#D1D5DB] dark:border-[#2a2d45] focus:border-[#6C5CE7] dark:focus:border-[#6C5CE7]"
+                }`}
               />
+              {errors.startDate && (
+                <p className="text-xs text-[#EF4444] mt-1">
+                  {errors.startDate}
+                </p>
+              )}
             </div>
+
             <div>
               <label className="block text-sm font-semibold text-[#64748B] dark:text-slate-400 mb-1.5">
                 Due date
@@ -201,12 +242,26 @@ function NewProjectModal({ onClose }: { onClose: () => void }) {
               <input
                 type="date"
                 value={form.dueDate}
-                onChange={(e) => setForm({ ...form, dueDate: e.target.value })}
-                className="w-full h-10 px-3 rounded-md border border-[#D1D5DB] dark:border-[#2a2d45] text-sm outline-none focus:border-[#6C5CE7] dark:focus:border-[#6C5CE7] bg-white dark:bg-[#252840] dark:text-white transition-colors"
+                // min = whichever is later: today or startDate
+                min={form.startDate || todayString()}
+                onChange={(e) => {
+                  const next = { ...form, dueDate: e.target.value };
+                  setForm(next);
+                  validateField("dueDate", next);
+                }}
+                className={`w-full h-10 px-3 rounded-md border text-sm outline-none bg-white dark:bg-[#252840] dark:text-white transition-colors ${
+                  errors.dueDate
+                    ? "border-[#EF4444] dark:border-red-700"
+                    : "border-[#D1D5DB] dark:border-[#2a2d45] focus:border-[#6C5CE7] dark:focus:border-[#6C5CE7]"
+                }`}
               />
+              {errors.dueDate && (
+                <p className="text-xs text-[#EF4444] mt-1">{errors.dueDate}</p>
+              )}
             </div>
           </div>
 
+          {/* Team */}
           {teams.length > 0 && (
             <div>
               <label className="block text-sm font-semibold text-[#64748B] dark:text-slate-400 mb-1.5">
@@ -227,6 +282,7 @@ function NewProjectModal({ onClose }: { onClose: () => void }) {
             </div>
           )}
 
+          {/* Color */}
           <div>
             <label className="block text-sm font-semibold text-[#64748B] dark:text-slate-400 mb-2">
               Color
@@ -272,6 +328,7 @@ function NewProjectModal({ onClose }: { onClose: () => void }) {
 
 /* ── Edit Project Modal ─────────────────────────────────────────── */
 type UpdateForm = z.infer<typeof updateProjectSchema>;
+type UpdateErrors = Partial<Record<keyof UpdateForm, string>>;
 
 function EditProjectModal({
   project,
@@ -285,14 +342,22 @@ function EditProjectModal({
   const [form, setForm] = useState<UpdateForm>({
     name: project.name,
     description: project.description ?? "",
-    dueDate: project.dueDate ?? "",
+    dueDate: project.dueDate ? project.dueDate.split("T")[0] : "",
     color: project.color,
   });
 
-  const [errors, setErrors] = useState<
-    Partial<Record<keyof UpdateForm, string>>
-  >({});
+  const [errors, setErrors] = useState<UpdateErrors>({});
   const [apiError, setApiError] = useState("");
+
+  const validateField = (field: keyof UpdateForm, next: UpdateForm) => {
+    const result = updateProjectSchema.safeParse(next);
+    if (!result.success) {
+      const issue = result.error.issues.find((i) => i.path[0] === field);
+      setErrors((p) => ({ ...p, [field]: issue?.message }));
+    } else {
+      setErrors((p) => ({ ...p, [field]: undefined }));
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -301,7 +366,7 @@ function EditProjectModal({
 
     const result = updateProjectSchema.safeParse(form);
     if (!result.success) {
-      const fe: Partial<Record<keyof UpdateForm, string>> = {};
+      const fe: UpdateErrors = {};
       for (const issue of result.error.issues) {
         const k = issue.path[0] as keyof UpdateForm;
         if (!fe[k]) fe[k] = issue.message;
@@ -344,13 +409,17 @@ function EditProjectModal({
             </p>
           )}
 
+          {/* Name */}
           <div>
             <label className="block text-sm font-semibold text-[#64748B] dark:text-slate-400 mb-1.5">
               Project name
             </label>
             <input
               value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              onChange={(e) => {
+                setForm({ ...form, name: e.target.value });
+                setErrors((p) => ({ ...p, name: undefined }));
+              }}
               className={`w-full h-10 px-3 rounded-md border text-sm outline-none bg-white dark:bg-[#252840] dark:text-white transition-colors ${
                 errors.name
                   ? "border-[#EF4444] dark:border-red-700"
@@ -362,18 +431,22 @@ function EditProjectModal({
             )}
           </div>
 
+          {/* Description */}
           <div>
             <label className="block text-sm font-semibold text-[#64748B] dark:text-slate-400 mb-1.5">
               Description
             </label>
             <textarea
               value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              onChange={(e) =>
+                setForm({ ...form, description: e.target.value })
+              }
               rows={2}
               className="w-full px-3 py-2.5 rounded-md border border-[#D1D5DB] dark:border-[#2a2d45] text-sm outline-none focus:border-[#6C5CE7] dark:focus:border-[#6C5CE7] bg-white dark:bg-[#252840] dark:text-white resize-none transition-colors"
             />
           </div>
 
+          {/* Due date */}
           <div>
             <label className="block text-sm font-semibold text-[#64748B] dark:text-slate-400 mb-1.5">
               Due date
@@ -381,11 +454,24 @@ function EditProjectModal({
             <input
               type="date"
               value={form.dueDate}
-              onChange={(e) => setForm({ ...form, dueDate: e.target.value })}
-              className="w-full h-10 px-3 rounded-md border border-[#D1D5DB] dark:border-[#2a2d45] text-sm outline-none focus:border-[#6C5CE7] dark:focus:border-[#6C5CE7] bg-white dark:bg-[#252840] dark:text-white transition-colors"
+              min={todayString()}
+              onChange={(e) => {
+                const next = { ...form, dueDate: e.target.value };
+                setForm(next);
+                validateField("dueDate", next);
+              }}
+              className={`w-full h-10 px-3 rounded-md border text-sm outline-none bg-white dark:bg-[#252840] dark:text-white transition-colors ${
+                errors.dueDate
+                  ? "border-[#EF4444] dark:border-red-700"
+                  : "border-[#D1D5DB] dark:border-[#2a2d45] focus:border-[#6C5CE7] dark:focus:border-[#6C5CE7]"
+              }`}
             />
+            {errors.dueDate && (
+              <p className="text-xs text-[#EF4444] mt-1">{errors.dueDate}</p>
+            )}
           </div>
 
+          {/* Color */}
           <div>
             <label className="block text-sm font-semibold text-[#64748B] dark:text-slate-400 mb-2">
               Color
@@ -453,10 +539,10 @@ function ProjectCard({
   const queryHasTasks = projectTasksPage?.content !== undefined;
   const parentTasksCount = queryHasTasks
     ? parentTasks.length
-    : project.tasksCount ?? project.totalTasks ?? 0;
+    : (project.tasksCount ?? project.totalTasks ?? 0);
   const parentTasksDone = queryHasTasks
     ? parentTasks.filter((task) => task.status === "DONE").length
-    : project.tasksDone ?? 0;
+    : (project.tasksDone ?? 0);
 
   const progress =
     parentTasksCount > 0
@@ -465,8 +551,18 @@ function ProjectCard({
 
   function formatDate(dateStr: string) {
     const months = [
-      "Jan","Feb","Mar","Apr","May","Jun",
-      "Jul","Aug","Sep","Oct","Nov","Dec",
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
     ];
     const d = new Date(dateStr);
     return `${months[d.getUTCMonth()]} ${d.getUTCDate()}`;
@@ -519,7 +615,10 @@ function ProjectCard({
                 />
                 <div className="absolute right-0 top-8 z-20 bg-white dark:bg-[#1e2035] rounded-lg shadow-lg dark:shadow-black/40 border border-[#E8E8EF] dark:border-[#2a2d45] py-1 min-w-[120px]">
                   <button
-                    onClick={() => { onEdit(project); setMenuOpen(false); }}
+                    onClick={() => {
+                      onEdit(project);
+                      setMenuOpen(false);
+                    }}
                     className="flex items-center gap-2 w-full px-3 py-2 text-sm text-[#64748B] dark:text-slate-400 hover:bg-[#F1F5F9] dark:hover:bg-[#252840]"
                   >
                     <Edit2 size={13} /> Edit
@@ -600,7 +699,12 @@ export default function ProjectsPage() {
   const [editProject, setEdit] = useState<Project | null>(null);
   const [activeProject, setActiveProject] = useState<Project | null>(null);
 
-  const { data: pageData, isLoading, isError, refetch } = useGetProjectsQuery({});
+  const {
+    data: pageData,
+    isLoading,
+    isError,
+    refetch,
+  } = useGetProjectsQuery({});
   const projects: Project[] = pageData?.content ?? [];
   const [deleteProject] = useDeleteProjectMutation();
 
@@ -640,8 +744,10 @@ export default function ProjectsPage() {
             )}
           </div>
         </div>
-        <ProjectTasksPanel project={activeProject} 
-        onBack={() => setActiveProject(null)}/>
+        <ProjectTasksPanel
+          project={activeProject}
+          onBack={() => setActiveProject(null)}
+        />
       </div>
     );
   }
@@ -684,7 +790,11 @@ export default function ProjectsPage() {
       <main className="overflow-auto p-6">
         {isLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {Array(6).fill(0).map((_, i) => <Skeleton key={i} />)}
+            {Array(6)
+              .fill(0)
+              .map((_, i) => (
+                <Skeleton key={i} />
+              ))}
           </div>
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-64 text-center">
@@ -721,10 +831,7 @@ export default function ProjectsPage() {
 
       {showNew && <NewProjectModal onClose={() => setShowNew(false)} />}
       {editProject && (
-        <EditProjectModal
-          project={editProject}
-          onClose={() => setEdit(null)}
-        />
+        <EditProjectModal project={editProject} onClose={() => setEdit(null)} />
       )}
     </div>
   );

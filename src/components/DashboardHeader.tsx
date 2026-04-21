@@ -45,14 +45,6 @@ const NAV = [
   { label: "Settings",      href: "/dashboard/settings",      icon: Settings },
 ];
 
-// ─── helpers ────────────────────────────────────────────────────────────────
-
-/** Read the auth token from the browser cookie (same token the RTK Query layer uses). */
-/**
- * Build a navigation URL for a notification.
- * We pass the raw referenceId to the team page and let it resolve
- * client-side via RTK Query (which always has correct auth + caching).
- */
 function notifHref(notif: Notification): string {
   if (notif.type === "TEAM_INVITATION") return "/dashboard/team";
   if (!notif.referenceId) return "/dashboard/notifications";
