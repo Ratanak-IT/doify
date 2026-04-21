@@ -31,6 +31,7 @@ import { useTheme } from "@/lib/contexts/ThemeContext";
 import type { Task, TaskStatus, Comment } from "@/lib/features/types/task-type";
 import { createPersonalTaskSchema } from "@/lib/schemas";
 import type { z } from "zod";
+import { toast } from "sonner";
 
 const PRIORITY_STYLE: Record<string, string> = {
   LOW: "bg-slate-50  text-slate-600  border-slate-200  dark:bg-slate-700/40 dark:text-slate-400  dark:border-slate-600/50",
@@ -288,7 +289,6 @@ function NewTaskModal({
   );
 }
 
-/* ── Comments Drawer ────────────────────────────────────────────── */
 function CommentsDrawer({
   task,
   onClose,
@@ -652,9 +652,31 @@ function TasksBoard() {
     if (!taskId || !taskFetched || !fetchedTask || editTask) return;
   }, [taskId, taskFetched, fetchedTask, editTask]);
 
-  const handleMove = (id: string, status: TaskStatus) =>
-    updateTask({ id, data: { status } });
-  const handleDelete = (id: string) => deleteTask(id);
+  const handleMove = async (id: string, status: TaskStatus) => {
+    try {
+      await updateTask({ id, data: { status } }).unwrap();
+    } catch (err: unknown) {
+      const e = err as { status?: number; data?: { message?: string } };
+      if (e?.status === 403) {
+        toast.error("You don't have permission to update this task.");
+      } else {
+        toast.error(e?.data?.message ?? "Failed to update task.");
+      }
+    }
+  };
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteTask(id).unwrap();
+      toast.success("Task deleted.");
+    } catch (err: unknown) {
+      const e = err as { status?: number; data?: { message?: string } };
+      if (e?.status === 403) {
+        toast.error("You don't have permission to delete this task.");
+      } else {
+        toast.error(e?.data?.message ?? "Failed to delete task.");
+      }
+    }
+  };
   const openModal = (status?: TaskStatus) => {
     setDefault(status);
     setModal(true);

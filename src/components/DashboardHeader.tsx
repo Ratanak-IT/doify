@@ -277,7 +277,7 @@ export default function DashboardHeader({
   }, [bellOpen]);
 
   return (
-    <header className="h-14 sm:h-16 bg-white dark:bg-[#1a1c2e] border-b border-[#E8E8EF] dark:border-[#2a2d45] flex items-center justify-between px-3 sm:px-5 gap-2 shrink-0 sticky top-0 z-30">
+    <header className="sticky top-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md  h-14 sm:h-16 border-b border-[#E8E8EF] dark:border-[#2a2d45] flex items-center justify-between px-3 sm:px-5 gap-2 shrink-0 z-30">
 
       {/* Actions */}
       <div className="flex items-center gap-1 ml-auto">
@@ -296,7 +296,7 @@ export default function DashboardHeader({
         {showCreate && onCreate && (
           <button
             onClick={onCreate}
-            className="flex items-center gap-1.5 h-9 px-3 sm:px-4 rounded-[15px] bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-sm font-bold transition-colors shadow-sm shadow-[#6C5CE7]/30"
+            className="flex items-center gap-1.5 h-9 px-3 sm:px-4 rounded-[10px] bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-sm font-bold transition-colors shadow-sm shadow-[#6C5CE7]/30"
           >
             <Plus size={15} strokeWidth={2.5} />
             <span className="hidden sm:inline">{createLabel}</span>

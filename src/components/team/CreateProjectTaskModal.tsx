@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, User } from "lucide-react";
+import { X, User, Info } from "lucide-react";
 import { useCreateProjectTaskMutation } from "@/lib/features/tasks/taskApi";
 import { useGetTeamMembersQuery } from "@/lib/features/team/teamApi";
 import { getAvatarColor, getInitials } from "@/lib/features/team/team.utils";
@@ -56,7 +56,6 @@ export default function CreateProjectTaskModal({
     const fe: FormErrors = {};
     if (!form.title.trim()) fe.title = "Task title is required";
 
-    // Due date is required when creating a new task
     const dateError = validateDueDate(form.dueDate, true);
     if (dateError) fe.dueDate = dateError;
 
@@ -176,7 +175,6 @@ export default function CreateProjectTaskModal({
                 onChange={(e) => {
                   const val = e.target.value;
                   setForm({ ...form, dueDate: val });
-                  // Real-time validation on change
                   setErrors((p) => ({
                     ...p,
                     dueDate: validateDueDate(val, true),
@@ -199,85 +197,96 @@ export default function CreateProjectTaskModal({
             <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
               Assign to
             </label>
-            <div className="relative">
-              <select
-                value={form.assigneeId}
-                onChange={(e) => setForm({ ...form, assigneeId: e.target.value })}
-                className="w-full h-11 pl-9 pr-3 rounded-md border border-slate-200 dark:border-slate-700 text-sm outline-none focus:border-blue-500 bg-white dark:bg-slate-800 dark:text-white appearance-none"
-              >
-                <option value="">— Unassigned —</option>
-                {members.map((m) => (
-                  <option key={m.user.id} value={m.user.id}>
-                    {m.user.fullName || m.user.username}
-                  </option>
-                ))}
-              </select>
 
-              {/* Avatar preview inside select */}
-              <div className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
-                {selectedMember ? (
-                  selectedMember.user.profilePhoto ? (
-                    <img
-                      src={selectedMember.user.profilePhoto}
-                      className="w-5 h-5 rounded-full object-cover"
-                      alt=""
-                    />
-                  ) : (
-                    <div
-                      className="w-5 h-5 rounded-full flex items-center justify-center text-white text-[9px] font-bold"
-                      style={{ backgroundColor: getAvatarColor(selectedMember.user.id) }}
-                    >
-                      {getInitials(selectedMember.user.fullName || selectedMember.user.username)}
-                    </div>
-                  )
-                ) : (
-                  <User size={14} className="text-slate-400" />
-                )}
+            {members.length === 0 ? (
+              /* No members yet — show helpful info instead of empty dropdown */
+              <div className="flex items-start gap-2.5 p-3 rounded-xl border border-blue-200 dark:border-blue-800/60 bg-blue-50 dark:bg-blue-950/40">
+                <Info size={14} className="text-blue-500 dark:text-blue-400 shrink-0 mt-0.5" />
+                <p className="text-xs text-blue-600 dark:text-blue-400 leading-relaxed">
+                  No team members yet. You can assign this task to a member after creating it by editing the task.
+                </p>
               </div>
-            </div>
-
-            {/* Avatar quick-pick */}
-            {members.length > 0 && (
-              <div className="flex items-center gap-1.5 mt-2 flex-wrap">
-                {members.slice(0, 6).map((m) => (
-                  <button
-                    key={m.user.id}
-                    type="button"
-                    onClick={() =>
-                      setForm({
-                        ...form,
-                        assigneeId: form.assigneeId === m.user.id ? "" : m.user.id,
-                      })
-                    }
-                    title={m.user.fullName || m.user.username}
-                    className={`w-7 h-7 rounded-full flex items-center justify-center text-white text-[10px] font-bold ring-2 transition-all ${
-                      form.assigneeId === m.user.id
-                        ? "ring-blue-500 scale-110"
-                        : "ring-white dark:ring-slate-900 opacity-70 hover:opacity-100"
-                    }`}
-                    style={{ backgroundColor: getAvatarColor(m.user.id) }}
+            ) : (
+              <>
+                <div className="relative">
+                  <select
+                    value={form.assigneeId}
+                    onChange={(e) => setForm({ ...form, assigneeId: e.target.value })}
+                    className="w-full h-11 pl-9 pr-3 rounded-md border border-slate-200 dark:border-slate-700 text-sm outline-none focus:border-blue-500 bg-white dark:bg-slate-800 dark:text-white appearance-none"
                   >
-                    {m.user.profilePhoto ? (
-                      <img
-                        src={m.user.profilePhoto}
-                        className="w-full h-full rounded-full object-cover"
-                        alt=""
-                      />
+                    <option value="">— Unassigned —</option>
+                    {members.map((m) => (
+                      <option key={m.user.id} value={m.user.id}>
+                        {m.user.fullName || m.user.username}
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* Avatar preview inside select */}
+                  <div className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
+                    {selectedMember ? (
+                      selectedMember.user.profilePhoto ? (
+                        <img
+                          src={selectedMember.user.profilePhoto}
+                          className="w-5 h-5 rounded-full object-cover"
+                          alt=""
+                        />
+                      ) : (
+                        <div
+                          className="w-5 h-5 rounded-full flex items-center justify-center text-white text-[9px] font-bold"
+                          style={{ backgroundColor: getAvatarColor(selectedMember.user.id) }}
+                        >
+                          {getInitials(selectedMember.user.fullName || selectedMember.user.username)}
+                        </div>
+                      )
                     ) : (
-                      getInitials(m.user.fullName || m.user.username)
+                      <User size={14} className="text-slate-400" />
                     )}
-                  </button>
-                ))}
-                {form.assigneeId && (
-                  <button
-                    type="button"
-                    onClick={() => setForm({ ...form, assigneeId: "" })}
-                    className="text-xs text-slate-400 hover:text-red-500 ml-1"
-                  >
-                    Clear
-                  </button>
-                )}
-              </div>
+                  </div>
+                </div>
+
+                {/* Avatar quick-pick */}
+                <div className="flex items-center gap-1.5 mt-2 flex-wrap">
+                  {members.slice(0, 6).map((m) => (
+                    <button
+                      key={m.user.id}
+                      type="button"
+                      onClick={() =>
+                        setForm({
+                          ...form,
+                          assigneeId: form.assigneeId === m.user.id ? "" : m.user.id,
+                        })
+                      }
+                      title={m.user.fullName || m.user.username}
+                      className={`w-7 h-7 rounded-full flex items-center justify-center text-white text-[10px] font-bold ring-2 transition-all ${
+                        form.assigneeId === m.user.id
+                          ? "ring-blue-500 scale-110"
+                          : "ring-white dark:ring-slate-900 opacity-70 hover:opacity-100"
+                      }`}
+                      style={{ backgroundColor: getAvatarColor(m.user.id) }}
+                    >
+                      {m.user.profilePhoto ? (
+                        <img
+                          src={m.user.profilePhoto}
+                          className="w-full h-full rounded-full object-cover"
+                          alt=""
+                        />
+                      ) : (
+                        getInitials(m.user.fullName || m.user.username)
+                      )}
+                    </button>
+                  ))}
+                  {form.assigneeId && (
+                    <button
+                      type="button"
+                      onClick={() => setForm({ ...form, assigneeId: "" })}
+                      className="text-xs text-slate-400 hover:text-red-500 ml-1"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+              </>
             )}
           </div>
 

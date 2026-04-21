@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { X, Loader, User } from "lucide-react";
+import { toast } from "sonner";
 import { useUpdateProjectTaskMutation } from "@/lib/features/tasks/taskApi";
 import { useGetTeamMembersQuery } from "@/lib/features/team/teamApi";
 import { getAvatarColor, getInitials } from "@/lib/features/team/team.utils";
@@ -80,8 +81,13 @@ export default function EditProjectTaskModal({
       }).unwrap();
       onClose();
     } catch (err: unknown) {
-      const e = err as { data?: { message?: string } };
-      setApiError(e?.data?.message ?? "Failed to update task.");
+      const e = err as { status?: number; data?: { message?: string } };
+      if (e?.status === 403) {
+        toast.error("You don't have permission to edit this task.");
+        onClose();
+      } else {
+        setApiError(e?.data?.message ?? "Failed to update task.");
+      }
     }
   };
 
@@ -90,7 +96,6 @@ export default function EditProjectTaskModal({
   return (
     <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
       <div className="bg-white dark:bg-slate-900 rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-md max-h-[92dvh] overflow-y-auto">
-
         {/* Header */}
         <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-slate-200 dark:border-slate-800">
           <h2 className="text-base font-bold text-slate-900 dark:text-white">
@@ -141,7 +146,9 @@ export default function EditProjectTaskModal({
             </label>
             <textarea
               value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              onChange={(e) =>
+                setForm({ ...form, description: e.target.value })
+              }
               rows={3}
               placeholder="Task details..."
               className="w-full px-3 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-sm outline-none focus:border-blue-500 bg-white dark:bg-slate-800 dark:text-white resize-none"
@@ -205,7 +212,9 @@ export default function EditProjectTaskModal({
             <div className="relative">
               <select
                 value={form.assigneeId}
-                onChange={(e) => setForm({ ...form, assigneeId: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, assigneeId: e.target.value })
+                }
                 className="w-full h-11 pl-9 pr-3 rounded-md border border-slate-200 dark:border-slate-700 text-sm outline-none focus:border-blue-500 bg-white dark:bg-slate-800 dark:text-white appearance-none"
               >
                 <option value="">— Unassigned —</option>
@@ -228,9 +237,14 @@ export default function EditProjectTaskModal({
                   ) : (
                     <div
                       className="w-5 h-5 rounded-full flex items-center justify-center text-white text-[9px] font-bold"
-                      style={{ backgroundColor: getAvatarColor(selectedMember.user.id) }}
+                      style={{
+                        backgroundColor: getAvatarColor(selectedMember.user.id),
+                      }}
                     >
-                      {getInitials(selectedMember.user.fullName || selectedMember.user.username)}
+                      {getInitials(
+                        selectedMember.user.fullName ||
+                          selectedMember.user.username,
+                      )}
                     </div>
                   )
                 ) : (
@@ -249,7 +263,8 @@ export default function EditProjectTaskModal({
                     onClick={() =>
                       setForm({
                         ...form,
-                        assigneeId: form.assigneeId === m.user.id ? "" : m.user.id,
+                        assigneeId:
+                          form.assigneeId === m.user.id ? "" : m.user.id,
                       })
                     }
                     title={m.user.fullName || m.user.username}
