@@ -33,11 +33,25 @@ export default function CreateProjectTaskModal({
   });
 
   const [apiError, setApiError] = useState("");
+  const [errors, setErrors] = useState<{ title?: string; dueDate?: string }>({});
+
+  const handleDueDateChange = (value: string) => {
+    setForm((prev) => ({ ...prev, dueDate: value }));
+    setErrors((prev) => ({ ...prev, dueDate: undefined }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setApiError("");
-    if (!form.title.trim()) return;
+
+    const fe: typeof errors = {};
+    if (!form.title.trim()) fe.title = "Task title is required";
+    if (!form.dueDate) fe.dueDate = "Due date is required";
+
+    if (Object.keys(fe).length > 0) {
+      setErrors(fe);
+      return;
+    }
 
     try {
       await createProjectTask({
@@ -87,10 +101,11 @@ export default function CreateProjectTaskModal({
             </label>
             <input
               value={form.title}
-              onChange={(e) => setForm({ ...form, title: e.target.value })}
+              onChange={(e) => { setForm({ ...form, title: e.target.value }); setErrors((p) => ({ ...p, title: undefined })); }}
               placeholder="Task title"
-              className="w-full h-11 px-3 rounded-md border border-slate-200 dark:border-slate-700 text-sm outline-none bg-white dark:bg-slate-800 dark:text-white focus:border-blue-500"
+              className={`w-full h-11 px-3 rounded-md border text-sm outline-none bg-white dark:bg-slate-800 dark:text-white focus:border-blue-500 ${errors.title ? "border-red-400" : "border-slate-200 dark:border-slate-700"}`}
             />
+            {errors.title && <p className="text-xs text-red-500 mt-1">{errors.title}</p>}
           </div>
 
           {/* Description */}
@@ -126,14 +141,15 @@ export default function CreateProjectTaskModal({
             </div>
             <div>
               <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                Due date
+                Due date <span className="text-red-500">*</span>
               </label>
               <input
                 type="date"
                 value={form.dueDate}
-                onChange={(e) => setForm({ ...form, dueDate: e.target.value })}
-                className="w-full h-11 px-3 rounded-md border border-slate-200 dark:border-slate-700 text-sm outline-none focus:border-blue-500 bg-white dark:bg-slate-800 dark:text-white"
+                onChange={(e) => handleDueDateChange(e.target.value)}
+                className={`w-full h-11 px-3 rounded-md border text-sm outline-none bg-white dark:bg-slate-800 dark:text-white focus:border-blue-500 ${errors.dueDate ? "border-red-400" : "border-slate-200 dark:border-slate-700"}`}
               />
+              {errors.dueDate && <p className="text-xs text-red-500 mt-1">{errors.dueDate}</p>}
             </div>
           </div>
 
@@ -235,7 +251,7 @@ export default function CreateProjectTaskModal({
             </button>
             <button
               type="submit"
-              disabled={isLoading || !form.title.trim()}
+              disabled={isLoading}
               className="flex-1 h-12 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors disabled:opacity-60"
             >
               {isLoading ? "Creating..." : "Create Task"}

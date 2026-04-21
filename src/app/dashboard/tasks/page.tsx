@@ -70,20 +70,26 @@ function NewTaskModal({ defaultStatus, onClose }: { defaultStatus?: TaskStatus; 
     setErrors({});
     setApiError("");
     const result = createPersonalTaskSchema.safeParse(form);
+    const fe: Partial<Record<keyof TaskForm, string>> = {};
+
     if (!result.success) {
-      const fe: Partial<Record<keyof TaskForm, string>> = {};
       for (const issue of result.error.issues) {
         const k = issue.path[0] as keyof TaskForm;
         if (!fe[k]) fe[k] = issue.message;
       }
+    }
+
+    if (!form.dueDate) fe.dueDate = "Due date is required";
+
+    if (Object.keys(fe).length > 0) {
       setErrors(fe);
       return;
     }
     try {
-      const payload: Record<string, string> = { title: result.data.title, priority: result.data.priority };
-      if (result.data.description) payload.description = result.data.description;
-      if (result.data.dueDate) payload.dueDate = result.data.dueDate;
-      if (result.data.parentTaskId) payload.parentTaskId = result.data.parentTaskId;
+      const payload: Record<string, string> = { title: result.data!.title, priority: result.data!.priority };
+      if (result.data!.description) payload.description = result.data!.description;
+      if (result.data!.dueDate) payload.dueDate = result.data!.dueDate;
+      if (result.data!.parentTaskId) payload.parentTaskId = result.data!.parentTaskId;
       if (defaultStatus) payload.status = defaultStatus;
       await createTask(payload as Parameters<typeof createTask>[0]).unwrap();
       onClose();
@@ -137,9 +143,10 @@ function NewTaskModal({ defaultStatus, onClose }: { defaultStatus?: TaskStatus; 
               </select>
             </div>
             <div>
-              <label className="block text-sm font-semibold text-[#64748B] dark:text-slate-400 mb-1.5">Due date</label>
-              <input type="date" value={form.dueDate} onChange={(e) => setForm({ ...form, dueDate: e.target.value })}
-                className="w-full h-11 px-3 rounded-md border border-[#D1D5DB] dark:border-[#2a2d45] text-sm outline-none focus:border-[#6C5CE7] bg-white dark:bg-[#252840] dark:text-white transition-colors" />
+              <label className="block text-sm font-semibold text-[#64748B] dark:text-slate-400 mb-1.5">Due date *</label>
+              <input type="date" value={form.dueDate} onChange={(e) => { setForm({ ...form, dueDate: e.target.value }); setErrors((p) => ({ ...p, dueDate: undefined })); }}
+                className={`w-full h-11 px-3 rounded-md border text-sm outline-none bg-white dark:bg-[#252840] dark:text-white transition-colors ${errors.dueDate ? "border-red-400 dark:border-red-700" : "border-[#D1D5DB] dark:border-[#2a2d45] focus:border-[#6C5CE7]"}`} />
+              {errors.dueDate && <p className="text-xs text-red-500 mt-1">{errors.dueDate}</p>}
             </div>
           </div>
           <div className="flex gap-3 pt-2">
@@ -262,11 +269,15 @@ function EditTaskModal({ task, onClose }: { task: Task; onClose: () => void }) {
     dueDate: task.dueDate ?? "",
   });
   const [apiError, setApiError] = useState("");
+  const [errors, setErrors] = useState<{ title?: string; dueDate?: string }>({});
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setApiError("");
-    if (!form.title.trim()) { setApiError("Title is required."); return; }
+    const fe: typeof errors = {};
+    if (!form.title.trim()) fe.title = "Title is required";
+    if (!form.dueDate) fe.dueDate = "Due date is required";
+    if (Object.keys(fe).length > 0) { setErrors(fe); return; }
     try {
       await updateTask({ id: task.id, data: { ...form } }).unwrap();
       onClose();
@@ -298,8 +309,9 @@ function EditTaskModal({ task, onClose }: { task: Task; onClose: () => void }) {
           )}
           <div>
             <label className="block text-sm font-semibold text-[#64748B] dark:text-slate-400 mb-1.5">Title *</label>
-            <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })}
-              placeholder="What needs to be done?" className={inputCls(!form.title.trim())} />
+            <input value={form.title} onChange={(e) => { setForm({ ...form, title: e.target.value }); setErrors((p) => ({ ...p, title: undefined })); }}
+              placeholder="What needs to be done?" className={inputCls(!!errors.title)} />
+            {errors.title && <p className="text-xs text-red-500 mt-1">{errors.title}</p>}
           </div>
           <div>
             <label className="block text-sm font-semibold text-[#64748B] dark:text-slate-400 mb-1.5">Description</label>
@@ -319,9 +331,10 @@ function EditTaskModal({ task, onClose }: { task: Task; onClose: () => void }) {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-semibold text-[#64748B] dark:text-slate-400 mb-1.5">Due date</label>
-              <input type="date" value={form.dueDate} onChange={(e) => setForm({ ...form, dueDate: e.target.value })}
-                className="w-full h-11 px-3 rounded-md border border-[#D1D5DB] dark:border-[#2a2d45] text-sm outline-none focus:border-[#6C5CE7] bg-white dark:bg-[#252840] dark:text-white transition-colors" />
+              <label className="block text-sm font-semibold text-[#64748B] dark:text-slate-400 mb-1.5">Due date *</label>
+              <input type="date" value={form.dueDate} onChange={(e) => { setForm({ ...form, dueDate: e.target.value }); setErrors((p) => ({ ...p, dueDate: undefined })); }}
+                className={`w-full h-11 px-3 rounded-md border text-sm outline-none bg-white dark:bg-[#252840] dark:text-white transition-colors ${errors.dueDate ? "border-red-400 dark:border-red-700" : "border-[#D1D5DB] dark:border-[#2a2d45] focus:border-[#6C5CE7]"}`} />
+              {errors.dueDate && <p className="text-xs text-red-500 mt-1">{errors.dueDate}</p>}
             </div>
           </div>
           <div className="flex gap-3 pt-2">

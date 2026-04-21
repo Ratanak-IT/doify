@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { X, Calendar, Palette } from "lucide-react";
 import type { Project } from "@/lib/features/types/task-type";
@@ -29,19 +29,45 @@ export default function EditProjectModal({ project, onClose, onSave }: Props) {
   const [startDate, setStartDate] = useState(project.startDate || "");
   const [dueDate, setDueDate] = useState(project.dueDate || "");
   const [color, setColor] = useState(project.color || "#6d28d9");
-
+  const [errors, setErrors] = useState<{ name?: string; startDate?: string; dueDate?: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const validateDates = (s: string, d: string) => {
+    if (s && d && new Date(d) <= new Date(s)) {
+      return "Due date must be after start date";
+    }
+    return undefined;
+  };
+
+  const handleStartDateChange = (value: string) => {
+    setStartDate(value);
+    setErrors((prev) => ({ ...prev, startDate: undefined, dueDate: validateDates(value, dueDate) }));
+  };
+
+  const handleDueDateChange = (value: string) => {
+    setDueDate(value);
+    setErrors((prev) => ({ ...prev, dueDate: validateDates(startDate, value) }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!name.trim()) {
-      toast.error("Project name is required");
+
+    const fe: typeof errors = {};
+    if (!name.trim()) fe.name = "Project name is required";
+    if (!startDate) fe.startDate = "Start date is required";
+    if (!dueDate) {
+      fe.dueDate = "Due date is required";
+    } else {
+      const dueDateErr = validateDates(startDate, dueDate);
+      if (dueDateErr) fe.dueDate = dueDateErr;
+    }
+
+    if (Object.keys(fe).length > 0) {
+      setErrors(fe);
       return;
     }
 
     setIsSubmitting(true);
-
     try {
       await onSave(project.id, {
         name: name.trim(),
@@ -90,11 +116,11 @@ export default function EditProjectModal({ project, onClose, onSave }: Props) {
             <input
               type="text"
               value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:border-violet-500 outline-none text-sm"
+              onChange={(e) => { setName(e.target.value); setErrors((p) => ({ ...p, name: undefined })); }}
+              className={`w-full px-4 py-3 rounded-xl border bg-white dark:bg-slate-800 focus:border-violet-500 outline-none text-sm ${errors.name ? "border-red-400" : "border-slate-200 dark:border-slate-700"}`}
               placeholder="Enter project name"
-              required
             />
+            {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name}</p>}
           </div>
 
           <div>
@@ -114,27 +140,29 @@ export default function EditProjectModal({ project, onClose, onSave }: Props) {
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-2">
                 <Calendar size={16} />
-                Start Date
+                Start Date <span className="text-red-500">*</span>
               </label>
               <input
                 type="date"
                 value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:border-violet-500 outline-none text-sm"
+                onChange={(e) => handleStartDateChange(e.target.value)}
+                className={`w-full px-4 py-3 rounded-xl border bg-white dark:bg-slate-800 focus:border-violet-500 outline-none text-sm ${errors.startDate ? "border-red-400" : "border-slate-200 dark:border-slate-700"}`}
               />
+              {errors.startDate && <p className="text-xs text-red-500 mt-1">{errors.startDate}</p>}
             </div>
 
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-2">
                 <Calendar size={16} />
-                Due Date
+                Due Date <span className="text-red-500">*</span>
               </label>
               <input
                 type="date"
                 value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:border-violet-500 outline-none text-sm"
+                onChange={(e) => handleDueDateChange(e.target.value)}
+                className={`w-full px-4 py-3 rounded-xl border bg-white dark:bg-slate-800 focus:border-violet-500 outline-none text-sm ${errors.dueDate ? "border-red-400" : "border-slate-200 dark:border-slate-700"}`}
               />
+              {errors.dueDate && <p className="text-xs text-red-500 mt-1">{errors.dueDate}</p>}
             </div>
           </div>
 
@@ -170,10 +198,9 @@ export default function EditProjectModal({ project, onClose, onSave }: Props) {
             >
               Cancel
             </button>
-
             <button
               type="submit"
-              disabled={isSubmitting || !name.trim()}
+              disabled={isSubmitting}
               className="flex-1 py-3.5 text-sm font-semibold bg-violet-600 hover:bg-violet-700 disabled:bg-violet-400 text-white rounded-2xl transition-all active:scale-[0.985]"
             >
               {isSubmitting ? "Saving..." : "Save Changes"}

@@ -13,6 +13,15 @@ interface Props {
 
 type Form = z.infer<typeof createPersonalTaskSchema> & { projectId?: string };
 
+function validateDates(startDate: string, dueDate: string): string | null {
+  if (!dueDate) return null;
+  if (!startDate) return null;
+  const s = new Date(startDate);
+  const d = new Date(dueDate);
+  if (d <= s) return "Due date must be after start date";
+  return null;
+}
+
 export function NewTaskModal({ onClose }: Props) {
   const { data: projectsPage } = useGetProjectsQuery({});
   const projects = projectsPage?.content ?? [];
@@ -27,35 +36,53 @@ export function NewTaskModal({ onClose }: Props) {
   const [errors, setErrors] = useState<Partial<Record<keyof Form, string>>>({});
   const [apiError, setApiError] = useState("");
 
+  const handleDueDateChange = (value: string) => {
+    const updated = { ...form, dueDate: value };
+    setForm(updated);
+    if (errors.dueDate) {
+      setErrors((prev) => ({ ...prev, dueDate: undefined }));
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({}); setApiError("");
 
     const result = createPersonalTaskSchema.safeParse(form);
+    const fe: Partial<Record<keyof Form, string>> = {};
+
     if (!result.success) {
-      const fe: Partial<Record<keyof Form, string>> = {};
       for (const issue of result.error.issues) {
         const k = issue.path[0] as keyof Form;
         if (!fe[k]) fe[k] = issue.message;
       }
-      setErrors(fe); return;
+    }
+
+    // Due date must be set and valid
+    if (!form.dueDate) {
+      fe.dueDate = "Due date is required";
+    }
+
+    if (Object.keys(fe).length > 0) {
+      setErrors(fe);
+      return;
     }
 
     try {
       if (form.projectId) {
         await createProject({
           projectId: form.projectId,
-          title: result.data.title,
-          description: result.data.description,
-          priority: result.data.priority,
-          dueDate: result.data.dueDate,
+          title: result.data!.title,
+          description: result.data!.description,
+          priority: result.data!.priority,
+          dueDate: result.data!.dueDate,
         }).unwrap();
       } else {
         await createPersonal({
-          title: result.data.title,
-          description: result.data.description,
-          priority: result.data.priority,
-          dueDate: result.data.dueDate,
+          title: result.data!.title,
+          description: result.data!.description,
+          priority: result.data!.priority,
+          dueDate: result.data!.dueDate,
         }).unwrap();
       }
       toast.success("Task created.");
@@ -108,9 +135,10 @@ export function NewTaskModal({ onClose }: Props) {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-semibold text-[#64748B] dark:text-slate-400 mb-1.5">Due date</label>
-              <input type="date" value={form.dueDate} onChange={(e) => setForm({ ...form, dueDate: e.target.value })}
-                className="w-full h-11 px-3 rounded-xl border border-[#D1D5DB] dark:border-slate-600 text-sm outline-none focus:border-[#6C5CE7] bg-white dark:bg-slate-800 dark:text-white transition-colors" />
+              <label className="block text-sm font-semibold text-[#64748B] dark:text-slate-400 mb-1.5">Due date *</label>
+              <input type="date" value={form.dueDate} onChange={(e) => handleDueDateChange(e.target.value)}
+                className={`w-full h-11 px-3 rounded-xl border text-sm outline-none bg-white dark:bg-slate-800 dark:text-white transition-colors ${errors.dueDate ? "border-[#EF4444]" : "border-[#D1D5DB] dark:border-slate-600 focus:border-[#6C5CE7]"}`} />
+              {errors.dueDate && <p className="text-xs text-[#EF4444] mt-1">{errors.dueDate}</p>}
             </div>
           </div>
 
