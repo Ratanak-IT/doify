@@ -111,7 +111,6 @@ function getAvatarColor(seed: string): string {
   return AVATAR_PALETTE[Math.abs(hash) % AVATAR_PALETTE.length];
 }
 
-/* ── New Task Modal ─────────────────────────────────────────────── */
 type TaskForm = z.infer<typeof createPersonalTaskSchema>;
 
 function NewTaskModal({

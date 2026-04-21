@@ -89,37 +89,46 @@ export const changePasswordSchema = z
     path: ["confirmPassword"],
   });
 
-export const createPersonalTaskSchema = z.object({
-  title: z
-    .string()
-    .min(1, "Task title is required")
-    .max(200, "Title is too long"),
-  description: z.string().max(2000).optional(),
-  priority: z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"]).default("MEDIUM"),
-  dueDate: z.string().optional(),
-  parentTaskId: z.string().optional(),
-});
+export const createPersonalTaskSchema = z
+  .object({
+    title: z.string().min(1, "Task title is required").max(200, "Title is too long"),
+    description: z.string().max(2000).optional(),
+    priority: z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"]).default("MEDIUM"),
+    dueDate: z.string().min(1, "Due date is required"),
+    parentTaskId: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    const dueErr = pastDateMessage(data.dueDate);
+    if (dueErr) ctx.addIssue({ code: z.ZodIssueCode.custom, message: dueErr, path: ["dueDate"] });
+  });
 
-export const createProjectTaskSchema = z.object({
-  title: z
-    .string()
-    .min(1, "Task title is required")
-    .max(200, "Title is too long"),
-  description: z.string().max(2000).optional(),
-  priority: z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"]).default("MEDIUM"),
-  dueDate: z.string().optional(),
-  assigneeId: z.string().optional(),
-  parentTaskId: z.string().optional(),
-});
+export const createProjectTaskSchema = z
+  .object({
+    title: z.string().min(1, "Task title is required").max(200, "Title is too long"),
+    description: z.string().max(2000).optional(),
+    priority: z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"]).default("MEDIUM"),
+    dueDate: z.string().min(1, "Due date is required"),
+    assigneeId: z.string().optional(),
+    parentTaskId: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    const dueErr = pastDateMessage(data.dueDate);
+    if (dueErr) ctx.addIssue({ code: z.ZodIssueCode.custom, message: dueErr, path: ["dueDate"] });
+  });
 
-export const updateTaskSchema = z.object({
-  title: z.string().min(1).max(200).optional(),
-  description: z.string().max(2000).optional(),
-  status: z.enum(["TODO", "IN_PROGRESS", "IN_REVIEW", "DONE"]).optional(),
-  priority: z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"]).optional(),
-  dueDate: z.string().optional(),
-  assigneeId: z.string().optional(),
-});
+export const updateTaskSchema = z
+  .object({
+    title: z.string().min(1).max(200).optional(),
+    description: z.string().max(2000).optional(),
+    status: z.enum(["TODO", "IN_PROGRESS", "IN_REVIEW", "DONE"]).optional(),
+    priority: z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"]).optional(),
+    dueDate: z.string().optional(),
+    assigneeId: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    const dueErr = pastDateMessage(data.dueDate);
+    if (dueErr) ctx.addIssue({ code: z.ZodIssueCode.custom, message: dueErr, path: ["dueDate"] });
+  });
 
 export const createCommentSchema = z.object({
   content: z
