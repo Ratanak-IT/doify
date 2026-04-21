@@ -1,35 +1,35 @@
 "use client";
 
 import { useState } from "react";
-import { X, Loader, User } from "lucide-react";
-import { useUpdateProjectTaskMutation } from "@/lib/features/tasks/taskApi";
+import { X, User } from "lucide-react";
+import { useCreateProjectTaskMutation } from "@/lib/features/tasks/taskApi";
 import { useGetTeamMembersQuery } from "@/lib/features/team/teamApi";
 import { getAvatarColor, getInitials } from "@/lib/features/team/team.utils";
-import type { Task } from "@/lib/features/types/task-type";
+import type { TaskStatus } from "@/lib/features/types/task-type";
 
 type Props = {
-  task: Task;
   projectId: string;
   teamId: string;
+  defaultStatus?: TaskStatus;
   onClose: () => void;
 };
 
-export default function EditProjectTaskModal({
-  task,
+export default function CreateProjectTaskModal({
   projectId,
   teamId,
+  defaultStatus,
   onClose,
 }: Props) {
-  const [updateProjectTask, { isLoading }] = useUpdateProjectTaskMutation();
+  const [createProjectTask, { isLoading }] = useCreateProjectTaskMutation();
   const { data: membersPage } = useGetTeamMembersQuery({ teamId });
   const members = membersPage?.content ?? [];
 
   const [form, setForm] = useState({
-    title: task.title,
-    description: task.description || "",
-    priority: task.priority,
-    dueDate: task.dueDate ? task.dueDate.split("T")[0] : "",
-    assigneeId: (task.assignees as any)?.[0]?.id ?? "",
+    title: "",
+    description: "",
+    priority: "MEDIUM",
+    dueDate: "",
+    assigneeId: "",
   });
 
   const [apiError, setApiError] = useState("");
@@ -37,7 +37,11 @@ export default function EditProjectTaskModal({
 
   const handleDueDateChange = (value: string) => {
     setForm((prev) => ({ ...prev, dueDate: value }));
-    setErrors((prev) => ({ ...prev, dueDate: undefined }));
+    if (!value) {
+      setErrors((prev) => ({ ...prev, dueDate: "Due date is required" }));
+    } else {
+      setErrors((prev) => ({ ...prev, dueDate: undefined }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -54,21 +58,19 @@ export default function EditProjectTaskModal({
     }
 
     try {
-      await updateProjectTask({
+      await createProjectTask({
         projectId,
-        taskId: task.id,
-        data: {
-          title: form.title.trim(),
-          description: form.description || undefined,
-          priority: form.priority,
-          dueDate: form.dueDate || undefined,
-          assigneeId: form.assigneeId || undefined,
-        },
+        title: form.title.trim(),
+        description: form.description || undefined,
+        priority: form.priority,
+        dueDate: form.dueDate || undefined,
+        assigneeId: form.assigneeId || undefined,
+        ...(defaultStatus ? { status: defaultStatus } : {}),
       } as any).unwrap();
       onClose();
     } catch (err: unknown) {
       const e = err as { data?: { message?: string } };
-      setApiError(e?.data?.message ?? "Failed to update task.");
+      setApiError(e?.data?.message ?? "Failed to create task.");
     }
   };
 
@@ -79,7 +81,7 @@ export default function EditProjectTaskModal({
       <div className="bg-white dark:bg-slate-900 rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-md max-h-[92dvh] overflow-y-auto">
         <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-slate-200 dark:border-slate-800">
           <h2 className="text-base font-bold text-slate-900 dark:text-white">
-            Edit Task
+            New Project Task
           </h2>
           <button
             onClick={onClose}
@@ -117,9 +119,7 @@ export default function EditProjectTaskModal({
             </label>
             <textarea
               value={form.description}
-              onChange={(e) =>
-                setForm({ ...form, description: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
               rows={3}
               placeholder="Task details..."
               className="w-full px-3 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-sm outline-none focus:border-blue-500 bg-white dark:bg-slate-800 dark:text-white resize-none"
@@ -134,13 +134,7 @@ export default function EditProjectTaskModal({
               </label>
               <select
                 value={form.priority}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    priority: e.target
-                      .value as import("@/lib/features/types/task-type").TaskPriority,
-                  })
-                }
+                onChange={(e) => setForm({ ...form, priority: e.target.value })}
                 className="w-full h-11 px-3 rounded-md border border-slate-200 dark:border-slate-700 text-sm outline-none focus:border-blue-500 bg-white dark:bg-slate-800 dark:text-white"
               >
                 <option value="LOW">Low</option>
@@ -171,9 +165,7 @@ export default function EditProjectTaskModal({
             <div className="relative">
               <select
                 value={form.assigneeId}
-                onChange={(e) =>
-                  setForm({ ...form, assigneeId: e.target.value })
-                }
+                onChange={(e) => setForm({ ...form, assigneeId: e.target.value })}
                 className="w-full h-11 pl-9 pr-3 rounded-md border border-slate-200 dark:border-slate-700 text-sm outline-none focus:border-blue-500 bg-white dark:bg-slate-800 dark:text-white appearance-none"
               >
                 <option value="">— Unassigned —</option>
@@ -196,14 +188,9 @@ export default function EditProjectTaskModal({
                   ) : (
                     <div
                       className="w-5 h-5 rounded-full flex items-center justify-center text-white text-[9px] font-bold"
-                      style={{
-                        backgroundColor: getAvatarColor(selectedMember.user.id),
-                      }}
+                      style={{ backgroundColor: getAvatarColor(selectedMember.user.id) }}
                     >
-                      {getInitials(
-                        selectedMember.user.fullName ||
-                          selectedMember.user.username,
-                      )}
+                      {getInitials(selectedMember.user.fullName || selectedMember.user.username)}
                     </div>
                   )
                 ) : (
@@ -212,7 +199,7 @@ export default function EditProjectTaskModal({
               </div>
             </div>
 
-            {/* Member avatar quick-pick */}
+            {/* Member list preview */}
             {members.length > 0 && (
               <div className="flex items-center gap-1.5 mt-2 flex-wrap">
                 {members.slice(0, 6).map((m) => (
@@ -222,8 +209,7 @@ export default function EditProjectTaskModal({
                     onClick={() =>
                       setForm({
                         ...form,
-                        assigneeId:
-                          form.assigneeId === m.user.id ? "" : m.user.id,
+                        assigneeId: form.assigneeId === m.user.id ? "" : m.user.id,
                       })
                     }
                     title={m.user.fullName || m.user.username}
@@ -270,10 +256,9 @@ export default function EditProjectTaskModal({
             <button
               type="submit"
               disabled={isLoading}
-              className="flex-1 h-12 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+              className="flex-1 h-12 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors disabled:opacity-60"
             >
-              {isLoading && <Loader size={14} className="animate-spin" />}
-              {isLoading ? "Saving..." : "Save Changes"}
+              {isLoading ? "Creating..." : "Create Task"}
             </button>
           </div>
         </form>

@@ -32,22 +32,34 @@ export default function EditProjectModal({ project, onClose, onSave }: Props) {
   const [errors, setErrors] = useState<{ name?: string; startDate?: string; dueDate?: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const validateDates = (s: string, d: string) => {
-    if (s && d && new Date(d) <= new Date(s)) {
-      return "Due date must be after start date";
-    }
+  const getDueDateError = (start: string, due: string): string | undefined => {
+    if (!due) return "Due date is required";
+    if (!start) return undefined;
+    if (due === start) return "Due date cannot be the same as start date";
+    if (new Date(due) < new Date(start)) return "Due date cannot be before start date";
     return undefined;
   };
 
   const handleStartDateChange = (value: string) => {
     setStartDate(value);
-    setErrors((prev) => ({ ...prev, startDate: undefined, dueDate: validateDates(value, dueDate) }));
+    setDueDate("");
+    setErrors((prev) => ({ ...prev, startDate: undefined, dueDate: undefined }));
   };
 
   const handleDueDateChange = (value: string) => {
     setDueDate(value);
-    setErrors((prev) => ({ ...prev, dueDate: validateDates(startDate, value) }));
+    const err = getDueDateError(startDate, value);
+    setErrors((prev) => ({ ...prev, dueDate: err }));
   };
+
+  // Min due date = day after startDate
+  const minDueDate = startDate
+    ? (() => {
+        const d = new Date(startDate);
+        d.setDate(d.getDate() + 1);
+        return d.toISOString().split("T")[0];
+      })()
+    : undefined;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,12 +67,8 @@ export default function EditProjectModal({ project, onClose, onSave }: Props) {
     const fe: typeof errors = {};
     if (!name.trim()) fe.name = "Project name is required";
     if (!startDate) fe.startDate = "Start date is required";
-    if (!dueDate) {
-      fe.dueDate = "Due date is required";
-    } else {
-      const dueDateErr = validateDates(startDate, dueDate);
-      if (dueDateErr) fe.dueDate = dueDateErr;
-    }
+    const dueDateErr = getDueDateError(startDate, dueDate);
+    if (dueDateErr) fe.dueDate = dueDateErr;
 
     if (Object.keys(fe).length > 0) {
       setErrors(fe);
@@ -100,10 +108,7 @@ export default function EditProjectModal({ project, onClose, onSave }: Props) {
             </div>
             <h2 className="text-xl font-semibold">Edit Project</h2>
           </div>
-          <button
-            onClick={onClose}
-            className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
-          >
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors">
             <X size={22} />
           </button>
         </div>
@@ -139,8 +144,7 @@ export default function EditProjectModal({ project, onClose, onSave }: Props) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-2">
-                <Calendar size={16} />
-                Start Date <span className="text-red-500">*</span>
+                <Calendar size={16} /> Start Date <span className="text-red-500">*</span>
               </label>
               <input
                 type="date"
@@ -153,12 +157,12 @@ export default function EditProjectModal({ project, onClose, onSave }: Props) {
 
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-2">
-                <Calendar size={16} />
-                Due Date <span className="text-red-500">*</span>
+                <Calendar size={16} /> Due Date <span className="text-red-500">*</span>
               </label>
               <input
                 type="date"
                 value={dueDate}
+                min={minDueDate}
                 onChange={(e) => handleDueDateChange(e.target.value)}
                 className={`w-full px-4 py-3 rounded-xl border bg-white dark:bg-slate-800 focus:border-violet-500 outline-none text-sm ${errors.dueDate ? "border-red-400" : "border-slate-200 dark:border-slate-700"}`}
               />
@@ -167,18 +171,14 @@ export default function EditProjectModal({ project, onClose, onSave }: Props) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-              Project Color
-            </label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Project Color</label>
             <div className="flex flex-wrap gap-3">
               {predefinedColors.map((c) => (
                 <button
                   key={c}
                   type="button"
                   onClick={() => setColor(c)}
-                  className={`w-9 h-9 rounded-2xl border-2 transition-all ${
-                    color === c ? "border-white scale-110 shadow-lg" : "border-transparent hover:scale-105"
-                  }`}
+                  className={`w-9 h-9 rounded-2xl border-2 transition-all ${color === c ? "border-white scale-110 shadow-lg" : "border-transparent hover:scale-105"}`}
                   style={{ backgroundColor: c }}
                   aria-label={`Select color ${c}`}
                 />

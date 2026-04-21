@@ -13,15 +13,6 @@ interface Props {
 
 type Form = z.infer<typeof createPersonalTaskSchema> & { projectId?: string };
 
-function validateDates(startDate: string, dueDate: string): string | null {
-  if (!dueDate) return null;
-  if (!startDate) return null;
-  const s = new Date(startDate);
-  const d = new Date(dueDate);
-  if (d <= s) return "Due date must be after start date";
-  return null;
-}
-
 export function NewTaskModal({ onClose }: Props) {
   const { data: projectsPage } = useGetProjectsQuery({});
   const projects = projectsPage?.content ?? [];
@@ -36,21 +27,13 @@ export function NewTaskModal({ onClose }: Props) {
   const [errors, setErrors] = useState<Partial<Record<keyof Form, string>>>({});
   const [apiError, setApiError] = useState("");
 
-  const handleDueDateChange = (value: string) => {
-    const updated = { ...form, dueDate: value };
-    setForm(updated);
-    if (errors.dueDate) {
-      setErrors((prev) => ({ ...prev, dueDate: undefined }));
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrors({}); setApiError("");
+    setApiError("");
 
-    const result = createPersonalTaskSchema.safeParse(form);
     const fe: Partial<Record<keyof Form, string>> = {};
 
+    const result = createPersonalTaskSchema.safeParse(form);
     if (!result.success) {
       for (const issue of result.error.issues) {
         const k = issue.path[0] as keyof Form;
@@ -58,10 +41,7 @@ export function NewTaskModal({ onClose }: Props) {
       }
     }
 
-    // Due date must be set and valid
-    if (!form.dueDate) {
-      fe.dueDate = "Due date is required";
-    }
+    if (!form.dueDate) fe.dueDate = "Due date is required";
 
     if (Object.keys(fe).length > 0) {
       setErrors(fe);
@@ -110,24 +90,34 @@ export function NewTaskModal({ onClose }: Props) {
 
           <div>
             <label className="block text-sm font-semibold text-[#64748B] dark:text-slate-400 mb-1.5">Title *</label>
-            <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })}
+            <input
+              value={form.title}
+              onChange={(e) => { setForm({ ...form, title: e.target.value }); setErrors((p) => ({ ...p, title: undefined })); }}
               placeholder="What needs to be done?"
-              className={`w-full h-11 px-3 rounded-xl border text-sm outline-none bg-white dark:bg-slate-800 dark:text-white transition-colors ${errors.title ? "border-[#EF4444]" : "border-[#D1D5DB] dark:border-slate-600 focus:border-[#6C5CE7]"}`} />
+              className={`w-full h-11 px-3 rounded-xl border text-sm outline-none bg-white dark:bg-slate-800 dark:text-white transition-colors ${errors.title ? "border-[#EF4444]" : "border-[#D1D5DB] dark:border-slate-600 focus:border-[#6C5CE7]"}`}
+            />
             {errors.title && <p className="text-xs text-[#EF4444] mt-1">{errors.title}</p>}
           </div>
 
           <div>
             <label className="block text-sm font-semibold text-[#64748B] dark:text-slate-400 mb-1.5">Description</label>
-            <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })}
-              rows={3} placeholder="Add more details…"
-              className="w-full px-3 py-3 rounded-xl border border-[#D1D5DB] dark:border-slate-600 text-sm outline-none focus:border-[#6C5CE7] bg-white dark:bg-slate-800 dark:text-white resize-none transition-colors" />
+            <textarea
+              value={form.description}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              rows={3}
+              placeholder="Add more details…"
+              className="w-full px-3 py-3 rounded-xl border border-[#D1D5DB] dark:border-slate-600 text-sm outline-none focus:border-[#6C5CE7] bg-white dark:bg-slate-800 dark:text-white resize-none transition-colors"
+            />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-semibold text-[#64748B] dark:text-slate-400 mb-1.5">Priority</label>
-              <select value={form.priority} onChange={(e) => setForm({ ...form, priority: e.target.value as Form["priority"] })}
-                className="w-full h-11 px-3 rounded-xl border border-[#D1D5DB] dark:border-slate-600 text-sm outline-none focus:border-[#6C5CE7] bg-white dark:bg-slate-800 dark:text-white">
+              <select
+                value={form.priority}
+                onChange={(e) => setForm({ ...form, priority: e.target.value as Form["priority"] })}
+                className="w-full h-11 px-3 rounded-xl border border-[#D1D5DB] dark:border-slate-600 text-sm outline-none focus:border-[#6C5CE7] bg-white dark:bg-slate-800 dark:text-white"
+              >
                 <option value="LOW">Low</option>
                 <option value="MEDIUM">Medium</option>
                 <option value="HIGH">High</option>
@@ -136,8 +126,12 @@ export function NewTaskModal({ onClose }: Props) {
             </div>
             <div>
               <label className="block text-sm font-semibold text-[#64748B] dark:text-slate-400 mb-1.5">Due date *</label>
-              <input type="date" value={form.dueDate} onChange={(e) => handleDueDateChange(e.target.value)}
-                className={`w-full h-11 px-3 rounded-xl border text-sm outline-none bg-white dark:bg-slate-800 dark:text-white transition-colors ${errors.dueDate ? "border-[#EF4444]" : "border-[#D1D5DB] dark:border-slate-600 focus:border-[#6C5CE7]"}`} />
+              <input
+                type="date"
+                value={form.dueDate}
+                onChange={(e) => { setForm({ ...form, dueDate: e.target.value }); setErrors((p) => ({ ...p, dueDate: undefined })); }}
+                className={`w-full h-11 px-3 rounded-xl border text-sm outline-none bg-white dark:bg-slate-800 dark:text-white transition-colors ${errors.dueDate ? "border-[#EF4444]" : "border-[#D1D5DB] dark:border-slate-600 focus:border-[#6C5CE7]"}`}
+              />
               {errors.dueDate && <p className="text-xs text-[#EF4444] mt-1">{errors.dueDate}</p>}
             </div>
           </div>
@@ -145,8 +139,11 @@ export function NewTaskModal({ onClose }: Props) {
           {projects.length > 0 && (
             <div>
               <label className="block text-sm font-semibold text-[#64748B] dark:text-slate-400 mb-1.5">Project (optional)</label>
-              <select value={form.projectId} onChange={(e) => setForm({ ...form, projectId: e.target.value })}
-                className="w-full h-11 px-3 rounded-xl border border-[#D1D5DB] dark:border-slate-600 text-sm outline-none focus:border-[#6C5CE7] bg-white dark:bg-slate-800 dark:text-white appearance-none">
+              <select
+                value={form.projectId}
+                onChange={(e) => setForm({ ...form, projectId: e.target.value })}
+                className="w-full h-11 px-3 rounded-xl border border-[#D1D5DB] dark:border-slate-600 text-sm outline-none focus:border-[#6C5CE7] bg-white dark:bg-slate-800 dark:text-white appearance-none"
+              >
                 <option value="">Personal task</option>
                 {projects.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
               </select>

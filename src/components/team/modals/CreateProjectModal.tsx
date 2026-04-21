@@ -30,36 +30,24 @@ const CreateProjectModal = ({ defaultTeamId, onClose }: Props) => {
   }>({});
   const [apiError, setApiError] = useState("");
 
-  const validateDates = (startDate: string, dueDate: string) => {
-    const errs: { startDate?: string; dueDate?: string } = {};
-    if (startDate && dueDate) {
-      const s = new Date(startDate);
-      const d = new Date(dueDate);
-      if (d <= s) {
-        errs.dueDate = "Due date must be after start date";
-      }
-    }
-    return errs;
+  // Due date is invalid if: not set, same as start, or before start
+  const getDueDateError = (start: string, due: string): string | undefined => {
+    if (!due) return "Due date is required";
+    if (!start) return undefined;
+    if (due === start) return "Due date cannot be the same as start date";
+    if (new Date(due) < new Date(start)) return "Due date cannot be before start date";
+    return undefined;
   };
 
   const handleStartDateChange = (value: string) => {
-    setForm((prev) => ({ ...prev, startDate: value }));
-    if (errors.dueDate) {
-      const dateErrs = validateDates(value, form.dueDate);
-      setErrors((prev) => ({
-        ...prev,
-        startDate: undefined,
-        dueDate: dateErrs.dueDate,
-      }));
-    } else {
-      setErrors((prev) => ({ ...prev, startDate: undefined }));
-    }
+    setForm((prev) => ({ ...prev, startDate: value, dueDate: "" }));
+    setErrors((prev) => ({ ...prev, startDate: undefined, dueDate: undefined }));
   };
 
   const handleDueDateChange = (value: string) => {
     setForm((prev) => ({ ...prev, dueDate: value }));
-    const dateErrs = validateDates(form.startDate, value);
-    setErrors((prev) => ({ ...prev, dueDate: dateErrs.dueDate }));
+    const err = getDueDateError(form.startDate, value);
+    setErrors((prev) => ({ ...prev, dueDate: err }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -67,16 +55,11 @@ const CreateProjectModal = ({ defaultTeamId, onClose }: Props) => {
     setApiError("");
 
     const fe: typeof errors = {};
-
     if (!form.name.trim()) fe.name = "Project name is required";
     if (!form.teamId) fe.teamId = "Team is required";
     if (!form.startDate) fe.startDate = "Start date is required";
-    if (!form.dueDate) {
-      fe.dueDate = "Due date is required";
-    } else if (form.startDate) {
-      const dateErrs = validateDates(form.startDate, form.dueDate);
-      if (dateErrs.dueDate) fe.dueDate = dateErrs.dueDate;
-    }
+    const dueDateErr = getDueDateError(form.startDate, form.dueDate);
+    if (dueDateErr) fe.dueDate = dueDateErr;
 
     if (Object.keys(fe).length > 0) {
       setErrors(fe);
@@ -96,12 +79,20 @@ const CreateProjectModal = ({ defaultTeamId, onClose }: Props) => {
       toast.success("Project created.");
       onClose();
     } catch (err: any) {
-      const message =
-        err?.data?.message || err?.message || "Failed to create project";
+      const message = err?.data?.message || err?.message || "Failed to create project";
       setApiError(message);
       toast.error(message);
     }
   };
+
+  // Min due date = day after startDate
+  const minDueDate = form.startDate
+    ? (() => {
+        const d = new Date(form.startDate);
+        d.setDate(d.getDate() + 1);
+        return d.toISOString().split("T")[0];
+      })()
+    : undefined;
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
@@ -110,14 +101,9 @@ const CreateProjectModal = ({ defaultTeamId, onClose }: Props) => {
         <div className="flex items-center justify-between px-5 py-5 border-b border-slate-200 dark:border-slate-700">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-2xl bg-violet-100 dark:bg-violet-900/50 flex items-center justify-center">
-              <Plus
-                className="text-violet-600 dark:text-violet-400"
-                size={22}
-              />
+              <Plus className="text-violet-600 dark:text-violet-400" size={22} />
             </div>
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
-              New Project
-            </h2>
+            <h2 className="text-xl font-semibold text-slate-900 dark:text-white">New Project</h2>
           </div>
           <button
             onClick={onClose}
@@ -142,16 +128,11 @@ const CreateProjectModal = ({ defaultTeamId, onClose }: Props) => {
             <input
               type="text"
               value={form.name}
-              onChange={(e) => {
-                setForm({ ...form, name: e.target.value });
-                setErrors((p) => ({ ...p, name: undefined }));
-              }}
+              onChange={(e) => { setForm({ ...form, name: e.target.value }); setErrors((p) => ({ ...p, name: undefined })); }}
               placeholder="e.g. E-commerce Platform"
               className={`w-full h-12 px-4 rounded-2xl border bg-white dark:bg-slate-800 text-base focus:border-violet-500 outline-none transition-all ${errors.name ? "border-red-400" : "border-slate-200 dark:border-slate-700"}`}
             />
-            {errors.name && (
-              <p className="text-xs text-red-500 mt-1">{errors.name}</p>
-            )}
+            {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name}</p>}
           </div>
 
           {/* Description */}
@@ -161,16 +142,14 @@ const CreateProjectModal = ({ defaultTeamId, onClose }: Props) => {
             </label>
             <textarea
               value={form.description}
-              onChange={(e) =>
-                setForm({ ...form, description: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
               placeholder="What is this project about?"
               rows={3}
               className="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm resize-y min-h-[90px] focus:border-violet-500 outline-none"
             />
           </div>
 
-          {/* Team (only show if not pre-filled) */}
+          {/* Team */}
           {!defaultTeamId && (
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
@@ -179,16 +158,11 @@ const CreateProjectModal = ({ defaultTeamId, onClose }: Props) => {
               <input
                 type="text"
                 value={form.teamId}
-                onChange={(e) => {
-                  setForm({ ...form, teamId: e.target.value });
-                  setErrors((p) => ({ ...p, teamId: undefined }));
-                }}
+                onChange={(e) => { setForm({ ...form, teamId: e.target.value }); setErrors((p) => ({ ...p, teamId: undefined })); }}
                 placeholder="Enter Team ID"
                 className={`w-full h-12 px-4 rounded-2xl border bg-white dark:bg-slate-800 text-sm focus:border-violet-500 outline-none ${errors.teamId ? "border-red-400" : "border-slate-200 dark:border-slate-700"}`}
               />
-              {errors.teamId && (
-                <p className="text-xs text-red-500 mt-1">{errors.teamId}</p>
-              )}
+              {errors.teamId && <p className="text-xs text-red-500 mt-1">{errors.teamId}</p>}
             </div>
           )}
 
@@ -204,9 +178,7 @@ const CreateProjectModal = ({ defaultTeamId, onClose }: Props) => {
                 onChange={(e) => handleStartDateChange(e.target.value)}
                 className={`w-full h-12 px-4 rounded-2xl border bg-white dark:bg-slate-800 text-sm focus:border-violet-500 outline-none ${errors.startDate ? "border-red-400" : "border-slate-200 dark:border-slate-700"}`}
               />
-              {errors.startDate && (
-                <p className="text-xs text-red-500 mt-1">{errors.startDate}</p>
-              )}
+              {errors.startDate && <p className="text-xs text-red-500 mt-1">{errors.startDate}</p>}
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
@@ -215,30 +187,19 @@ const CreateProjectModal = ({ defaultTeamId, onClose }: Props) => {
               <input
                 type="date"
                 value={form.dueDate}
+                min={minDueDate}
                 onChange={(e) => handleDueDateChange(e.target.value)}
                 className={`w-full h-12 px-4 rounded-2xl border bg-white dark:bg-slate-800 text-sm focus:border-violet-500 outline-none ${errors.dueDate ? "border-red-400" : "border-slate-200 dark:border-slate-700"}`}
               />
-              {errors.dueDate && (
-                <p className="text-xs text-red-500 mt-1">{errors.dueDate}</p>
-              )}
+              {errors.dueDate && <p className="text-xs text-red-500 mt-1">{errors.dueDate}</p>}
             </div>
           </div>
 
           {/* Color Picker */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-              Color
-            </label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Color</label>
             <div className="flex gap-3 flex-wrap">
-              {[
-                "#6d28d9",
-                "#10b981",
-                "#f59e0b",
-                "#ef4444",
-                "#3b82f6",
-                "#ec4899",
-                "#8b5cf6",
-              ].map((c) => (
+              {["#6d28d9", "#10b981", "#f59e0b", "#ef4444", "#3b82f6", "#ec4899", "#8b5cf6"].map((c) => (
                 <button
                   key={c}
                   type="button"
