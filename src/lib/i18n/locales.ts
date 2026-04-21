@@ -11,7 +11,7 @@ const en: Translations = {
   },
   landing: {
     hero: {
-      title: "TaskFlow — Where teams move work forward",
+      title: "— Where teams move work forward",
       subtitle: "Boards, lists, and cards. The simplest way to manage your projects.",
       cta: "Get started free",
     },
