@@ -1,4 +1,4 @@
-// app/page.tsx
+
 import Hero from "@/components/landing/Hero";
 import Logos from "@/components/landing/Logos";
 import Features from "@/components/landing/Features";
