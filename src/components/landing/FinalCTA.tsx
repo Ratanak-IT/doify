@@ -16,7 +16,7 @@ export default function FinalCTA() {
         <div className="flex flex-col sm:flex-row w-fit mx-auto gap-3 sm:gap-4 justify-center items-stretch sm:items-center p-3">
           <Link
             href="/register"
-            className="flex items-center justify-center min-h-[48px] px-6 py-3 rounded-[15px] bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-[15px] transition-colors shadow-lg shadow-blue-500/25"
+            className="flex items-center justify-center min-h-[48px] px-6 py-3 rounded-md bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-[15px] transition-colors shadow-lg shadow-blue-500/25"
           >
             Start for free
           </Link>
