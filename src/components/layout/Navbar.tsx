@@ -14,12 +14,12 @@ import {
   Sun,
   Moon,
   Globe,
-  Bell,
   User,
   LogOut,
   Settings,
   Menu,
   X,
+  Bell,
   CheckCheck,
   ChevronRight,
   CheckSquare,
@@ -182,7 +182,7 @@ export default function Navbar() {
             {/* Logged-in actions (desktop) */}
             {user ? (
               <>
-                <Link
+                {/* <Link
                   href="/dashboard/notifications"
                   className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors relative"
                 >
@@ -195,7 +195,7 @@ export default function Navbar() {
                       {unreadCount > 9 ? "9+" : unreadCount}
                     </span>
                   )}
-                </Link>
+                </Link> */}
 
                 <div className="relative">
                   <button
