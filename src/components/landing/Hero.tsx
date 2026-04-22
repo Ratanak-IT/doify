@@ -4,11 +4,12 @@ import Link from "next/link";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import KanbanDemo from "./KanbanDemo";
 import { motion } from "framer-motion";
+import type { Variants } from "framer-motion";
 
 export default function Hero() {
   const { t } = useTranslation();
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -19,14 +20,14 @@ export default function Hero() {
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 30 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
         duration: 0.6,
-        ease: "easeOut",
+        ease: [0.0, 0.0, 0.2, 1] as [number, number, number, number],
       },
     },
   };
@@ -55,7 +56,7 @@ export default function Hero() {
           className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-center text-slate-900 dark:text-white leading-tight mb-4 sm:mb-6 max-w-xs sm:max-w-2xl md:max-w-3xl lg:max-w-4xl"
           variants={itemVariants}
         >
-         <span className="text-blue-600">Doify</span> {t("landing.hero.title")}
+          <span className="text-blue-600">Doify</span> {t("landing.hero.title")}
         </motion.h1>
 
         {/* Subtitle */}
