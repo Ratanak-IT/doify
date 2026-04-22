@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation";
 import StoreProvider from "./StoreProvider";
 import { poppins, sovaphum } from "./fonts";
 import { Toaster } from "sonner";
+import { NotificationStreamProvider } from "@/components/NotificationStreamProvider";
 
 export default function RootProviders({
   children,
@@ -37,6 +38,7 @@ export default function RootProviders({
     >
       <ThemeProvider>
         <StoreProvider>
+           <NotificationStreamProvider /> 
           {showNavbar && <NavbarWrapper />}
           {children}
           {showFooter && <FooterWrapper />}

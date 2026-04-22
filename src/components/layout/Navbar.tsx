@@ -39,7 +39,6 @@ export default function Navbar() {
     skip: !mounted || !user,
     pollingInterval: 30000,
     refetchOnMountOrArgChange: true,
-    refetchOnFocus: true,
   });
   const unreadCount = mounted ? (unread?.count ?? 0) : 0;
 
