@@ -142,7 +142,7 @@ const credibilityBadges = [
 ];
 
 const colorMap: Record<string, string> = {
-  violet:  "bg-blue-600  text-violet-600  dark:bg-slate-800  dark:text-violet-400",
+  violet:  "bg-gray-400  text-violet-600  dark:bg-slate-800  dark:text-violet-400",
   amber:   "bg-amber-100   text-amber-600   dark:bg-amber-900/30   dark:text-amber-400",
   rose:    "bg-rose-100    text-rose-600    dark:bg-rose-900/30    dark:text-rose-400",
   emerald: "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400",
